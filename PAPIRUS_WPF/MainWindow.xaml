@@ -84,10 +84,10 @@
                 <TextBlock Margin="8,0" Text="{Binding Status}" VerticalAlignment="Center" ToolTip="{Binding Status}"/>
             </StatusBarItem>
         </StatusBar>
-        <TreeView Grid.Row="1" Grid.Column="0">
+        <TreeView Grid.Row="1" Grid.Column="0"
+         VirtualizingStackPanel.IsVirtualizing="True">
             <Elements:two_pole/>
             <Elements:two_pole/>
-
         </TreeView>
     </Grid>
 
