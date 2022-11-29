@@ -23,6 +23,9 @@ namespace PAPIRUS_WPF
         public MainWindow()
         {
             InitializeComponent();
+
         }
+
+
     }
 }

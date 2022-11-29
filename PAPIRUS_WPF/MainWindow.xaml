@@ -1,42 +1,78 @@
 ﻿<Window x:Class="PAPIRUS_WPF.MainWindow"
+        Name="Form"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PAPIRUS_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Menu>
+        Title="MainWindow" Height="480" Width="800"
+        ResizeMode="CanResizeWithGrip"
+        MinWidth="480" MinHeight="300"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+
+    <Grid ShowGridLines="True" RenderTransformOrigin="0.5,0.5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+
+        </Grid.ColumnDefinitions>
+        <Menu Padding="3,1" Background="Transparent"  Grid.Column="0" Grid.ColumnSpan="2" Height="24" VerticalAlignment="Center">
             <MenuItem Header="Файл">
                 <MenuItem Header="Файл">
 
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Правка">
-                
-                </MenuItem>
+
+            </MenuItem>
             <MenuItem Header="Редактор">
-                
-                </MenuItem>
+
+            </MenuItem>
             <MenuItem Header="Расчёты">
-                
-                </MenuItem>
+
+            </MenuItem>
             <MenuItem Header="Сервис">
-                
-                </MenuItem>
+
+            </MenuItem>
             <MenuItem Header="Справка">
-                
-                </MenuItem>
-            
+
+            </MenuItem>
+
 
         </Menu>
-        <StatusBarItem DockPanel.Dock="Left">
-            <TextBlock Margin="8,0" Text="ghbdtn" VerticalAlignment="Center" ToolTip=""/>
-        </StatusBarItem>
+        <TextBox Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="108" Height="18"/>
+
+        <GroupBox Grid.Column="1" Header="GroupBox" Grid.Row="1">
+            <ScrollViewer Name="DiagramScroll"
+					HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
+					
+					FlowDirection="LeftToRight">
+                <Canvas
+                Name="Canvas1"
+                Width="480"
+			    Height="400"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True">
+                    <Canvas.LayoutTransform>
+							<ScaleTransform
+								ScaleX="{Binding ElementName=zoom, Path=Value}"
+								ScaleY="{Binding ElementName=zoom, Path=Value}"
+							/>
+                    </Canvas.LayoutTransform>
+                </Canvas>
+            </ScrollViewer>
+        </GroupBox>
     </Grid>
 
-    
+
 
 
 </Window>
