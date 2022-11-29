@@ -65,6 +65,7 @@
       <DependentUpon>two_pole.xaml</DependentUpon>
     </Compile>
     <Compile Include="FormEditor.cs" />
+    <Compile Include="Object.cs" />
     <Compile Include="Symbol.cs" />
     <Compile Include="GridPoint.cs" />
     <Page Include="Elements\Input.xaml">

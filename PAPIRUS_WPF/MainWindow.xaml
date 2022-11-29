@@ -67,7 +67,7 @@
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
             <StatusBarItem DockPanel.Dock="Right">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Увеличение" Target="{Binding ElementName=zoom}" Margin="0"/>
+                    <Label Content="Увеличение" Target="{Binding ElementName=zoom}" Margin="0" FontSize="12"/>
                     <Slider Width="100" x:Name="zoom" VerticalAlignment="Center" 
 						Minimum="0.5" Maximum="3" Value="1"
 						IsMoveToPointEnabled="True"
@@ -82,7 +82,7 @@
                     <TextBlock VerticalAlignment="Center" MinWidth="50" Margin="3,0"
                         x:Name="TextZoom"
 						Text="{Binding Value, ElementName=zoom, StringFormat=P0}"
-						ToolTip="Текущее увеличение" 
+						ToolTip="Текущее увеличение" FontSize="12" 
 					/>
                 </StackPanel>
             </StatusBarItem>
@@ -90,7 +90,7 @@
                 <TextBlock Margin="8,0" Text="{Binding Status}" VerticalAlignment="Center" ToolTip="{Binding Status}"/>
             </StatusBarItem>
         </StatusBar>
-        <TreeView Grid.Row="1" Grid.Column="0">
+        <TreeView x:Name="ObjectSelector" AllowDrop="True" Grid.Row="1" Grid.Column="0">
             <Expander Margin="-20,0" IsExpanded="True">
                 <Elements:two_pole Margin="20,0"/>
             </Expander>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,9 +37,9 @@ namespace PAPIRUS_WPF
             InitializeComponent();
 
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
-          // CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
-           // CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-          //  CircuitCanvas.Drop += CircuitCanvas_Drop;
+            CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
+            CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
+            CircuitCanvas.Drop += CircuitCanvas_Drop;
         }
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -92,6 +93,122 @@ namespace PAPIRUS_WPF
                 e.Handled = true;
             }
         }
+        private void CircuitCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //If there is a linking in progress
+            if (_linkingStarted)
+            {
+                //Temporary value to show 
+                bool linked = false;
 
+                //Get the type of the element that the mouse went up on
+                var BaseType = e.Source.GetType().BaseType;
+
+                if (BaseType == typeof(Object))
+                {
+                    //Convert to a circuit object
+                    Object obj = (Object)e.Source;
+
+                    //Get the position of the mouse relative to the circuit object
+                    Point MousePosition = e.GetPosition(obj);
+
+                    //Get the element underneath the mouse
+                    HitTestResult result = VisualTreeHelper.HitTest(obj, MousePosition);
+
+                    //Return if there is no element under the cursor
+                    if (result == null || result.VisualHit == null)
+                    {
+                        //Remove the temporary line
+                        Connections.Children.Remove(_tempLink);
+                        _tempLink = null;
+                        _linkingStarted = false;
+                        return;
+                    }
+
+                    //If the underlying element is a border element
+                    if (result.VisualHit is Border)
+                    {
+                        Border border = (Border)result.VisualHit;
+                        var IO = border.Parent;
+
+                        //Check if the border element is a input element in disguise
+                        if (IO is Input)
+                        {
+                            //Convert to a input element
+                            Input IOInput = (Input)IO;
+
+                            //Get the center of the input relative to the canvas
+                            Point inputPoint = IOInput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOInput.ActualWidth / 2, IOInput.ActualHeight / 2));
+
+                            //Ends the line in the centre of the input
+                            _tempLink.EndPoint = inputPoint;
+
+                            //Links the output to the input
+    //IOInput.LinkInputs(_tempOutput);
+
+                            //Adds to the global list
+                            
+
+                            //Attaches the line to the object
+                            obj.AttachInputLine(_tempLink);
+
+                            //Some evil casting (the outputs' parent of the parent is the circuit object that contains the output). Attaches the output side to the object
+                            ((Object)((Grid)_tempOutput.Parent).Parent).AttachOutputLine(_tempLink);
+
+                            //Set linked to true
+                            linked = true;
+                        }
+                    }
+                }
+
+                //If it isn't linked remove the temporary link
+                if (!linked)
+                {
+                    Connections.Children.Remove(_tempLink);
+                    _tempLink = null;
+                }
+
+                //Stop handling linking
+                _linkingStarted = false;
+                e.Handled = true;
+            }
+        }
+        private void ObjectSelector_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //Don't do anything if no element clicked
+            if (ObjectSelector.SelectedItem == null)
+                return;
+
+            //Copy the element to the drag & drop clipboard
+            DragDrop.DoDragDrop(ObjectSelector, ObjectSelector.SelectedItem, DragDropEffects.Copy | DragDropEffects.Move);
+        }
+
+        private void CircuitCanvas_Drop(object sender, DragEventArgs e)
+        {
+            //Get the type of element that is dropped onto the canvas
+            String[] allFormats = e.Data.GetFormats();
+            //Make sure there is a format there
+            if (allFormats.Length == 0)
+                return;
+
+            string ItemType = allFormats[0];
+
+            //Create a new type of the format
+            Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
+
+            //If the format doesn't exist do nothing
+            if (instance == null)
+                return;
+
+            //Add the element to the canvas
+            CircuitCanvas.Children.Add(instance);
+
+            //Get the point of the mouse relative to the canvas
+            Point p = e.GetPosition(CircuitCanvas);
+
+            //Take 15 from the mouse position to center the element on the mouse
+            Canvas.SetLeft(instance, p.X - 15);
+            Canvas.SetTop(instance, p.Y - 15);
+        }
     }
 }
