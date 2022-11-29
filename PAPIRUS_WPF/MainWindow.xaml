@@ -70,6 +70,28 @@
                 </Canvas>
             </ScrollViewer>
         </GroupBox>
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
+            <StatusBarItem DockPanel.Dock="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{x:Static properties:Resources.TitleZoom}" Target="{Binding ElementName=zoom}" Margin="0"/>
+                    <Slider Width="100" x:Name="zoom" VerticalAlignment="Center" Background="{StaticResource SliderBackground}"
+						Minimum="{x:Static lc:Project.MinZoom}" Maximum="{x:Static lc:Project.MaxZoom}" Value="{Binding Path=Editor.Zoom, Mode=TwoWay, FallbackValue=1}"
+						IsMoveToPointEnabled="True"
+						TickPlacement="TopLeft"
+						Ticks="0, 0.5, 1, 1.5, 2, 2.5, 3"
+						ToolTip="{x:Static properties:Resources.ToolTipZoom}">
+                        
+                        <Slider.LayoutTransform>
+                            <ScaleTransform ScaleX="1" ScaleY="0.8"/>
+                        </Slider.LayoutTransform>
+                    </Slider>
+                    <TextBlock VerticalAlignment="Center" MinWidth="50" Margin="3,0"
+						Text="{Binding Path=Editor.Zoom, StringFormat=P0}"
+						ToolTip="{x:Static properties:Resources.ToolTipCurrentZoom}"
+					/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 
 
