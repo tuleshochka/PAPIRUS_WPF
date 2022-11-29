@@ -91,8 +91,17 @@
             </StatusBarItem>
         </StatusBar>
         <TreeView x:Name="ObjectSelector" AllowDrop="True" Grid.Row="1" Grid.Column="0">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="IsSelected" Value="False"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
             <Expander Margin="-20,0" IsExpanded="True">
-                <Elements:two_pole Margin="20,0"/>
+                <Elements:two_pole CanMove="False" Margin="20,0"/>
             </Expander>
         </TreeView>
     </Grid>

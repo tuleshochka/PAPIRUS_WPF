@@ -24,7 +24,9 @@ namespace PAPIRUS_WPF.Elements
         {
 
             InitializeComponent();
+            CanMove = true;
 
         }
+
     }
 }
