@@ -12,27 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace PAPIRUS_WPF
+namespace PAPIRUS_WPF.Elements
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для Input.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Input : UserControl
     {
-        public MainWindow()
+        public Input()
         {
             InitializeComponent();
-
-        }
-
-        public double Zoom
-        {
-            get
-            {
-                return zoom.Value;
-            }
         }
     }
 }

@@ -15,9 +15,9 @@
 
     <Grid ShowGridLines="True" RenderTransformOrigin="0.5,0.5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"></ColumnDefinition>
@@ -48,7 +48,6 @@
 
 
         </Menu>
-        <TextBox Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="108" Height="18"/>
 
         <GroupBox Grid.Column="1" Header="GroupBox" Grid.Row="1">
             <ScrollViewer Name="DiagramScroll"
@@ -57,8 +56,8 @@
 					FlowDirection="LeftToRight">
                 <Canvas
                 Name="Canvas1"
-                Width="480"
-			    Height="400"
+                Width="800"
+			    Height="600"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
                 Style="{StaticResource LogicCircuitBackground}" AllowDrop="True">
                     <Canvas.LayoutTransform>
@@ -73,25 +72,30 @@
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
             <StatusBarItem DockPanel.Dock="Right">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="{x:Static properties:Resources.TitleZoom}" Target="{Binding ElementName=zoom}" Margin="0"/>
-                    <Slider Width="100" x:Name="zoom" VerticalAlignment="Center" Background="{StaticResource SliderBackground}"
-						Minimum="{x:Static lc:Project.MinZoom}" Maximum="{x:Static lc:Project.MaxZoom}" Value="{Binding Path=Editor.Zoom, Mode=TwoWay, FallbackValue=1}"
+                    <Label Content="Увеличение" Target="{Binding ElementName=zoom}" Margin="0"/>
+                    <Slider Width="100" x:Name="zoom" VerticalAlignment="Center" 
+						Minimum="0.5" Maximum="3" Value="1"
 						IsMoveToPointEnabled="True"
 						TickPlacement="TopLeft"
 						Ticks="0, 0.5, 1, 1.5, 2, 2.5, 3"
-						ToolTip="{x:Static properties:Resources.ToolTipZoom}">
+						ToolTip="Установить масштаб">
                         
                         <Slider.LayoutTransform>
                             <ScaleTransform ScaleX="1" ScaleY="0.8"/>
                         </Slider.LayoutTransform>
                     </Slider>
                     <TextBlock VerticalAlignment="Center" MinWidth="50" Margin="3,0"
-						Text="{Binding Path=Editor.Zoom, StringFormat=P0}"
-						ToolTip="{x:Static properties:Resources.ToolTipCurrentZoom}"
+                        Name="TextZoom"
+						Text="{Binding ElementName=zoom, Path=Value, StringFormat=P0}"
+						ToolTip="Текущее увеличение" 
 					/>
                 </StackPanel>
             </StatusBarItem>
+            <StatusBarItem DockPanel.Dock="Left">
+                <TextBlock Margin="8,0" Text="{Binding Path=Status}" VerticalAlignment="Center" ToolTip="{Binding Path=Status}"/>
+            </StatusBarItem>
         </StatusBar>
+        <TreeView Grid.Row="1" Grid.Column="0"/>
     </Grid>
 
 
