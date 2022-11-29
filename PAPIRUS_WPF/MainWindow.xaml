@@ -44,11 +44,17 @@
 					
 					FlowDirection="LeftToRight">
                 <Canvas
-                x:Name="Canvas1"
+                x:Name="CircuitCanvas"
                 Width="1600"
 			    Height="1200"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
                 Style="{StaticResource LogicCircuitBackground}" AllowDrop="True">
+                    <Path Stroke="Black" StrokeThickness="1">
+                        <Path.Data>
+                            <GeometryGroup x:Name="Connections"/>
+                        </Path.Data>
+                    </Path>
+                    <Elements:two_pole Canvas.Left="139" Canvas.Top="130"/>
                     <Canvas.LayoutTransform>
                         <ScaleTransform
 								ScaleX="{Binding Value, ElementName=zoom}"
