@@ -22,7 +22,9 @@ namespace PAPIRUS_WPF.Elements
     {
         public two_pole()
         {
+
             InitializeComponent();
+
         }
     }
 }
