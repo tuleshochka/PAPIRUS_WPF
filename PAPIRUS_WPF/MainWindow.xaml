@@ -8,8 +8,35 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Menu>
-            <MenuItem Header="Файл"/>
-        </Menu>
+            <MenuItem Header="Файл">
+                <MenuItem Header="Файл">
 
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Правка">
+                
+                </MenuItem>
+            <MenuItem Header="Редактор">
+                
+                </MenuItem>
+            <MenuItem Header="Расчёты">
+                
+                </MenuItem>
+            <MenuItem Header="Сервис">
+                
+                </MenuItem>
+            <MenuItem Header="Справка">
+                
+                </MenuItem>
+            
+
+        </Menu>
+        <StatusBarItem DockPanel.Dock="Left">
+            <TextBlock Margin="8,0" Text="ghbdtn" VerticalAlignment="Center" ToolTip=""/>
+        </StatusBarItem>
     </Grid>
+
+    
+
+
 </Window>
