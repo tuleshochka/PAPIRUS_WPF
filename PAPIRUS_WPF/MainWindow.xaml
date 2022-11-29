@@ -1,10 +1,11 @@
-﻿<Window x:Class="PAPIRUS_WPF.MainWindow"
-        Name="Form"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PAPIRUS_WPF"
+        xmlns:Elements="clr-namespace:PAPIRUS_WPF.Elements" x:Class="PAPIRUS_WPF.MainWindow"
+        x:Name="Form"
         mc:Ignorable="d"
         Title="MainWindow" Height="480" Width="800"
         ResizeMode="CanResizeWithGrip"
@@ -15,55 +16,43 @@
 
     <Grid ShowGridLines="True" RenderTransformOrigin="0.5,0.5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
 
         </Grid.ColumnDefinitions>
         <Menu Padding="3,1" Background="Transparent"  Grid.Column="0" Grid.ColumnSpan="2" Height="24" VerticalAlignment="Center">
             <MenuItem Header="Файл">
-                <MenuItem Header="Файл">
-
-                </MenuItem>
+                <MenuItem Header="Файл"/>
             </MenuItem>
-            <MenuItem Header="Правка">
-
-            </MenuItem>
-            <MenuItem Header="Редактор">
-
-            </MenuItem>
-            <MenuItem Header="Расчёты">
-
-            </MenuItem>
-            <MenuItem Header="Сервис">
-
-            </MenuItem>
-            <MenuItem Header="Справка">
-
-            </MenuItem>
+            <MenuItem Header="Правка"/>
+            <MenuItem Header="Редактор"/>
+            <MenuItem Header="Расчёты"/>
+            <MenuItem Header="Сервис"/>
+            <MenuItem Header="Справка"/>
 
 
         </Menu>
 
-        <GroupBox Grid.Column="1" Header="GroupBox" Grid.Row="1">
-            <ScrollViewer Name="DiagramScroll"
+        <GroupBox Grid.Column="1" Grid.Row="1">
+            <ScrollViewer x:Name="DiagramScroll"
 					HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
 					
 					FlowDirection="LeftToRight">
                 <Canvas
-                Name="Canvas1"
+                x:Name="Canvas1"
                 Width="800"
 			    Height="600"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
                 Style="{StaticResource LogicCircuitBackground}" AllowDrop="True">
                     <Canvas.LayoutTransform>
-							<ScaleTransform
-								ScaleX="{Binding ElementName=zoom, Path=Value}"
-								ScaleY="{Binding ElementName=zoom, Path=Value}"
+                        <ScaleTransform
+								ScaleX="{Binding Value, ElementName=zoom}"
+								ScaleY="{Binding Value, ElementName=zoom}"
 							/>
                     </Canvas.LayoutTransform>
                 </Canvas>
@@ -79,23 +68,27 @@
 						TickPlacement="TopLeft"
 						Ticks="0, 0.5, 1, 1.5, 2, 2.5, 3"
 						ToolTip="Установить масштаб">
-                        
+
                         <Slider.LayoutTransform>
                             <ScaleTransform ScaleX="1" ScaleY="0.8"/>
                         </Slider.LayoutTransform>
                     </Slider>
                     <TextBlock VerticalAlignment="Center" MinWidth="50" Margin="3,0"
-                        Name="TextZoom"
-						Text="{Binding ElementName=zoom, Path=Value, StringFormat=P0}"
+                        x:Name="TextZoom"
+						Text="{Binding Value, ElementName=zoom, StringFormat=P0}"
 						ToolTip="Текущее увеличение" 
 					/>
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem DockPanel.Dock="Left">
-                <TextBlock Margin="8,0" Text="{Binding Path=Status}" VerticalAlignment="Center" ToolTip="{Binding Path=Status}"/>
+                <TextBlock Margin="8,0" Text="{Binding Status}" VerticalAlignment="Center" ToolTip="{Binding Status}"/>
             </StatusBarItem>
         </StatusBar>
-        <TreeView Grid.Row="1" Grid.Column="0"/>
+        <TreeView Grid.Row="1" Grid.Column="0">
+            <Elements:two_pole/>
+            <Elements:two_pole/>
+
+        </TreeView>
     </Grid>
 
 

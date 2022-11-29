@@ -61,8 +61,8 @@
     <Compile Include="Elements\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Elements\TwoPole.xaml.cs">
-      <DependentUpon>TwoPole.xaml</DependentUpon>
+    <Compile Include="Elements\two_pole.xaml.cs">
+      <DependentUpon>two_pole.xaml</DependentUpon>
     </Compile>
     <Compile Include="FormEditor.cs" />
     <Compile Include="Symbol.cs" />
@@ -75,7 +75,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Elements\TwoPole.xaml">
+    <Page Include="Elements\two_pole.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
