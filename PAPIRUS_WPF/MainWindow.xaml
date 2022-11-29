@@ -14,14 +14,14 @@
         SnapsToDevicePixels="True">
 
 
-    <Grid ShowGridLines="True" RenderTransformOrigin="0.5,0.5">
+    <Grid RenderTransformOrigin="0.5,0.5">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="130"/>
             <ColumnDefinition Width="*"/>
 
         </Grid.ColumnDefinitions>
@@ -45,8 +45,8 @@
 					FlowDirection="LeftToRight">
                 <Canvas
                 x:Name="Canvas1"
-                Width="800"
-			    Height="600"
+                Width="1600"
+			    Height="1200"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
                 Style="{StaticResource LogicCircuitBackground}" AllowDrop="True">
                     <Canvas.LayoutTransform>
@@ -84,10 +84,10 @@
                 <TextBlock Margin="8,0" Text="{Binding Status}" VerticalAlignment="Center" ToolTip="{Binding Status}"/>
             </StatusBarItem>
         </StatusBar>
-        <TreeView Grid.Row="1" Grid.Column="0"
-         VirtualizingStackPanel.IsVirtualizing="True">
-            <Elements:two_pole/>
-            <Elements:two_pole/>
+        <TreeView Grid.Row="1" Grid.Column="0">
+            <Expander Margin="-20,0" IsExpanded="True">
+                <Elements:two_pole Margin="20,0"/>
+            </Expander>
         </TreeView>
     </Grid>
 

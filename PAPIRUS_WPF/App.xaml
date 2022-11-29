@@ -31,6 +31,64 @@
             </Setter>
         </Style>
 
+        <Style x:Key="CircuitDescriptorGroup" TargetType="GroupItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupItem">
+                        <Expander IsExpanded="{Binding Path=Items[0].CategoryExpanded}">
+                            <Expander.Header>
+                                <TextBlock FontWeight="Bold" Foreground="{x:Static SystemColors.AppWorkspaceBrush}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="{Binding Path=Name}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=Name}" Value="">
+                                                    <Setter Property="Text" Value="{Binding Path=Items[0].Circuit.CircuitProject.ProjectSet.Project.Name}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Expander.Header>
+                            <Expander.Content>
+                                <ItemsPresenter/>
+                            </Expander.Content>
+                        </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="MyExpanderTemplateKey" TargetType="{x:Type Expander}">
+            <ToggleButton Name="Expander" ClickMode="Press" IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
+                <ToggleButton.Style>
+                    <Style TargetType="ToggleButton">
+                        <Setter Property="FrameworkElement.Focusable" Value="False"/>
+                        <Setter Property="FrameworkElement.Width" Value="19"/>
+                        <Setter Property="FrameworkElement.Height" Value="13"/>
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border Height="10" Width="10" BorderBrush="Black" BorderThickness="1">
+                                        <Border Name="BackgroundBorder"  Background="Blue"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                            <Setter Property="Background" TargetName="BackgroundBorder" Value="Red"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ToggleButton.Style>
+            </ToggleButton>
+        </ControlTemplate>
+
+        <Style x:Key="MyexpanderStyle" TargetType="{x:Type Expander}">
+            <Setter Property="Template" Value="{StaticResource MyExpanderTemplateKey}"/>
+        </Style>
+
 
     </Application.Resources>
 </Application>
