@@ -44,13 +44,13 @@ namespace PAPIRUS_WPF
         }
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            CircuitCanvas.Focus();
             if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
             {
                 Cursor = Cursors.SizeAll;
                 MiddleClick = true;
                 point = Mouse.GetPosition(CircuitCanvas);
-                // CircuitCanvas_MouseWheelCLick();
-                //return;
+
             }
             //Get the position of the mouse relative to the circuit canvas
             Point MousePosition = e.GetPosition(CircuitCanvas);
@@ -253,6 +253,36 @@ namespace PAPIRUS_WPF
             DiagramScroll.ScrollToHorizontalOffset(DiagramScroll.HorizontalOffset + (point.X - Mouse.GetPosition(CircuitCanvas).X));
             DiagramScroll.ScrollToVerticalOffset(DiagramScroll.VerticalOffset + (point.Y - Mouse.GetPosition(CircuitCanvas).Y));
 
+        }
+
+        private void CircuitCanvas_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Delete)
+            {
+                Point MousePosition = Mouse.GetPosition(CircuitCanvas);
+
+                //Do a hit test under the mouse position
+                HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
+                var element = result.VisualHit;
+                MessageBox.Show("Hi"+element.ToString());
+            }
+        }
+
+        private void GroupBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                Point MousePosition = Mouse.GetPosition(CircuitCanvas);
+
+                //Do a hit test under the mouse position
+                HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
+               
+                var element = result.VisualHit;
+                
+                    CircuitCanvas.Children.Remove((UIElement)element);
+                
+                MessageBox.Show(element.ToString());
+            }
         }
     }
 }

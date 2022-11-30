@@ -38,7 +38,7 @@
 
         </Menu>
 
-        <GroupBox Grid.Column="1" Grid.Row="1">
+        <GroupBox Grid.Column="1" Grid.Row="1" KeyDown="GroupBox_KeyDown" Focusable="True">
             <ScrollViewer x:Name="DiagramScroll"
 					HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
 					
@@ -48,7 +48,7 @@
                 Width="1600"
 			    Height="1200"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True" Drop="CircuitCanvas_Drop_1" MouseWheel="CircuitCanvas_MouseWheel">
+                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True" Drop="CircuitCanvas_Drop_1" MouseWheel="CircuitCanvas_MouseWheel" KeyDown="CircuitCanvas_KeyDown" Focusable="True">
                     <Path Stroke="Black" StrokeThickness="1">
                         <Path.Data>
                             <GeometryGroup x:Name="Connections"/>
