@@ -46,6 +46,7 @@ namespace PAPIRUS_WPF
         {
             if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
             {
+                Cursor = Cursors.SizeAll;
                 MiddleClick = true;
                 point = Mouse.GetPosition(CircuitCanvas);
                 // CircuitCanvas_MouseWheelCLick();
@@ -106,6 +107,7 @@ namespace PAPIRUS_WPF
         private void CircuitCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
             MiddleClick =  false;
+            Cursor = Cursors.Arrow;
             //If there is a linking in progress
             if (_linkingStarted)
             {
