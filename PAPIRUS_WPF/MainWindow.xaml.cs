@@ -31,7 +31,8 @@ namespace PAPIRUS_WPF
         private LineGeometry _tempLink;
         //The output that is being linked to
         private Output _tempOutput;
-
+        bool MiddleClick = false;
+        public Point point;
         public MainWindow()
         {
             InitializeComponent();
@@ -45,8 +46,10 @@ namespace PAPIRUS_WPF
         {
             if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
             {
-                CircuitCanvas_MouseWheelCLick(sender,e);
-                return;
+                MiddleClick = true;
+                point = Mouse.GetPosition(CircuitCanvas);
+                // CircuitCanvas_MouseWheelCLick();
+                //return;
             }
             //Get the position of the mouse relative to the circuit canvas
             Point MousePosition = e.GetPosition(CircuitCanvas);
@@ -91,6 +94,7 @@ namespace PAPIRUS_WPF
         }
         private void CircuitCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            if(MiddleClick) CircuitCanvas_MouseWheelCLick();
             //If there is a linking in progress
             if (_linkingStarted)
             {
@@ -101,6 +105,7 @@ namespace PAPIRUS_WPF
         }
         private void CircuitCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            MiddleClick =  false;
             //If there is a linking in progress
             if (_linkingStarted)
             {
@@ -241,10 +246,11 @@ namespace PAPIRUS_WPF
             }
         }
 
-        private void CircuitCanvas_MouseWheelCLick(object sender, MouseButtonEventArgs e)
+        private void CircuitCanvas_MouseWheelCLick()
         {
-            var point = Mouse.GetPosition(CircuitCanvas);
-            DiagramScroll.ScrollToHorizontalOffset(DiagramScroll.HorizontalOffset - )
+            DiagramScroll.ScrollToHorizontalOffset(DiagramScroll.HorizontalOffset + (point.X - Mouse.GetPosition(CircuitCanvas).X));
+            DiagramScroll.ScrollToVerticalOffset(DiagramScroll.VerticalOffset + (point.Y - Mouse.GetPosition(CircuitCanvas).Y));
+
         }
     }
 }
