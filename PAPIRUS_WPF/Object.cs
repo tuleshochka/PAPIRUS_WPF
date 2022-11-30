@@ -40,6 +40,7 @@ namespace PAPIRUS_WPF
         //The lines being connected to the output
         private List<LineGeometry> _attachedOutputLines;
 
+        FormEditor _editor = new FormEditor();
         /// <summary>
         /// Creates a new Circuit Object to be manipulated
         /// </summary>
@@ -120,6 +121,8 @@ namespace PAPIRUS_WPF
                 //Transform the element based off the last position
                 _transform.X += _currentPoint.X - _anchorPoint.X;
                 _transform.Y += _currentPoint.Y - _anchorPoint.Y;
+                _transform.X /= _editor.Zoom();
+                _transform.Y /= _editor.Zoom();
 
                 //Transform the attached line if its an input (uses EndPoint)
                 foreach (LineGeometry attachedLine in _attachedInputLines)

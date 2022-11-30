@@ -284,5 +284,9 @@ namespace PAPIRUS_WPF
                 MessageBox.Show(element.ToString());
             }
         }
+        public double Zoom()
+        {
+            return zoom.Value;
+        }
     }
 }
