@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PAPIRUS_WPF.Elements"
              mc:Ignorable="d" 
             Height="7" Width="7">
-    <Border CornerRadius="5" BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Border CornerRadius="5" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Border.Style>
             <Style TargetType="{x:Type Border}">
                 <Style.Triggers>

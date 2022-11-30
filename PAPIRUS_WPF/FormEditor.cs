@@ -9,11 +9,6 @@ namespace PAPIRUS_WPF
 {
     internal class FormEditor
     {
-        public double Zoom
-        {
-            get { return this.Table.GetField(this.ProjectRowId, ProjectData.ZoomField.Field); }
-            set { this.Table.SetField(this.ProjectRowId, ProjectData.ZoomField.Field, value); }
-        }
-
+      
     }
 }

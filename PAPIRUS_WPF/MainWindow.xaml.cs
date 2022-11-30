@@ -221,11 +221,11 @@ namespace PAPIRUS_WPF
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
-                double old = this.Project.Zoom;
-                double zoom = Project.CheckZoom(old + Math.Sign(e.Delta) * 0.1);
+                double old = this.zoom.Value;
+                double zoom = (old + Math.Sign(e.Delta) * 0.1);
                 if (0.0001 < Math.Abs(zoom - old))
                 {
-                    this.CircuitProject.InTransaction(() => this.Project.Zoom = zoom);
+                    this.zoom.Value = zoom;
                 }
                 e.Handled = true;
             }
