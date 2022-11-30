@@ -16,16 +16,13 @@ using System.Windows.Shapes;
 namespace PAPIRUS_WPF.Elements
 {
     /// <summary>
-    /// Логика взаимодействия для two_pole.xaml
+    /// Логика взаимодействия для six_pole.xaml
     /// </summary>
-    public partial class two_pole : Object
+    public partial class six_pole : Object
     {
-        public two_pole()
+        public six_pole()
         {
-
             InitializeComponent();
-
         }
-
     }
 }

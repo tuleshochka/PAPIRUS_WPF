@@ -48,7 +48,7 @@
                 Width="1600"
 			    Height="1200"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True">
+                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True" Drop="CircuitCanvas_Drop_1">
                     <Path Stroke="Black" StrokeThickness="1">
                         <Path.Data>
                             <GeometryGroup x:Name="Connections"/>
@@ -90,20 +90,33 @@
                 <TextBlock Margin="8,0" Text="{Binding Status}" VerticalAlignment="Center" ToolTip="{Binding Status}"/>
             </StatusBarItem>
         </StatusBar>
-        <TreeView x:Name="ObjectSelector" AllowDrop="True" Grid.Row="1" Grid.Column="0">
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="TreeViewItem">
+        <ListView x:Name="ObjectSelector" Padding="20,0" Grid.Row="1" Grid.Column="0" PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="IsSelected" Value="False"/>
+                            <Setter Property="IsSelected" Value="True"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </TreeView.ItemContainerStyle>
-            <Expander Margin="-20,0" IsExpanded="True">
-                <Elements:two_pole CanMove="False" Margin="20,0"/>
-            </Expander>
-        </TreeView>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), 
+                        RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+                        ItemWidth="{Binding (ListView.View).ItemWidth, 
+                        RelativeSource={RelativeSource AncestorType=ListView}}"
+                        MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+                        ItemHeight="{Binding (ListView.View).ItemHeight, 
+                        RelativeSource={RelativeSource AncestorType=ListView}}" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+
+            <Elements:two_pole CanMove="False"/>
+            <Elements:four_pole CanMove="False"/>
+            <Elements:six_pole CanMove="False"/>
+
+        </ListView>
     </Grid>
 
 

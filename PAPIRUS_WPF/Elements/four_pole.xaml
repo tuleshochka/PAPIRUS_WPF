@@ -1,4 +1,4 @@
-﻿<Papirus:Object x:Class="PAPIRUS_WPF.Elements.two_pole"
+﻿<Papirus:Object x:Class="PAPIRUS_WPF.Elements.four_pole"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,5 +14,6 @@
             <Rectangle x:Name="LEDRect" RadiusX="5" RadiusY="5" Fill="White" Margin="0"></Rectangle>
         </Border>
         <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center"/>
     </Grid>
 </Papirus:Object>

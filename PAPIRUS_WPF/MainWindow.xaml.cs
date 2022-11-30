@@ -39,7 +39,7 @@ namespace PAPIRUS_WPF
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-            CircuitCanvas.Drop += CircuitCanvas_Drop;
+          
         }
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -54,6 +54,7 @@ namespace PAPIRUS_WPF
                 return;
 
             //If the mouse has hit a border
+            Console.WriteLine(result.VisualHit.ToString());
             if (result.VisualHit is Border)
             {
                 //Get the parent class of the border
@@ -173,8 +174,11 @@ namespace PAPIRUS_WPF
                 e.Handled = true;
             }
         }
-        private void ObjectSelector_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+
+
+        private void ObjectSelector_PreviewMouseDown_1(object sender, MouseButtonEventArgs e)
         {
+            //MessageBox.Show(ObjectSelector.SelectedItem.ToString());
             //Don't do anything if no element clicked
             if (ObjectSelector.SelectedItem == null)
                 return;
@@ -183,20 +187,22 @@ namespace PAPIRUS_WPF
             DragDrop.DoDragDrop(ObjectSelector, ObjectSelector.SelectedItem, DragDropEffects.Copy | DragDropEffects.Move);
         }
 
-        private void CircuitCanvas_Drop(object sender, DragEventArgs e)
+        private void CircuitCanvas_Drop_1(object sender, DragEventArgs e)
         {
             //Get the type of element that is dropped onto the canvas
             String[] allFormats = e.Data.GetFormats();
             //Make sure there is a format there
+            
             if (allFormats.Length == 0)
                 return;
 
             string ItemType = allFormats[0];
-
+            
             //Create a new type of the format
             Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
 
             //If the format doesn't exist do nothing
+            
             if (instance == null)
                 return;
 
