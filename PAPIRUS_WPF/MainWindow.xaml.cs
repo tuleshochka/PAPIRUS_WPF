@@ -216,5 +216,19 @@ namespace PAPIRUS_WPF
             Canvas.SetLeft(instance, p.X - 15);
             Canvas.SetTop(instance, p.Y - 15);
         }
+
+        private void CircuitCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                double old = this.Project.Zoom;
+                double zoom = Project.CheckZoom(old + Math.Sign(e.Delta) * 0.1);
+                if (0.0001 < Math.Abs(zoom - old))
+                {
+                    this.CircuitProject.InTransaction(() => this.Project.Zoom = zoom);
+                }
+                e.Handled = true;
+            }
+        }
     }
 }

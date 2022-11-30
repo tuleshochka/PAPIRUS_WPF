@@ -48,7 +48,7 @@
                 Width="1600"
 			    Height="1200"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True" Drop="CircuitCanvas_Drop_1">
+                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True" Drop="CircuitCanvas_Drop_1" MouseWheel="CircuitCanvas_MouseWheel">
                     <Path Stroke="Black" StrokeThickness="1">
                         <Path.Data>
                             <GeometryGroup x:Name="Connections"/>
@@ -69,7 +69,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Увеличение" Target="{Binding ElementName=zoom}" Margin="0" FontSize="12"/>
                     <Slider Width="100" x:Name="zoom" VerticalAlignment="Center" 
-						Minimum="0.5" Maximum="3" Value="1"
+						Minimum="0.7" Maximum="3" Value="1"
 						IsMoveToPointEnabled="True"
 						TickPlacement="TopLeft"
 						Ticks="0, 0.5, 1, 1.5, 2, 2.5, 3"
