@@ -43,6 +43,11 @@ namespace PAPIRUS_WPF
         }
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
+            {
+                CircuitCanvas_MouseWheelCLick(sender,e);
+                return;
+            }
             //Get the position of the mouse relative to the circuit canvas
             Point MousePosition = e.GetPosition(CircuitCanvas);
 
@@ -219,7 +224,12 @@ namespace PAPIRUS_WPF
 
         private void CircuitCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
+            if (Keyboard.Modifiers == ModifierKeys.Shift)
+            {
+                DiagramScroll.ScrollToHorizontalOffset(DiagramScroll.HorizontalOffset - e.Delta);
+                e.Handled = true;
+            }
+              else if (Keyboard.Modifiers == ModifierKeys.Control)
             {
                 double old = this.zoom.Value;
                 double zoom = (old + Math.Sign(e.Delta) * 0.1);
@@ -229,6 +239,12 @@ namespace PAPIRUS_WPF
                 }
                 e.Handled = true;
             }
+        }
+
+        private void CircuitCanvas_MouseWheelCLick(object sender, MouseButtonEventArgs e)
+        {
+            var point = Mouse.GetPosition(CircuitCanvas);
+            DiagramScroll.ScrollToHorizontalOffset(DiagramScroll.HorizontalOffset - )
         }
     }
 }
