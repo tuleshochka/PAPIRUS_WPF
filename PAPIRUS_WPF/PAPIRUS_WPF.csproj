@@ -58,6 +58,9 @@
     <Compile Include="Elements\four_pole.xaml.cs">
       <DependentUpon>four_pole.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Elements\Generator.xaml.cs">
+      <DependentUpon>Generator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Elements\Input.xaml.cs">
       <DependentUpon>Input.xaml</DependentUpon>
     </Compile>
@@ -75,6 +78,10 @@
     <Compile Include="Symbol.cs" />
     <Compile Include="GridPoint.cs" />
     <Page Include="Elements\four_pole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Elements\Generator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

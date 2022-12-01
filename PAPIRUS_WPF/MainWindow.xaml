@@ -54,7 +54,6 @@
                             <GeometryGroup x:Name="Connections"/>
                         </Path.Data>
                     </Path>
-                    <Elements:two_pole Canvas.Left="139" Canvas.Top="130"/>
                     <Canvas.LayoutTransform>
                         <ScaleTransform
 								ScaleX="{Binding Value, ElementName=zoom}"
@@ -90,33 +89,49 @@
                 <TextBlock Margin="8,0" Text="{Binding Status}" VerticalAlignment="Center" ToolTip="{Binding Status}"/>
             </StatusBarItem>
         </StatusBar>
-        <ListView x:Name="ObjectSelector" Padding="20,0" Grid.Row="1" Grid.Column="0" PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="IsSelected" Value="True"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), 
+
+        <ToggleButton x:Name="TogglePopupButton" Padding="20,0" Grid.Row="1" Grid.Column="0" Height="30" Width="150" HorizontalAlignment="Left">
+            <StackPanel>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Run Text="Is button toggled? " />
+            <Run Text="{Binding IsChecked, ElementName=TogglePopupButton}" />
+                </TextBlock>
+
+                <Popup Name="myPopup" IsOpen="{Binding IsChecked, ElementName=TogglePopupButton}">
+                    <ListView x:Name="ObjectSelector"  PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="IsSelected" Value="True"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), 
                         RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
                         ItemWidth="{Binding (ListView.View).ItemWidth, 
                         RelativeSource={RelativeSource AncestorType=ListView}}"
                         MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
                         ItemHeight="{Binding (ListView.View).ItemHeight, 
                         RelativeSource={RelativeSource AncestorType=ListView}}" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
 
-            <Elements:two_pole CanMove="False"/>
-            <Elements:four_pole CanMove="False"/>
-            <Elements:six_pole CanMove="False"/>
+                        <Elements:two_pole CanMove="False"/>
+                        <Elements:four_pole CanMove="False"/>
+                        <Elements:six_pole CanMove="False"/>
+                        <Elements:Generator CanMove="False"/>
 
-        </ListView>
+                    </ListView>
+                </Popup>
+            </StackPanel>
+        </ToggleButton>
+
+       
+
     </Grid>
 
 

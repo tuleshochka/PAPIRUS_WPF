@@ -9,10 +9,10 @@
            Height="40" Width="62">
 
     <Grid x:Name="TwoPol">
+        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <Border CornerRadius="5" BorderBrush="Black" Margin="6" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-            <Rectangle x:Name="LEDRect" RadiusX="5" RadiusY="5" Fill="White" Margin="0"></Rectangle>
+            <Rectangle x:Name="LEDRect" RadiusX="5" RadiusY="5" Fill="White" Margin="0"/>
         </Border>
-        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center"/>
     </Grid>
 </Papirus:Object>
