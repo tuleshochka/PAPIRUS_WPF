@@ -1,8 +1,10 @@
 ﻿using PAPIRUS_WPF.Elements;
+using PAPIRUS_WPF.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,8 +25,7 @@ namespace PAPIRUS_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-
-
+        Point? myDragStartPoint { get; set; }
         //The boolean that signifys when an output is being linked
         private bool _linkingStarted = false;
         //The temporary line that shows when linking an output
@@ -33,6 +34,14 @@ namespace PAPIRUS_WPF
         private Output _tempOutput;
         bool MiddleClick = false;
         public Point point;
+        private Marker movingMarker;
+        private Point moveStart;
+        private Point panStart;
+        private bool panning;
+        private TranslateTransform moveVector;
+        private Point maxMove;
+        private Canvas selectionLayer;
+        private Dictionary<Symbol, Marker> selection = new Dictionary<Symbol, Marker>();
         public MainWindow()
         {
             InitializeComponent();
@@ -42,56 +51,203 @@ namespace PAPIRUS_WPF
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
           
         }
-        private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+
+        //--------Selection-------//
+
+        private Marker FindMarker(Symbol symbol)
         {
-            CircuitCanvas.Focus();
-            if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
+            if (this.selection.TryGetValue(symbol, out Marker marker))
             {
-                Cursor = Cursors.SizeAll;
-                MiddleClick = true;
-                point = Mouse.GetPosition(CircuitCanvas);
-
+                return marker;
             }
-            //Get the position of the mouse relative to the circuit canvas
-            Point MousePosition = e.GetPosition(CircuitCanvas);
+            return null;
+        }
 
-            //Do a hit test under the mouse position
-            HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
-
-            //Make sure that there is something under the mouse
-            if (result == null || result.VisualHit == null)
-                return;
-
-            //If the mouse has hit a border
-            Console.WriteLine(result.VisualHit.ToString());
-            if (result.VisualHit is Border)
+        public Marker SelectSymbol(Symbol symbol)
+        {
+            Marker marker = this.FindMarker(symbol);
+            if (marker == null)
             {
-                //Get the parent class of the border
-                Border border = (Border)result.VisualHit;
-                var IO = border.Parent;
+                marker = this.CreateMarker(symbol);
+                this.selection.Add(symbol, marker);
+                this.AddMarkerGlyph(marker);
+            }
+            return marker;
+        }
 
-                //If the parent class is an Output
-                if (IO is Output)
+        public Marker CreateMarker(Symbol symbol)
+        {
+            if (symbol is Object circuitSymbol)
+            {
+                    return new Marker(symbol);
+                
+            }
+            throw new InvalidOperationException();
+        }
+
+        public void ClearSelection()
+        {
+            this.selection.Clear();
+            if (this.selectionLayer != null)
+            {
+                this.selectionLayer.Children.Clear();
+            }
+        }
+
+        private void SymbolMouseDown(Symbol symbol, MouseEventArgs e)
+        {
+            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                this.SelectSymbol(symbol);
+            }
+            else
+            {
+                this.ClearSelection();
+                this.StartMove(this.SelectSymbol(symbol), e.GetPosition(this.Diagram));
+            }
+        }
+
+        public void Select(Rect area)
+        {
+            
+            foreach (FrameworkElement symbol in CircuitCanvas.Children)
+            {
+                Rect item = new Rect(Symbol.ScreenPoint(new GridPoint(this.X, this.Y)),
+                    new Size(Symbol.ScreenPoint(symbol.Circuit.SymbolWidth), Symbol.ScreenPoint(symbol.Circuit.SymbolHeight))
+                );
+                
+                if (area.Contains(item))
                 {
-                    //Cast to output
-                    Output IOOutput = (Output)IO;
-
-                    //Get the center of the output relative to the canvas
-                    Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
-
-                    //Creates a new line
-                    _linkingStarted = true;
-                    _tempLink = new LineGeometry(position, position);
-
-                    //Assign it to the list of connections to be displayed
-                    Connections.Children.Add(_tempLink);
-
-                    //Assign the temporary output to the current output
-                    _tempOutput = (Output)IO;
-
-                    e.Handled = true;
+                    this.SelectSymbol(symbol);
                 }
             }
+            }
+        
+            public IEnumerable<Symbol> Selection()
+        {
+            return new List<Symbol>(this.selection.Keys);
+        }
+
+        public void StartMove(Marker marker, Point startPoint, string tip)
+        {
+            
+            Mouse.Capture(this.CircuitCanvas, CaptureMode.Element);
+            this.movingMarker = marker;
+            this.moveStart = startPoint;
+
+            if (marker is AreaMarker)
+            {
+                this.maxMove = new Point(0, 0);
+            }
+            else
+            {
+                Rect bound = marker.Bounds();
+                if (bound.Width < 3 * Symbol.PinRadius && this.selection.Count == 1)
+                {
+                    this.maxMove = new Point(0, 0);
+                }
+                else
+                {
+                    bound = this.Selection().Aggregate(new Rect(startPoint, startPoint), (rect, symbol) => Rect.Union(rect, symbol.Bounds()));
+                    this.maxMove = new Point(
+                        startPoint.X - bound.X,
+                        startPoint.Y - bound.Y
+                    );
+                }
+            }
+        }
+            private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                //FormEditor formeditor = new FormEditor();
+                //formeditor.DiagramMouseDown(e);
+                 CircuitCanvas.Focus();
+                 if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
+                 {
+                     Cursor = Cursors.SizeAll;
+                     MiddleClick = true;
+                     point = Mouse.GetPosition(CircuitCanvas);
+
+                 }
+
+                FrameworkElement element = e.OriginalSource as FrameworkElement;
+                if(element == null)
+                {
+                    FrameworkContentElement content = e.OriginalSource as FrameworkContentElement;
+                    while(element == null && content !=null)
+                    {
+                        element = content.Parent as FrameworkElement;
+                        content = content.Parent as FrameworkContentElement;
+                    }
+                }
+                Symbol symbol = null;
+
+                if (element != this.CircuitCanvas)
+                {
+                    symbol = element.DataContext as Symbol;
+                    if (symbol == null)
+                    {
+                        FrameworkElement root = element;
+                        while (root != null && !(root.DataContext is Symbol))
+                        {
+                            root = (root.Parent ?? root.TemplatedParent) as FrameworkElement;
+                        }
+                        if (root != null)
+                        {
+                            symbol = root.DataContext as Symbol;
+                        }
+                    }
+                else
+                {
+                    Point point = e.GetPosition(CircuitCanvas);
+                }
+                if (symbol != null)
+                {
+                    if(e.ClickCount < 2) this.SymbolMouseDown(symbol,e)
+                }
+
+                 //Get the position of the mouse relative to the circuit canvas
+                 Point MousePosition = e.GetPosition(CircuitCanvas);
+
+                 //Do a hit test under the mouse position
+                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
+
+                 //Make sure that there is something under the mouse
+                 if (result == null || result.VisualHit == null)
+                     return;
+
+                 //If the mouse has hit a border
+                 Console.WriteLine(result.VisualHit.ToString());
+                 if (result.VisualHit is Border)
+                 {
+                     //Get the parent class of the border
+                     Border border = (Border)result.VisualHit;
+                     var IO = border.Parent;
+
+                     //If the parent class is an Output
+                     if (IO is Output)
+                     {
+                         //Cast to output
+                         Output IOOutput = (Output)IO;
+
+                         //Get the center of the output relative to the canvas
+                         Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
+
+                         //Creates a new line
+                         _linkingStarted = true;
+                         _tempLink = new LineGeometry(position, position);
+
+                         //Assign it to the list of connections to be displayed
+                         Connections.Children.Add(_tempLink);
+
+                         //Assign the temporary output to the current output
+                         _tempOutput = (Output)IO;
+
+                         e.Handled = true;
+                     }
+                 }
+            }  
         }
         private void CircuitCanvas_MouseMove(object sender, MouseEventArgs e)
         {

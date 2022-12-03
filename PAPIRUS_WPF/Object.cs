@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace PAPIRUS_WPF
 {
-    public class Object : UserControl
+    public class Object : Symbol
     {
         public static readonly DependencyProperty CanMoveProperty = DependencyProperty.Register("CanMove", typeof(bool), typeof(Object), new PropertyMetadata(true));
         /// <summary>
