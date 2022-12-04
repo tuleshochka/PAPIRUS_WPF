@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace PAPIRUS_WPF
@@ -34,14 +35,16 @@ namespace PAPIRUS_WPF
         private Output _tempOutput;
         bool MiddleClick = false;
         public Point point;
-        private Marker movingMarker;
-        private Point moveStart;
+        private Point MoveSelStartPoint;
         private Point panStart;
         public bool panning;
         private TranslateTransform moveVector;
         private Point maxMove;
         private Canvas selectionLayer;
         private List<UserControl> selection = new List<UserControl>();
+
+        public bool MovingSelectionIsStarted = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -56,13 +59,48 @@ namespace PAPIRUS_WPF
 
         //--------Selection-------//
 
+       
+
+        public void ClearSelection()
+        {
+            this.selection.Clear();
+            if (this.selectionLayer != null)
+            {
+                this.selectionLayer.Children.Clear();
+            }
+        }
+
+        public void SingleElementSelect(FrameworkElement element)
+        {
+            this.selection.Add((UserControl)element);
+            Rectangle item = new Rectangle();
+
+            item = Symbol.Skin<Rectangle>(SymbolShape.SelectionMarker);
+            if (this.selectionLayer == null)
+            {
+                this.selectionLayer = new Canvas()
+                {
+                    RenderTransform = this.moveVector = new TranslateTransform()
+                };
+                Panel.SetZIndex(this.selectionLayer, int.MaxValue);
+            }
+            if (this.selectionLayer.Parent != this.CircuitCanvas)
+            {
+                this.CircuitCanvas.Children.Add(this.selectionLayer);
+            }
+            selectionLayer.Children.Add(item);
+            Canvas.SetLeft(item, element.TransformToAncestor(CircuitCanvas).Transform(new Point(0, 0)).X);
+            Canvas.SetTop(item, element.TransformToAncestor(CircuitCanvas).Transform(new Point(0, 0)).Y);
+
+            item.Width = element.ActualWidth;
+            item.Height = element.ActualHeight;
+        }
+
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                //FormEditor formeditor = new FormEditor();
-                //formeditor.DiagramMouseDown(e);
-               
+
                 if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
                 {
                     Cursor = Cursors.SizeAll;
@@ -71,57 +109,53 @@ namespace PAPIRUS_WPF
 
                 }
 
-                UserControl element = e.Source as UserControl;
-                MessageBox.Show(element.ToString());
+                FrameworkElement element = e.Source as FrameworkElement;
+                Console.WriteLine("e.Source = " + element.ToString());
 
-                Symbol symbol = null;
-
-                //if (element != this.CircuitCanvas)
-                //{
-                    
-                    if(selection.Contains(element) == false)
-                     this.selection.Add((UserControl)element);
-
-                    /*MessageBox.Show(symbol.ToString());
-                    if (symbol == null)
+                if (element != this.CircuitCanvas)
+                {
+                    if (element is Rectangle) return;
+                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
                     {
-                        FrameworkElement root = element;
-                        while (root != null && !(root is Symbol))
+                        if (selection.Contains(element) == false)
                         {
-                            root = (root.Parent ?? root.TemplatedParent) as FrameworkElement;
+                            SingleElementSelect(element);
                         }
-                        if (root != null)
-                        {
-                            symbol = root as Symbol;
-                        }*/
-                //}
+                    }
                     else
                     {
-                        Point point = e.GetPosition(CircuitCanvas);
+                        ClearSelection();
+                        if (selection.Contains(element) == false)
+                        {
+                            SingleElementSelect(element);
+                        }
                     }
-                    if (symbol != null)
-                    {
-                       // if (e.ClickCount < 2) this.SymbolMouseDown(symbol, e);
-                    }
-                    else if (Keyboard.Modifiers != ModifierKeys.Control)
+                }
+
+                else
+                {
+                    Point point = e.GetPosition(CircuitCanvas);
+                    if (Keyboard.Modifiers != ModifierKeys.Control)
                     { // Nothing was clicked on the diagram
                         if (e.ClickCount < 2)
                         {
                             if (Keyboard.Modifiers != ModifierKeys.Shift)
                             {
-                            //    this.ClearSelection();
+                                this.ClearSelection();
+                                MovingSelectionIsStarted = true;
+                                MoveSelStartPoint = e.GetPosition(CircuitCanvas);
+                                CaptureMouse();
+                                e.Handled = true;
                             }
-                           // this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
+                            // this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
                         }
                         else
                         {
-                         //   this.ClearSelection();
+                            //   this.ClearSelection();
                         }
-                    } else if (Keyboard.Modifiers == ModifierKeys.Control && Mouse.Capture(this.CircuitCanvas, CaptureMode.Element))
-                    {
-                        this.panStart = e.GetPosition(this);
-                        this.panning = true;
                     }
+                }
+                   
 
                     /////////////////
                     /*//Get the position of the mouse relative to the circuit canvas
@@ -167,21 +201,23 @@ namespace PAPIRUS_WPF
                 }
             }
         
+        
           
         private void CircuitCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            /*if(MiddleClick) CircuitCanvas_MouseWheelCLick();
+            if(MiddleClick) CircuitCanvas_MouseWheelCLick();
             //If there is a linking in progress
             if (_linkingStarted)
             {
                 //Move the link endpoint to the current location of the mouse
                 _tempLink.EndPoint = e.GetPosition(CircuitCanvas);
                 e.Handled = true;
-            } else*/
-            if (movingMarker != null)
+            } 
+            else
+            if (MovingSelectionIsStarted)
             {
                 Point point = e.GetPosition(this.CircuitCanvas);
-                this.movingMarker.Move(this, new Point(Math.Max(this.maxMove.X, point.X), Math.Max(this.maxMove.Y, point.Y)));
+               // this.movingMarker.Move(this, new Point(Math.Max(this.maxMove.X, point.X), Math.Max(this.maxMove.Y, point.Y)));
             } else if (this.panning)
             {
                 Point point = e.GetPosition(this);
@@ -192,87 +228,11 @@ namespace PAPIRUS_WPF
             }
         }
 
-        public void MoveSelection(Point point)
-        {
-            this.moveVector.X = point.X - this.moveStart.X;
-            this.moveVector.Y = point.Y - this.moveStart.Y;
-        }
-
-        private void FinishMove(Point position, bool withWires)
-        {
-            Marker marker = this.movingMarker;
-           // this.CancelMove();
-            marker.Commit(this, new Point(Math.Max(this.maxMove.X, position.X), Math.Max(this.maxMove.Y, position.Y)), withWires);
-        }
-
-        public void CommitMove(Point point, bool withWires)
-        {
-            int dx = Symbol.GridPoint(point.X - this.moveStart.X);
-            int dy = Symbol.GridPoint(point.Y - this.moveStart.Y);
-            if (dx != 0 || dy != 0)
-            {
-                HashSet<GridPoint> movedPoints = null;
-                /*if (withWires)
-                {
-                    movedPoints = new HashSet<GridPoint>();
-                    foreach (Marker marker in this.selection.Values)
-                    {
-                        if (marker.Symbol is CircuitSymbol symbol)
-                        {
-                            foreach (Jam jam in symbol.Jams())
-                            {
-                                movedPoints.Add(jam.AbsolutePoint);
-                            }
-                        }
-                        else
-                        {
-                            if (marker.Symbol is Wire wire)
-                            {
-                                movedPoints.Add(wire.Point1);
-                                movedPoints.Add(wire.Point2);
-                            }
-                        }
-                    }
-                }*/
-                
-                    foreach (Marker marker in this.selection)
-                    {
-                        marker.Symbol.Shift(dx, dy);
-                        marker.Symbol.PositionGlyph();
-                        marker.Refresh();
-                    }
-                    /*if (withWires)
-                    {
-                        foreach (Wire wire in this.Project.LogicalCircuit.Wires())
-                        {
-                            if (!this.selection.ContainsKey(wire))
-                            {
-                                if (movedPoints.Contains(wire.Point1))
-                                {
-                                    wire.X1 += dx;
-                                    wire.Y1 += dy;
-                                    wire.PositionGlyph();
-                                }
-                                if (movedPoints.Contains(wire.Point2))
-                                {
-                                    wire.X2 += dx;
-                                    wire.Y2 += dy;
-                                    wire.PositionGlyph();
-                                }
-                            }
-                        }
-                    
-                    this.DeleteEmptyWires();*/
-                };
-            }
-        
+       
 
         private void CircuitCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(this.movingMarker != null)
-            {
-                this.FinishMove(e.GetPosition(this.CircuitCanvas), (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.None);
-            }
+            
 			if(this.panning) {
             Mouse.Capture(null);
             this.panning = false;

@@ -195,16 +195,14 @@
                         MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
                         ItemHeight="{Binding (ListView.View).ItemHeight, 
                         RelativeSource={RelativeSource AncestorType=ListView}}" />
-                            </ItemsPanelTemplate>
-                        </ListView.ItemsPanel>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
 
-                        <Elements:two_pole CanMove="False"/>
-                        <Elements:four_pole CanMove="False"/>
-                        <Elements:six_pole CanMove="False"/>
-                        <Elements:Generator CanMove="False"/>
+            <Elements:two_pole CanMove="False"/>
+            <Elements:four_pole CanMove="False"/>
+            <Elements:six_pole CanMove="False"/>
+            <Elements:Generator CanMove="False"/>
 
-                    </ListView>
-
-      
+        </ListView>
     </Grid>
 </Window>
