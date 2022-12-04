@@ -21,7 +21,7 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="*"/>
 
         </Grid.ColumnDefinitions>
@@ -37,7 +37,93 @@
 
 
         </Menu>
+        <!--<GroupBox Grid.Row="1" Header="Nice">
+            <ListView SelectionMode="Single" BorderThickness="0" HorizontalContentAlignment="Stretch"
+						ItemsSource="{Binding Source={StaticResource circuitDescriptorList}}"
+					>
+                <ListView.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource CircuitDescriptorGroup}"/>
+                </ListView.GroupStyle>
+                <ListView.Resources>
+                    <Style TargetType="ContentControl">
+                        <Setter Property="IsTabStop" Value="False"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="MinWidth" Value="75"/>
+                        <Setter Property="Margin" Value="3,3,8,3"/>
+                        <Setter Property="Content" Value="{Binding Path=CircuitGlyph.Glyph}"/>
+                        <Setter Property="FlowDirection" Value="LeftToRight"/>
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="0.75" ScaleY="0.75"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="SnapsToDevicePixels" Value="False"/>
+                    </Style>
 
+                    <Style x:Key="DescriptorPanel" TargetType="StackPanel">
+                        <Setter Property="Orientation" Value="Horizontal"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <EventSetter Event="MouseDown" Handler="DescriptorMouseDown"/>
+                        <EventSetter Event="MouseUp" Handler="DescriptorMouseUp"/>
+                        <EventSetter Event="MouseMove" Handler="DescriptorMouseMove"/>
+                    </Style>
+
+                    <Style x:Key="PropertyLabel" TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="5,0"/>
+                    </Style>
+
+                    <Style x:Key="CircuitName" TargetType="TextBlock">
+                        <Setter Property="Text" Value="{Binding Path=Circuit.Name}"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="16,0,0,0"/>
+                    </Style>
+
+                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                        <Setter Property="Margin" Value="1"/>
+                    </Style>
+
+                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                        <Setter Property="Margin" Value="1"/>
+                    </Style>
+
+                    <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+                        <Setter Property="Margin" Value="1"/>
+                    </Style>
+
+                    <Style TargetType="lc:AutoWidthComboBox" BasedOn="{StaticResource {x:Type lc:AutoWidthComboBox}}">
+                        <Setter Property="Margin" Value="1"/>
+                    </Style>
+
+                    <Style x:Key="PropertyGrid" TargetType="lc:AutoGrid">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+
+                    <DataTemplate DataType="{x:Type local:Object}">
+                        <DataTemplate.Resources>
+                            <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+                                <Setter Property="MinWidth" Value="42"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=InputCountRangeLength}" Value="0">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataTemplate.Resources>
+                        <StackPanel Style="{StaticResource DescriptorPanel}">
+                            <ContentControl/>
+                            <ComboBox
+										SelectedItem="{Binding Path=InputCount, Mode=TwoWay}"
+										ItemsSource="{Binding Path=InputCountRange}"
+										
+									/>
+                            <TextBlock Style="{StaticResource CircuitName}"/>
+                        </StackPanel>
+                    </DataTemplate>
+
+                </ListView.Resources>
+            </ListView>
+        </GroupBox> -->
         <GroupBox Grid.Column="1" Grid.Row="1" KeyDown="GroupBox_KeyDown" Focusable="True">
             <ScrollViewer x:Name="DiagramScroll"
 					HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
@@ -90,11 +176,11 @@
             </StatusBarItem>
         </StatusBar>
 
-        <ToggleButton x:Name="TogglePopupButton" Padding="20,0" Grid.Row="1" Grid.Column="0" Height="30" Width="150" HorizontalAlignment="Left">
+        <ToggleButton x:Name="TogglePopupButton" Padding="0,0" Grid.Row="1" Grid.Column="0" Height="25" Width="25" HorizontalAlignment="Left" VerticalAlignment="Top">
             <StackPanel>
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Run Text="Is button toggled? " />
-            <Run Text="{Binding IsChecked, ElementName=TogglePopupButton}" />
+                    fpf
+            
                 </TextBlock>
 
                 <Popup Name="myPopup" IsOpen="{Binding IsChecked, ElementName=TogglePopupButton}">
@@ -126,6 +212,7 @@
                         <Elements:Generator CanMove="False"/>
 
                     </ListView>
+
                 </Popup>
             </StackPanel>
         </ToggleButton>

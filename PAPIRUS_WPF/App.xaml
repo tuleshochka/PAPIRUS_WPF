@@ -30,7 +30,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
+        
         <Style x:Key="CircuitDescriptorGroup" TargetType="GroupItem">
             <Setter Property="Template">
                 <Setter.Value>

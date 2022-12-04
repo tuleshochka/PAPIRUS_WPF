@@ -288,5 +288,10 @@ namespace PAPIRUS_WPF
         {
             return zoom.Value;
         }
+
+        private void two_pole_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
+        }
     }
 }
