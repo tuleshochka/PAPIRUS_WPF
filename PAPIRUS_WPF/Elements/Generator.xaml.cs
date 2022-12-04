@@ -24,5 +24,11 @@ namespace PAPIRUS_WPF.Elements
         {
             InitializeComponent();
         }
+
+        private void Object_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            GeneratorDialog generatorDialog = new GeneratorDialog();    
+            generatorDialog.ShowDialog();
+        }
     }
 }

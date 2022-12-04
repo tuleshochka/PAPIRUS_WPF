@@ -76,6 +76,9 @@
       <DependentUpon>two_pole.xaml</DependentUpon>
     </Compile>
     <Compile Include="FormEditor.cs" />
+    <Compile Include="GeneratorDialog.xaml.cs">
+      <DependentUpon>GeneratorDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IRotatable.cs" />
     <Compile Include="ITableSnapshop.cs" />
     <Compile Include="Marker.cs" />
@@ -109,6 +112,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Elements\two_pole.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GeneratorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

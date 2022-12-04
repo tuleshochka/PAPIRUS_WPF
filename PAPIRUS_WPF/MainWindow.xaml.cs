@@ -49,7 +49,9 @@ namespace PAPIRUS_WPF
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-          
+            
+
+
         }
 
         //--------Selection-------//
