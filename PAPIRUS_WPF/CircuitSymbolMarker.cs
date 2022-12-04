@@ -12,7 +12,7 @@ namespace PAPIRUS_WPF
     {
         public Symbol Symbol { get; private set; }
 
-        public override FrameworkElement Glyph => throw new NotImplementedException();
+        public override FrameworkElement Glyph { get; }
 
         public CircuitSymbolMarker(Symbol symbol):base(null)
         {
