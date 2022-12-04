@@ -19,10 +19,10 @@ namespace PAPIRUS_WPF
                 this.Symbol = symbol;
             }
 
-            //public virtual Rect Bounds()
-           // {
-                //return this.Symbol.Bounds();
-            //}
+            public override Rect Bounds()
+            {
+                return this.Symbol.Bounds();
+            }
 
             public virtual void Move(MainWindow editor, Point point)
             {

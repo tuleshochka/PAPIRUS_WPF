@@ -47,9 +47,9 @@ namespace PAPIRUS_WPF
         public Object()
         {
             //Set the events for the object
-            this.MouseLeftButtonDown += DragObject_MouseLeftButtonDown;
-            this.MouseMove += DragObject_MouseMove;
-            this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
+           // this.MouseLeftButtonDown += DragObject_MouseLeftButtonDown;
+            //this.MouseMove += DragObject_MouseMove;
+           // this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
 
             //Initialize the lists
             _attachedInputLines = new List<LineGeometry>();
@@ -62,7 +62,7 @@ namespace PAPIRUS_WPF
         /// </summary>
         /// <param name="sender">The element that is calling the event</param>
         /// <param name="e">The event parameters</param>
-        private void DragObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+       /* private void DragObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //Don't start the drag if we can't interact with the object
             if (CanMove == false)
@@ -146,7 +146,7 @@ namespace PAPIRUS_WPF
                 //Update the anchor point
                 _anchorPoint = _currentPoint;
             }
-        }
+        }*/
 
         /// <summary>
         /// Translates a lines position.

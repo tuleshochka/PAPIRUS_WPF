@@ -41,7 +41,7 @@ namespace PAPIRUS_WPF
         private TranslateTransform moveVector;
         private Point maxMove;
         private Canvas selectionLayer;
-        private Dictionary<Symbol, Marker> selection = new Dictionary<Symbol, Marker>();
+        private List<UserControl> selection = new List<UserControl>();
         public MainWindow()
         {
             InitializeComponent();
@@ -54,154 +54,13 @@ namespace PAPIRUS_WPF
 
         //--------Selection-------//
 
-        private Marker FindMarker(Symbol symbol)
-        {
-            if (this.selection.TryGetValue(symbol, out Marker marker))
-            {
-                return marker;
-            }
-            return null;
-        }
-
-        private void AddMarkerGlyph(Marker marker)
-        {
-            if (this.selectionLayer == null)
-            {
-                this.selectionLayer = new Canvas()
-                {
-                    RenderTransform = this.moveVector = new TranslateTransform()
-                };
-                Panel.SetZIndex(this.selectionLayer, int.MaxValue);
-            }
-            if (this.selectionLayer.Parent != this.CircuitCanvas)
-            {
-                this.CircuitCanvas.Children.Add(this.selectionLayer);
-            }
-            this.selectionLayer.Children.Add(marker.Glyph);
-        }
-
-        public Marker SelectSymbol(Symbol symbol)
-        {
-            Marker marker = this.FindMarker(symbol);
-            if (marker == null)
-            {
-                marker = this.CreateMarker(symbol);
-                this.selection.Add(symbol, marker);
-                this.AddMarkerGlyph(marker);
-            }
-            return marker;
-        }
-
-
-
-        public Marker CreateMarker(Symbol symbol)
-        {
-            if (symbol is Object circuitSymbol)
-            {
-                    return new CircuitSymbolMarker(symbol);
-                
-            }
-            throw new InvalidOperationException();
-        }
-
-        public void ClearSelection()
-        {
-            this.selection.Clear();
-            if (this.selectionLayer != null)
-            {
-                this.selectionLayer.Children.Clear();
-            }
-        }
-
-        private void SymbolMouseDown(Symbol symbol, MouseEventArgs e)
-        {
-            if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-            {
-                this.SelectSymbol(symbol);
-            }
-            else
-            {
-                this.ClearSelection();
-                this.StartMove(this.SelectSymbol(symbol), e.GetPosition(this.CircuitCanvas));
-            }
-        }
-
-        public void Select(Rect area)
-        {
-            
-            foreach (Object symbol in CircuitCanvas.Children)
-            {
-                Rect item = new Rect(symbol.TransformToAncestor(CircuitCanvas).Transform(new Point(0,0)),
-                    new Size(symbol.ActualWidth,symbol.ActualHeight)
-                );
-                
-                if (area.Contains(item))
-                {
-                    this.SelectSymbol((Symbol)symbol);
-                }
-            }
-            }
-        
-            public IEnumerable<Symbol> Selection()
-        {
-            return new List<Symbol>(this.selection.Keys);
-        }
-
-        public void StartMove(Marker marker, Point startPoint)
-        {
-            
-            Mouse.Capture(this.CircuitCanvas, CaptureMode.Element);
-            this.movingMarker = marker;
-            this.moveStart = startPoint;
-
-            if (marker is AreaMarker)
-            {
-                this.maxMove = new Point(0, 0);
-            }
-            else
-            {
-                Rect bound = marker.Bounds();
-                if (bound.Width < 3 * Symbol.PinRadius && this.selection.Count == 1)
-                {
-                    this.maxMove = new Point(0, 0);
-                }
-                else
-                {
-                    bound = this.Selection().Aggregate(new Rect(startPoint, startPoint), (rect, symbol) => Rect.Union(rect, symbol.Bounds()));
-                    this.maxMove = new Point(
-                        startPoint.X - bound.X,
-                        startPoint.Y - bound.Y
-                    );
-                }
-            }
-        }
-
-        private void StartAreaSelection(Point point)
-        {
-            this.CancelMove();
-            AreaMarker marker = new AreaMarker(point);
-            this.AddMarkerGlyph(marker);
-            this.StartMove(marker, point);
-        }
-
-        protected void CancelMove()
-        {
-            if (this.movingMarker != null)
-            {
-                Mouse.Capture(null);
-                this.movingMarker.CancelMove(this.selectionLayer);
-                this.movingMarker = null;
-                this.moveVector.X = this.moveVector.Y = 0;
-            }
-        }
-
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
             {
                 //FormEditor formeditor = new FormEditor();
                 //formeditor.DiagramMouseDown(e);
-                CircuitCanvas.Focus();
+               
                 if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
                 {
                     Cursor = Cursors.SizeAll;
@@ -210,11 +69,13 @@ namespace PAPIRUS_WPF
 
                 }
 
-                FrameworkElement element = e.OriginalSource as FrameworkElement;
-                MessageBox.Show(element.ToString());
+                FrameworkElement element = e.Source as FrameworkElement;
+                //MessageBox.Show(element.ToString());
+
                 if (element == null)
                 {
                     FrameworkContentElement content = e.OriginalSource as FrameworkContentElement;
+                    MessageBox.Show(content.ToString());
                     while (element == null && content != null)
                     {
                         element = content.Parent as FrameworkElement;
@@ -225,19 +86,22 @@ namespace PAPIRUS_WPF
 
                 if (element != this.CircuitCanvas)
                 {
-                    symbol = element.DataContext as Symbol;
+                    symbol = element as Symbol;
+                    this.SelectSymbol(symbol);
+                    
+                    /*MessageBox.Show(symbol.ToString());
                     if (symbol == null)
                     {
                         FrameworkElement root = element;
-                        while (root != null && !(root.DataContext is Symbol))
+                        while (root != null && !(root is Symbol))
                         {
                             root = (root.Parent ?? root.TemplatedParent) as FrameworkElement;
                         }
                         if (root != null)
                         {
-                            symbol = root.DataContext as Symbol;
-                        }
-                    }
+                            symbol = root as Symbol;
+                        }*/
+                   }
                     else
                     {
                         Point point = e.GetPosition(CircuitCanvas);
@@ -309,7 +173,7 @@ namespace PAPIRUS_WPF
                     }*/
                 }
             }
-        }
+        
           
         private void CircuitCanvas_MouseMove(object sender, MouseEventArgs e)
         {
