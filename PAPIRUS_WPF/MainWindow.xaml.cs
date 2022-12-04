@@ -69,26 +69,17 @@ namespace PAPIRUS_WPF
 
                 }
 
-                FrameworkElement element = e.Source as FrameworkElement;
-                //MessageBox.Show(element.ToString());
+                UserControl element = e.Source as UserControl;
+                MessageBox.Show(element.ToString());
 
-                if (element == null)
-                {
-                    FrameworkContentElement content = e.Source as FrameworkContentElement;
-                    MessageBox.Show(content.ToString());
-                    while (element == null && content != null)
-                    {
-                        element = content.Parent as FrameworkElement;
-                        content = content.Parent as FrameworkContentElement;
-                    }
-                }
                 Symbol symbol = null;
 
-                if (element != this.CircuitCanvas)
-                {
-                    symbol = element as Symbol;
-                    this.SelectSymbol(symbol);
+                //if (element != this.CircuitCanvas)
+                //{
                     
+                    if(selection.Contains(element) == false)
+                     this.selection.Add((UserControl)element);
+
                     /*MessageBox.Show(symbol.ToString());
                     if (symbol == null)
                     {
@@ -101,7 +92,7 @@ namespace PAPIRUS_WPF
                         {
                             symbol = root as Symbol;
                         }*/
-                   }
+                //}
                     else
                     {
                         Point point = e.GetPosition(CircuitCanvas);
