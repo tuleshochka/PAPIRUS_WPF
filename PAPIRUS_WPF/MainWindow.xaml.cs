@@ -98,7 +98,7 @@ namespace PAPIRUS_WPF
 
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount<2)
             {
 
                 if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
@@ -132,9 +132,8 @@ namespace PAPIRUS_WPF
                     }
                 }
 
-                else
+                else if(element == this.CircuitCanvas)
                 {
-                    Point point = e.GetPosition(CircuitCanvas);
                     if (Keyboard.Modifiers != ModifierKeys.Control)
                     { // Nothing was clicked on the diagram
                         if (e.ClickCount < 2)
@@ -144,7 +143,7 @@ namespace PAPIRUS_WPF
                                 this.ClearSelection();
                                 MovingSelectionIsStarted = true;
                                 MoveSelStartPoint = e.GetPosition(CircuitCanvas);
-                                CaptureMouse();
+                                //CaptureMouse();
                                 e.Handled = true;
                             }
                             // this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
@@ -220,11 +219,7 @@ namespace PAPIRUS_WPF
                // this.movingMarker.Move(this, new Point(Math.Max(this.maxMove.X, point.X), Math.Max(this.maxMove.Y, point.Y)));
             } else if (this.panning)
             {
-                Point point = e.GetPosition(this);
-                ScrollViewer scroll = this.DiagramScroll;
-                scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset + this.panStart.X - point.X);
-                scroll.ScrollToVerticalOffset(scroll.VerticalOffset + this.panStart.Y - point.Y);
-                this.panStart = point;
+
             }
         }
 
