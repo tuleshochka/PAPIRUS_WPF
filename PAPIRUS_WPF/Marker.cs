@@ -9,10 +9,10 @@ using System.Windows;
 namespace PAPIRUS_WPF
 {
 
-        public  class Marker:Symbol
+        public  abstract class Marker:Symbol
         {
             public Symbol Symbol { get; private set; }
-            public FrameworkElement Glyph { get; }
+            public abstract FrameworkElement Glyph { get; }
 
            public Marker(Symbol symbol)
             {
@@ -24,16 +24,22 @@ namespace PAPIRUS_WPF
                 //return this.Symbol.Bounds();
             //}
 
-            public void Move(FormEditor editor, Point point)
+            public virtual void Move(MainWindow editor, Point point)
             {
                 editor.MoveSelection(point);
             }
 
-            public void CancelMove(Panel selectionLayer)
+            public virtual void CancelMove(Panel selectionLayer)
             {
             }
 
-            //public virtual void Refresh();
+        public virtual void Commit(MainWindow editor, Point point, bool withWires)
+        {
+            editor.CommitMove(point, withWires);
         }
+        public abstract void Refresh();
+
+        //public virtual void Refresh();
+    }
     }
 

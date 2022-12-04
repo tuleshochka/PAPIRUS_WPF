@@ -14,7 +14,7 @@ namespace PAPIRUS_WPF
         private readonly Point point0;
         private readonly Rectangle markerGlyph;
 
-        public FrameworkElement Glyph { get { return this.markerGlyph; } }
+        public override FrameworkElement Glyph { get { return this.markerGlyph; } }
 
         public AreaMarker(Point point) : base(null)
         {
@@ -24,17 +24,17 @@ namespace PAPIRUS_WPF
             this.PositionGlyph(point);
         }
 
-        public  Rect Bounds()
+        public override Rect Bounds()
         {
             return new Rect(Canvas.GetLeft(this.markerGlyph), Canvas.GetTop(this.markerGlyph), this.markerGlyph.Width, this.markerGlyph.Height);
         }
 
-        public  void Move(FormEditor editor, Point point)
+        public override void Move(MainWindow editor, Point point)
         {
             this.PositionGlyph(point);
         }
 
-        public  void Commit(FormEditor editor, Point point, bool withWires)
+        public override void Commit(MainWindow editor, Point point, bool withWires)
         {
             editor.Select(new Rect(this.point0, point));
         }
@@ -48,14 +48,24 @@ namespace PAPIRUS_WPF
             this.markerGlyph.Height = rect.Height;
         }
 
-        public  void CancelMove(Panel selectionLayer)
+        public override void CancelMove(Panel selectionLayer)
         {
             selectionLayer.Children.Remove(this.Glyph);
         }
 
-        public  void Refresh()
+        public override void Refresh()
         {
             throw new InvalidOperationException();
+        }
+
+        public override void Shift(int dx, int dy)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void PositionGlyph()
+        {
+            throw new NotImplementedException();
         }
     }
 }

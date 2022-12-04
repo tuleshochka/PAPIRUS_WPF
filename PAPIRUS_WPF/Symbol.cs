@@ -244,7 +244,8 @@ namespace PAPIRUS_WPF
         public abstract Rect Bounds();
         public  FrameworkElement Glyph { get; }
         public  bool HasCreatedGlyph { get; }
-
+        public abstract void Shift(int dx, int dy);
+        public abstract void PositionGlyph();
 
         protected void NotifyPropertyChanged(string name)
         {

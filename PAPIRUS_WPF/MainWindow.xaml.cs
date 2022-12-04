@@ -37,7 +37,7 @@ namespace PAPIRUS_WPF
         private Marker movingMarker;
         private Point moveStart;
         private Point panStart;
-        private bool panning;
+        public bool panning;
         private TranslateTransform moveVector;
         private Point maxMove;
         private Canvas selectionLayer;
@@ -63,6 +63,23 @@ namespace PAPIRUS_WPF
             return null;
         }
 
+        private void AddMarkerGlyph(Marker marker)
+        {
+            if (this.selectionLayer == null)
+            {
+                this.selectionLayer = new Canvas()
+                {
+                    RenderTransform = this.moveVector = new TranslateTransform()
+                };
+                Panel.SetZIndex(this.selectionLayer, int.MaxValue);
+            }
+            if (this.selectionLayer.Parent != this.CircuitCanvas)
+            {
+                this.CircuitCanvas.Children.Add(this.selectionLayer);
+            }
+            this.selectionLayer.Children.Add(marker.Glyph);
+        }
+
         public Marker SelectSymbol(Symbol symbol)
         {
             Marker marker = this.FindMarker(symbol);
@@ -75,11 +92,13 @@ namespace PAPIRUS_WPF
             return marker;
         }
 
+
+
         public Marker CreateMarker(Symbol symbol)
         {
             if (symbol is Object circuitSymbol)
             {
-                    return new Marker(symbol);
+                    return new CircuitSymbolMarker(symbol);
                 
             }
             throw new InvalidOperationException();
@@ -103,22 +122,22 @@ namespace PAPIRUS_WPF
             else
             {
                 this.ClearSelection();
-                this.StartMove(this.SelectSymbol(symbol), e.GetPosition(this.Diagram));
+                this.StartMove(this.SelectSymbol(symbol), e.GetPosition(this.CircuitCanvas));
             }
         }
 
         public void Select(Rect area)
         {
             
-            foreach (FrameworkElement symbol in CircuitCanvas.Children)
+            foreach (Object symbol in CircuitCanvas.Children)
             {
-                Rect item = new Rect(Symbol.ScreenPoint(new GridPoint(this.X, this.Y)),
-                    new Size(Symbol.ScreenPoint(symbol.Circuit.SymbolWidth), Symbol.ScreenPoint(symbol.Circuit.SymbolHeight))
+                Rect item = new Rect(symbol.TransformToAncestor(CircuitCanvas).Transform(new Point(0,0)),
+                    new Size(symbol.ActualWidth,symbol.ActualHeight)
                 );
                 
                 if (area.Contains(item))
                 {
-                    this.SelectSymbol(symbol);
+                    this.SelectSymbol((Symbol)symbol);
                 }
             }
             }
@@ -128,7 +147,7 @@ namespace PAPIRUS_WPF
             return new List<Symbol>(this.selection.Keys);
         }
 
-        public void StartMove(Marker marker, Point startPoint, string tip)
+        public void StartMove(Marker marker, Point startPoint)
         {
             
             Mouse.Capture(this.CircuitCanvas, CaptureMode.Element);
@@ -156,26 +175,47 @@ namespace PAPIRUS_WPF
                 }
             }
         }
-            private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+
+        private void StartAreaSelection(Point point)
+        {
+            this.CancelMove();
+            AreaMarker marker = new AreaMarker(point);
+            this.AddMarkerGlyph(marker);
+            this.StartMove(marker, point);
+        }
+
+        protected void CancelMove()
+        {
+            if (this.movingMarker != null)
+            {
+                Mouse.Capture(null);
+                this.movingMarker.CancelMove(this.selectionLayer);
+                this.movingMarker = null;
+                this.moveVector.X = this.moveVector.Y = 0;
+            }
+        }
+
+        private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
             {
                 //FormEditor formeditor = new FormEditor();
                 //formeditor.DiagramMouseDown(e);
-                 CircuitCanvas.Focus();
-                 if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
-                 {
-                     Cursor = Cursors.SizeAll;
-                     MiddleClick = true;
-                     point = Mouse.GetPosition(CircuitCanvas);
+                CircuitCanvas.Focus();
+                if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
+                {
+                    Cursor = Cursors.SizeAll;
+                    MiddleClick = true;
+                    point = Mouse.GetPosition(CircuitCanvas);
 
-                 }
+                }
 
                 FrameworkElement element = e.OriginalSource as FrameworkElement;
-                if(element == null)
+                MessageBox.Show(element.ToString());
+                if (element == null)
                 {
                     FrameworkContentElement content = e.OriginalSource as FrameworkContentElement;
-                    while(element == null && content !=null)
+                    while (element == null && content != null)
                     {
                         element = content.Parent as FrameworkElement;
                         content = content.Parent as FrameworkContentElement;
@@ -198,70 +238,188 @@ namespace PAPIRUS_WPF
                             symbol = root.DataContext as Symbol;
                         }
                     }
-                else
-                {
-                    Point point = e.GetPosition(CircuitCanvas);
+                    else
+                    {
+                        Point point = e.GetPosition(CircuitCanvas);
+                    }
+                    if (symbol != null)
+                    {
+                        if (e.ClickCount < 2) this.SymbolMouseDown(symbol, e);
+                    }
+                    else if (Keyboard.Modifiers != ModifierKeys.Control)
+                    { // Nothing was clicked on the diagram
+                        if (e.ClickCount < 2)
+                        {
+                            if (Keyboard.Modifiers != ModifierKeys.Shift)
+                            {
+                                this.ClearSelection();
+                            }
+                            this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
+                        }
+                        else
+                        {
+                            this.ClearSelection();
+                        }
+                    } else if (Keyboard.Modifiers == ModifierKeys.Control && Mouse.Capture(this.CircuitCanvas, CaptureMode.Element))
+                    {
+                        this.panStart = e.GetPosition(this);
+                        this.panning = true;
+                    }
+
+                    /////////////////
+                    /*//Get the position of the mouse relative to the circuit canvas
+                    Point MousePosition = e.GetPosition(CircuitCanvas);
+
+                    //Do a hit test under the mouse position
+                    HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
+
+                    //Make sure that there is something under the mouse
+                    if (result == null || result.VisualHit == null)
+                        return;
+
+                    //If the mouse has hit a border
+                    Console.WriteLine(result.VisualHit.ToString());
+                    if (result.VisualHit is Border)
+                    {
+                        //Get the parent class of the border
+                        Border border = (Border)result.VisualHit;
+                        var IO = border.Parent;
+
+                        //If the parent class is an Output
+                        if (IO is Output)
+                        {
+                            //Cast to output
+                            Output IOOutput = (Output)IO;
+
+                            //Get the center of the output relative to the canvas
+                            Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
+
+                            //Creates a new line
+                            _linkingStarted = true;
+                            _tempLink = new LineGeometry(position, position);
+
+                            //Assign it to the list of connections to be displayed
+                            Connections.Children.Add(_tempLink);
+
+                            //Assign the temporary output to the current output
+                            _tempOutput = (Output)IO;
+
+                            e.Handled = true;
+                        }
+                    }*/
                 }
-                if (symbol != null)
-                {
-                    if(e.ClickCount < 2) this.SymbolMouseDown(symbol,e)
-                }
-
-                 //Get the position of the mouse relative to the circuit canvas
-                 Point MousePosition = e.GetPosition(CircuitCanvas);
-
-                 //Do a hit test under the mouse position
-                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
-
-                 //Make sure that there is something under the mouse
-                 if (result == null || result.VisualHit == null)
-                     return;
-
-                 //If the mouse has hit a border
-                 Console.WriteLine(result.VisualHit.ToString());
-                 if (result.VisualHit is Border)
-                 {
-                     //Get the parent class of the border
-                     Border border = (Border)result.VisualHit;
-                     var IO = border.Parent;
-
-                     //If the parent class is an Output
-                     if (IO is Output)
-                     {
-                         //Cast to output
-                         Output IOOutput = (Output)IO;
-
-                         //Get the center of the output relative to the canvas
-                         Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
-
-                         //Creates a new line
-                         _linkingStarted = true;
-                         _tempLink = new LineGeometry(position, position);
-
-                         //Assign it to the list of connections to be displayed
-                         Connections.Children.Add(_tempLink);
-
-                         //Assign the temporary output to the current output
-                         _tempOutput = (Output)IO;
-
-                         e.Handled = true;
-                     }
-                 }
-            }  
+            }
         }
+          
         private void CircuitCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if(MiddleClick) CircuitCanvas_MouseWheelCLick();
+            /*if(MiddleClick) CircuitCanvas_MouseWheelCLick();
             //If there is a linking in progress
             if (_linkingStarted)
             {
                 //Move the link endpoint to the current location of the mouse
                 _tempLink.EndPoint = e.GetPosition(CircuitCanvas);
                 e.Handled = true;
+            } else*/
+            if (movingMarker != null)
+            {
+                Point point = e.GetPosition(this.CircuitCanvas);
+                this.movingMarker.Move(this, new Point(Math.Max(this.maxMove.X, point.X), Math.Max(this.maxMove.Y, point.Y)));
+            } else if (this.panning)
+            {
+                Point point = e.GetPosition(this);
+                ScrollViewer scroll = this.DiagramScroll;
+                scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset + this.panStart.X - point.X);
+                scroll.ScrollToVerticalOffset(scroll.VerticalOffset + this.panStart.Y - point.Y);
+                this.panStart = point;
             }
         }
+
+        public void MoveSelection(Point point)
+        {
+            this.moveVector.X = point.X - this.moveStart.X;
+            this.moveVector.Y = point.Y - this.moveStart.Y;
+        }
+
+        private void FinishMove(Point position, bool withWires)
+        {
+            Marker marker = this.movingMarker;
+            this.CancelMove();
+            marker.Commit(this, new Point(Math.Max(this.maxMove.X, position.X), Math.Max(this.maxMove.Y, position.Y)), withWires);
+        }
+
+        public void CommitMove(Point point, bool withWires)
+        {
+            int dx = Symbol.GridPoint(point.X - this.moveStart.X);
+            int dy = Symbol.GridPoint(point.Y - this.moveStart.Y);
+            if (dx != 0 || dy != 0)
+            {
+                HashSet<GridPoint> movedPoints = null;
+                /*if (withWires)
+                {
+                    movedPoints = new HashSet<GridPoint>();
+                    foreach (Marker marker in this.selection.Values)
+                    {
+                        if (marker.Symbol is CircuitSymbol symbol)
+                        {
+                            foreach (Jam jam in symbol.Jams())
+                            {
+                                movedPoints.Add(jam.AbsolutePoint);
+                            }
+                        }
+                        else
+                        {
+                            if (marker.Symbol is Wire wire)
+                            {
+                                movedPoints.Add(wire.Point1);
+                                movedPoints.Add(wire.Point2);
+                            }
+                        }
+                    }
+                }*/
+                
+                    foreach (Marker marker in this.selection.Values)
+                    {
+                        marker.Symbol.Shift(dx, dy);
+                        marker.Symbol.PositionGlyph();
+                        marker.Refresh();
+                    }
+                    /*if (withWires)
+                    {
+                        foreach (Wire wire in this.Project.LogicalCircuit.Wires())
+                        {
+                            if (!this.selection.ContainsKey(wire))
+                            {
+                                if (movedPoints.Contains(wire.Point1))
+                                {
+                                    wire.X1 += dx;
+                                    wire.Y1 += dy;
+                                    wire.PositionGlyph();
+                                }
+                                if (movedPoints.Contains(wire.Point2))
+                                {
+                                    wire.X2 += dx;
+                                    wire.Y2 += dy;
+                                    wire.PositionGlyph();
+                                }
+                            }
+                        }
+                    
+                    this.DeleteEmptyWires();*/
+                };
+            }
+        
+
         private void CircuitCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if(this.movingMarker != null)
+            {
+                this.FinishMove(e.GetPosition(this.CircuitCanvas), (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.None);
+            }
+			if(this.panning) {
+            Mouse.Capture(null);
+            this.panning = false;
+        }
             MiddleClick =  false;
             Cursor = Cursors.Arrow;
             //If there is a linking in progress

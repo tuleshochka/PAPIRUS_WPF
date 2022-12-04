@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AreaMarker.cs" />
+    <Compile Include="CircuitSymbolMarker.cs" />
     <Compile Include="Elements\four_pole.xaml.cs">
       <DependentUpon>four_pole.xaml</DependentUpon>
     </Compile>
@@ -67,9 +68,6 @@
     </Compile>
     <Compile Include="Elements\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Elements\SelectionMark.xaml.cs">
-      <DependentUpon>SelectionMark.xaml</DependentUpon>
     </Compile>
     <Compile Include="Elements\six_pole.xaml.cs">
       <DependentUpon>six_pole.xaml</DependentUpon>
