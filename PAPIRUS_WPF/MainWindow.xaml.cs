@@ -99,7 +99,7 @@ namespace PAPIRUS_WPF
                     }
                     if (symbol != null)
                     {
-                        if (e.ClickCount < 2) this.SymbolMouseDown(symbol, e);
+                       // if (e.ClickCount < 2) this.SymbolMouseDown(symbol, e);
                     }
                     else if (Keyboard.Modifiers != ModifierKeys.Control)
                     { // Nothing was clicked on the diagram
@@ -107,13 +107,13 @@ namespace PAPIRUS_WPF
                         {
                             if (Keyboard.Modifiers != ModifierKeys.Shift)
                             {
-                                this.ClearSelection();
+                            //    this.ClearSelection();
                             }
-                            this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
+                           // this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
                         }
                         else
                         {
-                            this.ClearSelection();
+                         //   this.ClearSelection();
                         }
                     } else if (Keyboard.Modifiers == ModifierKeys.Control && Mouse.Capture(this.CircuitCanvas, CaptureMode.Element))
                     {
@@ -199,7 +199,7 @@ namespace PAPIRUS_WPF
         private void FinishMove(Point position, bool withWires)
         {
             Marker marker = this.movingMarker;
-            this.CancelMove();
+           // this.CancelMove();
             marker.Commit(this, new Point(Math.Max(this.maxMove.X, position.X), Math.Max(this.maxMove.Y, position.Y)), withWires);
         }
 
