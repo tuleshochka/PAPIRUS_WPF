@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace PAPIRUS_WPF
 {
-    public class Object : UserControl
+    public class Object : Symbol
     {
         public static readonly DependencyProperty CanMoveProperty = DependencyProperty.Register("CanMove", typeof(bool), typeof(Object), new PropertyMetadata(true));
         /// <summary>
@@ -55,6 +55,7 @@ namespace PAPIRUS_WPF
             _attachedInputLines = new List<LineGeometry>();
             _attachedOutputLines = new List<LineGeometry>();
         }
+
 
         /// <summary>
         /// Called when the mouse button is held on the object
@@ -166,7 +167,7 @@ namespace PAPIRUS_WPF
         /// Adds an input line to the list of attached lines
         /// </summary>
         /// <param name="line">The line to add</param>
-        public void AttachInputLine(LineGeometry line)
+        public virtual void AttachInputLine(LineGeometry line)
         {
             _attachedInputLines.Add(line);
         }
@@ -175,9 +176,24 @@ namespace PAPIRUS_WPF
         /// Adds an output line to the list of attached lines
         /// </summary>
         /// <param name="line">The line to add</param>
-        public void AttachOutputLine(LineGeometry line)
+        public virtual void AttachOutputLine(LineGeometry line)
         {
             _attachedOutputLines.Add(line);
+        }
+
+        public override Rect Bounds()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Shift(int dx, int dy)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void PositionGlyph()
+        {
+            throw new NotImplementedException();
         }
     }
 }

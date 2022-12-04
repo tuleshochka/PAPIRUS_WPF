@@ -176,27 +176,19 @@
             </StatusBarItem>
         </StatusBar>
 
-        <ToggleButton x:Name="TogglePopupButton" Padding="0,0" Grid.Row="1" Grid.Column="0" Height="25" Width="25" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <StackPanel>
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">
-                    fpf
-            
-                </TextBlock>
-
-                <Popup Name="myPopup" IsOpen="{Binding IsChecked, ElementName=TogglePopupButton}">
-                    <ListView x:Name="ObjectSelector"  PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="IsSelected" Value="True"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), 
+        <ListView x:Name="ObjectSelector" Grid.Row="1" PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="IsSelected" Value="True"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Center" Width="{Binding (FrameworkElement.ActualWidth), 
                         RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
                         ItemWidth="{Binding (ListView.View).ItemWidth, 
                         RelativeSource={RelativeSource AncestorType=ListView}}"
@@ -212,7 +204,6 @@
                         <Elements:Generator CanMove="False"/>
 
                     </ListView>
-
                 </Popup>
             </StackPanel>
         </ToggleButton>
@@ -220,8 +211,4 @@
        
 
     </Grid>
-
-
-
-
 </Window>
