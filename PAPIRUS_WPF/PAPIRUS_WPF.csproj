@@ -55,8 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AreaMarker.cs" />
-    <Compile Include="CircuitSymbolMarker.cs" />
     <Compile Include="Elements\four_pole.xaml.cs">
       <DependentUpon>four_pole.xaml</DependentUpon>
     </Compile>
@@ -78,7 +76,6 @@
     <Compile Include="FormEditor.cs" />
     <Compile Include="IRotatable.cs" />
     <Compile Include="ITableSnapshop.cs" />
-    <Compile Include="Marker.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="RowId.cs" />
     <Compile Include="Symbol.cs" />
