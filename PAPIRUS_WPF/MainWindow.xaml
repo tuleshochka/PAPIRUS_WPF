@@ -129,7 +129,7 @@
 					HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
 					
 					FlowDirection="LeftToRight">
-                <Canvas
+                <Canvas ButtonBase.Click="CircuitCanvas_Click"
                 x:Name="CircuitCanvas"
                 Width="1600"
 			    Height="1200"

@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using System.Timers;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace PAPIRUS_WPF
@@ -42,11 +43,16 @@ namespace PAPIRUS_WPF
         private Point maxMove;
         private Canvas selectionLayer;
         private List<UserControl> selection = new List<UserControl>();
+        public FrameworkElement singleElement;
+        private Timer ClickTimer;
+        private int ClickCounter;
 
         public bool MovingSelectionIsStarted = false;
 
         public MainWindow()
         {
+            ClickTimer = new Timer(300);
+            ClickTimer.Elapsed += new ElapsedEventHandler(EvaluateClicks);
             InitializeComponent();
 
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
@@ -57,9 +63,10 @@ namespace PAPIRUS_WPF
 
         }
 
+
         //--------Selection-------//
 
-       
+
 
         public void ClearSelection()
         {
@@ -72,6 +79,7 @@ namespace PAPIRUS_WPF
 
         public void SingleElementSelect(FrameworkElement element)
         {
+
             this.selection.Add((UserControl)element);
             Rectangle item = new Rectangle();
 
@@ -98,63 +106,115 @@ namespace PAPIRUS_WPF
 
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left && e.ClickCount<2)
+            //для тыка колесика
+            if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
             {
+                Cursor = Cursors.SizeAll;
+                MiddleClick = true;
+                point = Mouse.GetPosition(CircuitCanvas);
 
-                if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
+            }
+            //тык левой кнопкой
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                ClickTimer.Stop();
+                ClickCounter++;
+                ClickTimer.Start();
+            }
+                //Console.WriteLine(ClickCounter.ToString());
+                //если тык два раза
+               /* if (ClickCounter == 2)
                 {
-                    Cursor = Cursors.SizeAll;
-                    MiddleClick = true;
-                    point = Mouse.GetPosition(CircuitCanvas);
-
+                    ClearSelection();
+                    SingleElementSelect(singleElement);
                 }
-
-                FrameworkElement element = e.Source as FrameworkElement;
-                Console.WriteLine("e.Source = " + element.ToString());
-
-                if (element != this.CircuitCanvas)
+                //в другом случае (один тык)
+                else if(ClickCounter == 1)
                 {
-                    if (element is Rectangle) return;
-                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-                    {
-                        if (selection.Contains(element) == false)
-                        {
-                            SingleElementSelect(element);
-                        }
-                    }
-                    else
-                    {
-                        ClearSelection();
-                        if (selection.Contains(element) == false)
-                        {
-                            SingleElementSelect(element);
-                        }
-                    }
-                }
+                    Console.WriteLine("один тык");
+                    singleElement = e.Source as FrameworkElement;
+                    FrameworkElement element = e.Source as FrameworkElement;
 
-                else if(element == this.CircuitCanvas)
-                {
-                    if (Keyboard.Modifiers != ModifierKeys.Control)
-                    { // Nothing was clicked on the diagram
-                        if (e.ClickCount < 2)
+                    //doubleclicl - clear celection, singleElementSelect (add element to list), смотрим что в листе по индексу 0
+
+                    if (element != this.CircuitCanvas)
+                    {
+                        if (element is Rectangle)
                         {
-                            if (Keyboard.Modifiers != ModifierKeys.Shift)
+                            Point MousePosition = e.GetPosition(CircuitCanvas);
+                            //Do a hit test under the mouse position
+                            HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
+                            Console.WriteLine(result.VisualHit);
+                            if (e.ClickCount == 2)
                             {
-                                this.ClearSelection();
-                                MovingSelectionIsStarted = true;
-                                MoveSelStartPoint = e.GetPosition(CircuitCanvas);
-                                //CaptureMouse();
-                                e.Handled = true;
+
+                                GeneratorDialog gd = new GeneratorDialog();
+                                gd.ShowDialog();
                             }
-                            // this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
                         }
                         else
                         {
-                            //   this.ClearSelection();
+                            Object el = (Object)element;
+
+                            Console.WriteLine("element.Parent: " + element.Parent);
+                            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                            {
+                                if (selection.Contains(element) == false)
+                                {
+                                    SingleElementSelect(element);
+                                    el.isSelected = true;
+                                    Console.WriteLine(el.isSelected);
+                                }
+                                else
+                                {
+                                    el.isSelected = false;
+                                    Console.WriteLine(el.isSelected);
+                                }
+
+                            }
+                            else
+                            {
+                                ClearSelection();
+                                if (selection.Contains(element) == false)
+                                {
+                                    SingleElementSelect(element);
+                                    el.isSelected = true;
+                                    Console.WriteLine(el.isSelected);
+                                }
+                                else
+                                {
+                                    el.isSelected = false;
+                                    Console.WriteLine(el.isSelected);
+                                }
+
+                            }
                         }
                     }
-                }
-                   
+
+                    else if (element == this.CircuitCanvas)
+                    {
+                        if (Keyboard.Modifiers != ModifierKeys.Control)
+                        { // Nothing was clicked on the diagram
+                            if (e.ClickCount < 2)
+                            {
+                                if (Keyboard.Modifiers != ModifierKeys.Shift)
+                                {
+                                    this.ClearSelection();
+                                    MovingSelectionIsStarted = true;
+                                    MoveSelStartPoint = e.GetPosition(CircuitCanvas);
+                                    //CaptureMouse();
+                                    e.Handled = true;
+                                }
+                                // this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
+                            }
+                            else
+                            {
+                                //   this.ClearSelection();
+                            }
+                        }
+                    }
+               */
+
 
                     /////////////////
                     /*//Get the position of the mouse relative to the circuit canvas
@@ -198,10 +258,28 @@ namespace PAPIRUS_WPF
                         }
                     }*/
                 }
+
+
+        private void EvaluateClicks(object source, ElapsedEventArgs e)
+        {
+            ClickTimer.Stop();
+            Console.WriteLine(ClickCounter.ToString());
+            //если тык два раза
+            if (ClickCounter == 2)
+            {
+                //ClearSelection();
+                //SingleElementSelect(singleElement);
             }
-        
-        
-          
+            //в другом случае (один тык)
+            else if (ClickCounter == 1)
+            {
+
+            }
+                //Evaluate ClickCounter here
+                ClickCounter = 0;
+        }
+
+
         private void CircuitCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             if(MiddleClick) CircuitCanvas_MouseWheelCLick();
@@ -416,6 +494,11 @@ namespace PAPIRUS_WPF
         }
 
         private void two_pole_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
+        }
+
+        private void CircuitCanvas_Click(object sender, RoutedEventArgs e)
         {
 
         }

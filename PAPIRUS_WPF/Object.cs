@@ -22,6 +22,7 @@ namespace PAPIRUS_WPF
             set { SetValue(CanMoveProperty, value); }
         }
 
+        public bool isSelected = false;
         //The anchor point of the object when being moved
         private Point _anchorPoint;
 
@@ -47,9 +48,9 @@ namespace PAPIRUS_WPF
         public Object()
         {
             //Set the events for the object
-           // this.MouseLeftButtonDown += DragObject_MouseLeftButtonDown;
+            //this.MouseLeftButtonDown += DragObject_MouseLeftButtonDown;
             //this.MouseMove += DragObject_MouseMove;
-           // this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
+            //this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
 
             //Initialize the lists
             _attachedInputLines = new List<LineGeometry>();
@@ -62,29 +63,32 @@ namespace PAPIRUS_WPF
         /// </summary>
         /// <param name="sender">The element that is calling the event</param>
         /// <param name="e">The event parameters</param>
-       /* private void DragObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void DragObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //Don't start the drag if we can't interact with the object
-            if (CanMove == false)
-                return;
+            if (isSelected)
+            {
+                //Don't start the drag if we can't interact with the object
+                if (CanMove == false)
+                    return;
 
-            //Get the element the object is directly over
-            var x = Mouse.DirectlyOver;
+                //Get the element the object is directly over
+                var x = Mouse.DirectlyOver;
 
-            //Don't drag when on input/output
-            if (x is Border)
-                return;
+                //Don't drag when on input/output
+                if (x is Border)
+                    return;
 
-            //Get the element that called it
-            var element = sender as FrameworkElement;
+                //Get the element that called it
+                var element = sender as FrameworkElement;
 
-            //Set the variables up to the event parameters
-            _anchorPoint = e.GetPosition(null);
-            _isInDrag = true;
+                //Set the variables up to the event parameters
+                _anchorPoint = e.GetPosition(null);
+                _isInDrag = true;
 
-            //Hide the mouse and signal that the event was handled.
-            element.CaptureMouse();
-            e.Handled = true;
+                //Hide the mouse and signal that the event was handled.
+                element.CaptureMouse();
+                e.Handled = true;
+            }
         }
 
         /// <summary>
@@ -146,7 +150,7 @@ namespace PAPIRUS_WPF
                 //Update the anchor point
                 _anchorPoint = _currentPoint;
             }
-        }*/
+        }
 
         /// <summary>
         /// Translates a lines position.
