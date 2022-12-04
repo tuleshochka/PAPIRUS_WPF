@@ -21,7 +21,7 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
 
         </Grid.ColumnDefinitions>
@@ -204,11 +204,7 @@
                         <Elements:Generator CanMove="False"/>
 
                     </ListView>
-                </Popup>
-            </StackPanel>
-        </ToggleButton>
 
-       
-
+      
     </Grid>
 </Window>

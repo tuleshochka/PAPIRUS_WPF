@@ -36,7 +36,7 @@ namespace PAPIRUS_WPF
 
         public override void Commit(MainWindow editor, Point point, bool withWires)
         {
-            editor.Select(new Rect(this.point0, point));
+            //editor.Select(new Rect(this.point0, point));
         }
 
         private void PositionGlyph(Point point)

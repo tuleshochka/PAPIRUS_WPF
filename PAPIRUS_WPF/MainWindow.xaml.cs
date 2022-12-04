@@ -233,7 +233,7 @@ namespace PAPIRUS_WPF
                     }
                 }*/
                 
-                    foreach (Marker marker in this.selection.Values)
+                    foreach (Marker marker in this.selection)
                     {
                         marker.Symbol.Shift(dx, dy);
                         marker.Symbol.PositionGlyph();
