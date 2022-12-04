@@ -74,7 +74,7 @@ namespace PAPIRUS_WPF
 
                 if (element == null)
                 {
-                    FrameworkContentElement content = e.OriginalSource as FrameworkContentElement;
+                    FrameworkContentElement content = e.Source as FrameworkContentElement;
                     MessageBox.Show(content.ToString());
                     while (element == null && content != null)
                     {
