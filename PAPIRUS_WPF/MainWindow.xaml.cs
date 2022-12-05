@@ -41,13 +41,16 @@ namespace PAPIRUS_WPF
         public bool panning;
         private TranslateTransform moveVector;
         private Point maxMove;
+
         private Canvas selectionLayer;
         private List<UserControl> selection = new List<UserControl>();
-        public FrameworkElement singleElement;
+        public FrameworkElement singleElement = null;
         private Timer ClickTimer;
         private int ClickCounter;
 
         public bool MovingSelectionIsStarted = false;
+        FrameworkElement Source = null;
+        Point MousePosition;
 
         public MainWindow()
         {
@@ -58,10 +61,10 @@ namespace PAPIRUS_WPF
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-            
 
 
         }
+        public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
 
 
         //--------Selection-------//
@@ -104,6 +107,17 @@ namespace PAPIRUS_WPF
             item.Height = element.ActualHeight;
         }
 
+        private HitTestResultBehavior MyHitFilter (HitTestResult result)
+        {
+            if(result.VisualHit.GetType() == typeof(UserControl))
+            {
+                Console.WriteLine("result: " + (result.VisualHit));
+                return HitTestResultBehavior.Stop;
+            }
+            Console.WriteLine("result: " + (result.VisualHit));
+            return HitTestResultBehavior.Continue;
+        }
+
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //для тыка колесика
@@ -117,23 +131,19 @@ namespace PAPIRUS_WPF
             //тык левой кнопкой
             if (e.ChangedButton == MouseButton.Left)
             {
+                Source = e.Source as FrameworkElement;
+                Point pt = e.GetPosition((UIElement)sender);
+                //VisualTreeHelper.HitTest(CircuitCanvas, null,new HitTestResultCallback(MyHitFilter), new PointHitTestParameters(pt));
+                MousePosition = e.GetPosition(CircuitCanvas);
+                Console.WriteLine(Source);
                 ClickTimer.Stop();
                 ClickCounter++;
-                ClickTimer.Start();
-            }
-                //Console.WriteLine(ClickCounter.ToString());
-                //если тык два раза
-               /* if (ClickCounter == 2)
+                Console.WriteLine(ClickCounter);
+                if (ClickCounter == 1)
                 {
-                    ClearSelection();
-                    SingleElementSelect(singleElement);
-                }
-                //в другом случае (один тык)
-                else if(ClickCounter == 1)
-                {
-                    Console.WriteLine("один тык");
                     singleElement = e.Source as FrameworkElement;
-                    FrameworkElement element = e.Source as FrameworkElement;
+                    FrameworkElement element = Source;
+                    
 
                     //doubleclicl - clear celection, singleElementSelect (add element to list), смотрим что в листе по индексу 0
 
@@ -143,8 +153,6 @@ namespace PAPIRUS_WPF
                         {
                             Point MousePosition = e.GetPosition(CircuitCanvas);
                             //Do a hit test under the mouse position
-                            HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
-                            Console.WriteLine(result.VisualHit);
                             if (e.ClickCount == 2)
                             {
 
@@ -155,38 +163,23 @@ namespace PAPIRUS_WPF
                         else
                         {
                             Object el = (Object)element;
-
-                            Console.WriteLine("element.Parent: " + element.Parent);
                             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
                             {
                                 if (selection.Contains(element) == false)
                                 {
                                     SingleElementSelect(element);
-                                    el.isSelected = true;
-                                    Console.WriteLine(el.isSelected);
                                 }
                                 else
                                 {
-                                    el.isSelected = false;
-                                    Console.WriteLine(el.isSelected);
+
                                 }
 
                             }
                             else
                             {
+                                if(Source is Rectangle)
                                 ClearSelection();
-                                if (selection.Contains(element) == false)
-                                {
-                                    SingleElementSelect(element);
-                                    el.isSelected = true;
-                                    Console.WriteLine(el.isSelected);
-                                }
-                                else
-                                {
-                                    el.isSelected = false;
-                                    Console.WriteLine(el.isSelected);
-                                }
-
+                                else SingleElementSelect(element);
                             }
                         }
                     }
@@ -213,6 +206,37 @@ namespace PAPIRUS_WPF
                             }
                         }
                     }
+                }
+                if (ClickCounter == 2)
+                {
+                    if (Source is Rectangle)
+                    {
+                        //SingleElementSelect(singleElement);
+                    }
+                    else
+                    {
+                        //singleElement = Source;
+                        //SingleElementSelect(singleElement);
+                    }
+                    ClearSelection();
+                    Source = e.Source as FrameworkElement;
+                    Console.WriteLine(Source.ToString());
+                }
+                ClickTimer.Start();
+                
+            }
+                //Console.WriteLine(ClickCounter.ToString());
+                //если тык два раза
+               /* if (ClickCounter == 2)
+                {
+                    ClearSelection();
+                    SingleElementSelect(singleElement);
+                }
+                //в другом случае (один тык)
+                else if(ClickCounter == 1)
+                {
+                    Console.WriteLine("один тык");
+                    
                */
 
 
@@ -263,17 +287,28 @@ namespace PAPIRUS_WPF
         private void EvaluateClicks(object source, ElapsedEventArgs e)
         {
             ClickTimer.Stop();
-            Console.WriteLine(ClickCounter.ToString());
+            //Console.WriteLine(ClickCounter.ToString());
             //если тык два раза
             if (ClickCounter == 2)
             {
-                //ClearSelection();
-                //SingleElementSelect(singleElement);
+                if (Source is Rectangle)
+                {
+                    //ClearSelection();
+                    
+                    //SingleElementSelect(singleElement);
+                }
+                else
+                {
+                    //singleElement = Source;
+                    //SingleElementSelect(singleElement);
+                }
             }
             //в другом случае (один тык)
             else if (ClickCounter == 1)
             {
+                
 
+                
             }
                 //Evaluate ClickCounter here
                 ClickCounter = 0;
