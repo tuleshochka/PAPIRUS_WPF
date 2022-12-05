@@ -51,6 +51,8 @@ namespace PAPIRUS_WPF
         public bool MovingSelectionIsStarted = false;
         FrameworkElement Source = null;
         Point MousePosition;
+        ModifierKeys Keys;
+        Object Object;
 
         public MainWindow()
         {
@@ -76,17 +78,29 @@ namespace PAPIRUS_WPF
             this.selection.Clear();
             if (this.selectionLayer != null)
             {
+                foreach (FrameworkElement object_ in CircuitCanvas.Children)
+                {
+                    Console.WriteLine(object_.ToString());
+                    if (object_ is Object) 
+                    {
+                        Object = (Object)object_;
+                        Object.isSelected = false;
+                    }
+                }
                 this.selectionLayer.Children.Clear();
             }
         }
 
         public void SingleElementSelect(FrameworkElement element)
         {
+            //Object = element as Object;
+            //Object.
+
 
             this.selection.Add((UserControl)element);
-            Rectangle item = new Rectangle();
+            Border item = new Border();
 
-            item = Symbol.Skin<Rectangle>(SymbolShape.SelectionMarker);
+            item = Symbol.Skin<Border>(SymbolShape.SelectionMarker);
             if (this.selectionLayer == null)
             {
                 this.selectionLayer = new Canvas()
@@ -132,184 +146,116 @@ namespace PAPIRUS_WPF
             if (e.ChangedButton == MouseButton.Left)
             {
                 Source = e.Source as FrameworkElement;
-                Point pt = e.GetPosition((UIElement)sender);
-                //VisualTreeHelper.HitTest(CircuitCanvas, null,new HitTestResultCallback(MyHitFilter), new PointHitTestParameters(pt));
                 MousePosition = e.GetPosition(CircuitCanvas);
-                Console.WriteLine(Source);
+                Keys = Keyboard.Modifiers;
                 ClickTimer.Stop();
                 ClickCounter++;
-                Console.WriteLine(ClickCounter);
-                if (ClickCounter == 1)
+                if (ClickCounter == 2)
                 {
-                    singleElement = e.Source as FrameworkElement;
-                    FrameworkElement element = Source;
-                    
-
-                    //doubleclicl - clear celection, singleElementSelect (add element to list), смотрим что в листе по индексу 0
-
-                    if (element != this.CircuitCanvas)
+                    if (selection.Count > 1)
                     {
-                        if (element is Rectangle)
-                        {
-                            Point MousePosition = e.GetPosition(CircuitCanvas);
-                            //Do a hit test under the mouse position
-                            if (e.ClickCount == 2)
-                            {
+                        ClearSelection();
+                        SingleElementSelect(Source);
+                        Object = Source as Object;
+                        Object.isSelected = true;
+                    }
+                    GeneratorDialog gd = new GeneratorDialog();
+                    gd.ShowDialog();
 
-                                GeneratorDialog gd = new GeneratorDialog();
-                                gd.ShowDialog();
+                }
+                //в другом случае (один тык)
+                else if (ClickCounter == 1)
+                {
+                    if (Source != this.CircuitCanvas)
+                    {
+                        if (Keys == ModifierKeys.Control)
+                        {
+                            if (selection.Contains(Source) == false)
+                            { 
+                                SingleElementSelect(Source);
+                                Object = Source as Object;
+                                Object.isSelected = true;
                             }
+
                         }
                         else
                         {
-                            Object el = (Object)element;
-                            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-                            {
-                                if (selection.Contains(element) == false)
-                                {
-                                    SingleElementSelect(element);
-                                }
-                                else
-                                {
 
-                                }
-
-                            }
-                            else
-                            {
-                                if(Source is Rectangle)
-                                ClearSelection();
-                                else SingleElementSelect(element);
-                            }
+                            ClearSelection();
+                            SingleElementSelect(Source);
+                            Object = Source as Object;
+                            Object.isSelected = true;
                         }
                     }
-
-                    else if (element == this.CircuitCanvas)
+                    else if (Source == this.CircuitCanvas)
                     {
-                        if (Keyboard.Modifiers != ModifierKeys.Control)
+                        if (Keys != ModifierKeys.Control)
                         { // Nothing was clicked on the diagram
-                            if (e.ClickCount < 2)
+                            if (ClickCounter < 2)
                             {
-                                if (Keyboard.Modifiers != ModifierKeys.Shift)
+                                if (Keys != ModifierKeys.Shift)
                                 {
                                     this.ClearSelection();
                                     MovingSelectionIsStarted = true;
-                                    MoveSelStartPoint = e.GetPosition(CircuitCanvas);
+                                    MoveSelStartPoint = MousePosition;
                                     //CaptureMouse();
-                                    e.Handled = true;
                                 }
-                                // this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
-                            }
-                            else
-                            {
-                                //   this.ClearSelection();
+                                //this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
+                                else
+                                {
+                                    this.ClearSelection();
+                                }
                             }
                         }
                     }
-                }
-                if (ClickCounter == 2)
-                {
-                    if (Source is Rectangle)
-                    {
-                        //SingleElementSelect(singleElement);
-                    }
-                    else
-                    {
-                        //singleElement = Source;
-                        //SingleElementSelect(singleElement);
-                    }
-                    ClearSelection();
-                    Source = e.Source as FrameworkElement;
-                    Console.WriteLine(Source.ToString());
                 }
                 ClickTimer.Start();
-                
-            }
-                //Console.WriteLine(ClickCounter.ToString());
-                //если тык два раза
-               /* if (ClickCounter == 2)
+
+                //Do a hit test under the mouse position
+                HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
+
+                //Make sure that there is something under the mouse
+                if (result == null || result.VisualHit == null)
+                    return;
+
+                //If the mouse has hit a border
+                if (result.VisualHit is Border)
                 {
-                    ClearSelection();
-                    SingleElementSelect(singleElement);
-                }
-                //в другом случае (один тык)
-                else if(ClickCounter == 1)
-                {
-                    Console.WriteLine("один тык");
-                    
-               */
+                    //Get the parent class of the border
+                    Border border = (Border)result.VisualHit;
+                    var IO = border.Parent;
 
-
-                    /////////////////
-                    /*//Get the position of the mouse relative to the circuit canvas
-                    Point MousePosition = e.GetPosition(CircuitCanvas);
-
-                    //Do a hit test under the mouse position
-                    HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
-
-                    //Make sure that there is something under the mouse
-                    if (result == null || result.VisualHit == null)
-                        return;
-
-                    //If the mouse has hit a border
-                    Console.WriteLine(result.VisualHit.ToString());
-                    if (result.VisualHit is Border)
+                    //If the parent class is an Output
+                    if (IO is Output)
                     {
-                        //Get the parent class of the border
-                        Border border = (Border)result.VisualHit;
-                        var IO = border.Parent;
+                        //Cast to output
+                        Output IOOutput = (Output)IO;
 
-                        //If the parent class is an Output
-                        if (IO is Output)
-                        {
-                            //Cast to output
-                            Output IOOutput = (Output)IO;
+                        //Get the center of the output relative to the canvas
+                        Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
 
-                            //Get the center of the output relative to the canvas
-                            Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
+                        //Creates a new line
+                        _linkingStarted = true;
+                        _tempLink = new LineGeometry(position, position);
 
-                            //Creates a new line
-                            _linkingStarted = true;
-                            _tempLink = new LineGeometry(position, position);
+                        //Assign it to the list of connections to be displayed
+                        Connections.Children.Add(_tempLink);
 
-                            //Assign it to the list of connections to be displayed
-                            Connections.Children.Add(_tempLink);
+                        //Assign the temporary output to the current output
+                        _tempOutput = (Output)IO;
 
-                            //Assign the temporary output to the current output
-                            _tempOutput = (Output)IO;
-
-                            e.Handled = true;
-                        }
-                    }*/
+                        e.Handled = true;
+                    }
                 }
-
+            }
+        }
 
         private void EvaluateClicks(object source, ElapsedEventArgs e)
         {
             ClickTimer.Stop();
             //Console.WriteLine(ClickCounter.ToString());
             //если тык два раза
-            if (ClickCounter == 2)
-            {
-                if (Source is Rectangle)
-                {
-                    //ClearSelection();
-                    
-                    //SingleElementSelect(singleElement);
-                }
-                else
-                {
-                    //singleElement = Source;
-                    //SingleElementSelect(singleElement);
-                }
-            }
-            //в другом случае (один тык)
-            else if (ClickCounter == 1)
-            {
-                
-
-                
-            }
+            
                 //Evaluate ClickCounter here
                 ClickCounter = 0;
         }

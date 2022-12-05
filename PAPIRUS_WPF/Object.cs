@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace PAPIRUS_WPF
 {
-    public class Object : Symbol
+    public class Object : UserControl
     {
         public static readonly DependencyProperty CanMoveProperty = DependencyProperty.Register("CanMove", typeof(bool), typeof(Object), new PropertyMetadata(true));
         /// <summary>
@@ -19,6 +19,12 @@ namespace PAPIRUS_WPF
         public bool CanMove
         {
             get { return (bool)GetValue(CanMoveProperty); }
+            set { SetValue(CanMoveProperty, value); }
+        }
+
+        public bool BorderSelect
+        {
+            get { return (bool)GetValue(Border.VisibilityProperty); }
             set { SetValue(CanMoveProperty, value); }
         }
 
@@ -48,9 +54,9 @@ namespace PAPIRUS_WPF
         public Object()
         {
             //Set the events for the object
-            //this.MouseLeftButtonDown += DragObject_MouseLeftButtonDown;
-            //this.MouseMove += DragObject_MouseMove;
-            //this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
+            this.MouseLeftButtonDown += DragObject_MouseLeftButtonDown;
+            this.MouseMove += DragObject_MouseMove;
+            this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
 
             //Initialize the lists
             _attachedInputLines = new List<LineGeometry>();
@@ -65,8 +71,7 @@ namespace PAPIRUS_WPF
         /// <param name="e">The event parameters</param>
         private void DragObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (isSelected)
-            {
+            if (!isSelected) return;
                 //Don't start the drag if we can't interact with the object
                 if (CanMove == false)
                     return;
@@ -88,7 +93,7 @@ namespace PAPIRUS_WPF
                 //Hide the mouse and signal that the event was handled.
                 element.CaptureMouse();
                 e.Handled = true;
-            }
+            
         }
 
         /// <summary>
@@ -185,19 +190,5 @@ namespace PAPIRUS_WPF
             _attachedOutputLines.Add(line);
         }
 
-        public override Rect Bounds()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Shift(int dx, int dy)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PositionGlyph()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

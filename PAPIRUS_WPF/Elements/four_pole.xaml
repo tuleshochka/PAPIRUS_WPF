@@ -6,12 +6,14 @@
              xmlns:local="clr-namespace:PAPIRUS_WPF.Elements"
              xmlns:Papirus="clr-namespace:PAPIRUS_WPF" 
              mc:Ignorable="d" 
-           Height="40" Width="62">
+           Height="52" Width="74">
 
     <Grid x:Name="TwoPol">
-        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <Border CornerRadius="5" BorderBrush="Black" Margin="6" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Border x:Name="SelectBorder" BorderBrush="{StaticResource MarkerStroke}" BorderThickness="2" Visibility="Hidden">
+        </Border>
+        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4"/>
+        <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"/>
+        <Border CornerRadius="5" BorderBrush="Black" Margin="11" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
             <Rectangle x:Name="LEDRect" RadiusX="5" RadiusY="5" Fill="White" Margin="0"/>
         </Border>

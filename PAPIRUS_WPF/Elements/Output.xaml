@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PAPIRUS_WPF.Elements"
              mc:Ignorable="d" 
-            Height="7" Width="7">
+            Height="8" Width="8">
     <Border CornerRadius="5" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Border.Style>
             <Style TargetType="{x:Type Border}">
