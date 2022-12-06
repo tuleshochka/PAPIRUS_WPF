@@ -20,8 +20,13 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class four_pole : Object
     {
+
+
+
         public four_pole()
         {
+            BorderBrush = Brushes.Transparent;
+            BorderThickness = new Thickness(2);
             InitializeComponent();
         }
     }
