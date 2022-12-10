@@ -109,8 +109,11 @@ namespace PAPIRUS_WPF
 
         public void SingleElementSelect(FrameworkElement element)
         {
+
             Object = element as Object;
             selection.Add(Object);
+            MovingElement = Object;
+            Object.Focus();
             Object.BorderBrush = Brushes.Magenta;
             inDrag = true;
             _anchorPoint = MousePosition;
@@ -269,7 +272,6 @@ namespace PAPIRUS_WPF
             }
             if (inDrag)
             {
-                MovingElement = e.Source as FrameworkElement;
                 if(!(MovingElement is Output)) 
                 { 
                 _currentPoint = e.GetPosition(CircuitCanvas);
@@ -295,6 +297,7 @@ namespace PAPIRUS_WPF
                 }
 
                     //Transform the elements location
+                    Console.WriteLine(MovingElement);
                     MovingElement.RenderTransform = _transform;
                 //Update the anchor point
                 _anchorPoint = _currentPoint;
@@ -328,6 +331,7 @@ namespace PAPIRUS_WPF
                 MovingElement.ReleaseMouseCapture();
                 MovingElement = null;
                 e.Handled = true;
+                
             }
             if (_linkingStarted)
             {
@@ -405,6 +409,7 @@ namespace PAPIRUS_WPF
                 _linkingStarted = false;
                 e.Handled = true;
             }
+           
         }
 
 
