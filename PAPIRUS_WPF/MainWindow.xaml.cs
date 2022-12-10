@@ -59,6 +59,8 @@ namespace PAPIRUS_WPF
             ClickTimer = new Timer(300);
             ClickTimer.Elapsed += new ElapsedEventHandler(EvaluateClicks);
             InitializeComponent();
+            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
+            window1.ShowDialog();
 
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
