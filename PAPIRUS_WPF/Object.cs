@@ -7,10 +7,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows;
+using System.ComponentModel;
+using System.Windows.Shapes;
 
 namespace PAPIRUS_WPF
 {
-    public class Object : UserControl
+    public class Object : UserControl, INotifyPropertyChanged
     {
         public static readonly DependencyProperty CanMoveProperty = DependencyProperty.Register("CanMove", typeof(bool), typeof(Object), new PropertyMetadata(true));
         /// <summary>
@@ -22,10 +24,11 @@ namespace PAPIRUS_WPF
             set { SetValue(CanMoveProperty, value); }
         }
 
-        public bool BorderSelect
+        Visibility visibility;
+
+        public void SetBorderVisibility(DependencyObject obj, Brushes color)
         {
-            get { return (bool)GetValue(Border.VisibilityProperty); }
-            set { SetValue(CanMoveProperty, value); }
+            obj.SetValue(BorderBrushProperty, color);
         }
 
         public bool isSelected = false;
@@ -48,15 +51,18 @@ namespace PAPIRUS_WPF
         private List<LineGeometry> _attachedOutputLines;
 
         FormEditor _editor = new FormEditor();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         /// <summary>
         /// Creates a new Circuit Object to be manipulated
         /// </summary>
         public Object()
         {
             //Set the events for the object
-            this.MouseLeftButtonDown += DragObject_MouseLeftButtonDown;
-            this.MouseMove += DragObject_MouseMove;
-            this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
+            //this.MouseLeftButtonDown += DragObject_MouseLeftButtonDown;
+           // this.MouseMove += DragObject_MouseMove;
+            //this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
 
             //Initialize the lists
             _attachedInputLines = new List<LineGeometry>();
@@ -72,8 +78,8 @@ namespace PAPIRUS_WPF
         private void DragObject_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!isSelected) return;
-                //Don't start the drag if we can't interact with the object
-                if (CanMove == false)
+            //Don't start the drag if we can't interact with the object
+            if (CanMove == false)
                     return;
 
                 //Get the element the object is directly over

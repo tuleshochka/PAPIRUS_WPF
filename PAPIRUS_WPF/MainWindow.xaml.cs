@@ -53,6 +53,21 @@ namespace PAPIRUS_WPF
         Point MousePosition;
         ModifierKeys Keys;
         Object Object;
+        Visibility visibility;
+        public bool inDrag = false;
+        //The anchor point of the object when being moved
+        private Point _anchorPoint;
+        FrameworkElement MovingElement;
+
+        //The current location of the point
+        private Point _currentPoint;
+        //The transformer that will change the position of the object
+        private TranslateTransform _transform = new TranslateTransform();
+        //The lines being connected to the input
+        private List<LineGeometry> _attachedInputLines = new List<LineGeometry>();
+
+        //The lines being connected to the output
+        private List<LineGeometry> _attachedOutputLines = new List<LineGeometry>();
 
         public MainWindow()
         {
@@ -78,49 +93,29 @@ namespace PAPIRUS_WPF
         public void ClearSelection()
         {
             this.selection.Clear();
-            if (this.selectionLayer != null)
-            {
+
                 foreach (FrameworkElement object_ in CircuitCanvas.Children)
                 {
-                    Console.WriteLine(object_.ToString());
                     if (object_ is Object) 
                     {
                         Object = (Object)object_;
                         Object.isSelected = false;
-                    }
+                        Object.BorderBrush = Brushes.Transparent;
                 }
-                this.selectionLayer.Children.Clear();
+                }
+
             }
-        }
+        
 
         public void SingleElementSelect(FrameworkElement element)
         {
-            //Object = element as Object;
-            //Object.
-
-
-            this.selection.Add((UserControl)element);
-            Border item = new Border();
-
-            item = Symbol.Skin<Border>(SymbolShape.SelectionMarker);
-            if (this.selectionLayer == null)
-            {
-                this.selectionLayer = new Canvas()
-                {
-                    RenderTransform = this.moveVector = new TranslateTransform()
-                };
-                Panel.SetZIndex(this.selectionLayer, int.MaxValue);
-            }
-            if (this.selectionLayer.Parent != this.CircuitCanvas)
-            {
-                this.CircuitCanvas.Children.Add(this.selectionLayer);
-            }
-            selectionLayer.Children.Add(item);
-            Canvas.SetLeft(item, element.TransformToAncestor(CircuitCanvas).Transform(new Point(0, 0)).X);
-            Canvas.SetTop(item, element.TransformToAncestor(CircuitCanvas).Transform(new Point(0, 0)).Y);
-
-            item.Width = element.ActualWidth;
-            item.Height = element.ActualHeight;
+            Object = element as Object;
+            selection.Add(Object);
+            Object.BorderBrush = Brushes.Magenta;
+            inDrag = true;
+            _anchorPoint = MousePosition;
+            MovingElement = element;
+            MovingElement.CaptureMouse();
         }
 
         private HitTestResultBehavior MyHitFilter (HitTestResult result)
@@ -175,18 +170,13 @@ namespace PAPIRUS_WPF
                             if (selection.Contains(Source) == false)
                             { 
                                 SingleElementSelect(Source);
-                                Object = Source as Object;
-                                Object.isSelected = true;
                             }
 
                         }
                         else
                         {
-
                             ClearSelection();
                             SingleElementSelect(Source);
-                            Object = Source as Object;
-                            Object.isSelected = true;
                         }
                     }
                     else if (Source == this.CircuitCanvas)
@@ -215,10 +205,6 @@ namespace PAPIRUS_WPF
 
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
-
-                //Make sure that there is something under the mouse
-                if (result == null || result.VisualHit == null)
-                    return;
 
                 //If the mouse has hit a border
                 if (result.VisualHit is Border)
@@ -273,18 +259,56 @@ namespace PAPIRUS_WPF
                 _tempLink.EndPoint = e.GetPosition(CircuitCanvas);
                 e.Handled = true;
             } 
-            else
-            if (MovingSelectionIsStarted)
-            {
-                Point point = e.GetPosition(this.CircuitCanvas);
+            //if (MovingSelectionIsStarted)
+            //{
+              //  Point point = e.GetPosition(this.CircuitCanvas);
                // this.movingMarker.Move(this, new Point(Math.Max(this.maxMove.X, point.X), Math.Max(this.maxMove.Y, point.Y)));
-            } else if (this.panning)
+            //} else if (this.panning)
             {
 
             }
+            if (inDrag)
+            {
+                MovingElement = e.Source as FrameworkElement;
+                if(!(MovingElement is Output)) 
+                { 
+                _currentPoint = e.GetPosition(CircuitCanvas);
+
+                //Transform the element based off the last position
+                _transform.X += _currentPoint.X - _anchorPoint.X;
+                _transform.Y += _currentPoint.Y - _anchorPoint.Y;
+
+                //Transform the attached line if its an input (uses EndPoint)
+                foreach (LineGeometry attachedLine in _attachedInputLines)
+                {
+                    attachedLine.EndPoint = MoveLine(attachedLine.EndPoint,
+                                                     (_currentPoint.X - _anchorPoint.X),
+                                                     (_currentPoint.Y - _anchorPoint.Y));
+                }
+
+                //Transform the attached line if its an output (uses StartPoint)
+                foreach (LineGeometry attachedLine in _attachedOutputLines)
+                {
+                    attachedLine.StartPoint = MoveLine(attachedLine.StartPoint,
+                                                     (_currentPoint.X - _anchorPoint.X),
+                                                     (_currentPoint.Y - _anchorPoint.Y));
+                }
+
+                    //Transform the elements location
+                    MovingElement.RenderTransform = _transform;
+                //Update the anchor point
+                _anchorPoint = _currentPoint;
+                }
+            }
         }
 
-       
+        private Point MoveLine(Point PointToMove, double AmountToMoveX, double AmountToMoveY)
+        {
+            Point transformedPoint = new Point();
+            transformedPoint.X = PointToMove.X + AmountToMoveX;
+            transformedPoint.Y = PointToMove.Y + AmountToMoveY;
+            return transformedPoint;
+        }
 
         private void CircuitCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -296,6 +320,15 @@ namespace PAPIRUS_WPF
             MiddleClick =  false;
             Cursor = Cursors.Arrow;
             //If there is a linking in progress
+            if (inDrag)
+            {
+                //Stop dragging and uncapture the mouse
+                inDrag = false;
+                var element = e.Source as FrameworkElement;
+                MovingElement.ReleaseMouseCapture();
+                MovingElement = null;
+                e.Handled = true;
+            }
             if (_linkingStarted)
             {
                 //Temporary value to show 

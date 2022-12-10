@@ -22,9 +22,9 @@ namespace PAPIRUS_WPF.Elements
     {
         public two_pole()
         {
+            BorderBrush = Brushes.Transparent;
+            BorderThickness = new Thickness(2);
             InitializeComponent();
-
         }
-        
     }
 }
