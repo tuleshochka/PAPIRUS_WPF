@@ -196,5 +196,18 @@ namespace PAPIRUS_WPF
             _attachedOutputLines.Add(line);
         }
 
+        public List<LineGeometry> GetOutputLine()
+        {
+            return _attachedOutputLines;
+        }
+        public List<LineGeometry> GetInputLine()
+        {
+            return _attachedInputLines;
+        }
+
+        public UserControl GetChild(string name)
+        {
+             return (UserControl)this.GetTemplateChild(name);
+        }
     }
 }
