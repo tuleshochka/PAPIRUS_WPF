@@ -83,6 +83,7 @@
     <Compile Include="IRotatable.cs" />
     <Compile Include="ITableSnapshop.cs" />
     <Compile Include="Object.cs" />
+    <Compile Include="PowerObject.cs" />
     <Compile Include="RowId.cs" />
     <Compile Include="Symbol.cs" />
     <Compile Include="GridPoint.cs" />

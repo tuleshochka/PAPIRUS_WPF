@@ -27,7 +27,43 @@ namespace PAPIRUS_WPF.Elements
         {
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(2);
+            
             InitializeComponent();
+            LeftInput.StateChanged += FourPoleStateChanged;
+            RightInput.StateChanged += FourPoleStateChanged;
+        }
+
+        private void FourPoleStateChanged()
+        {
+            //Reset the internal state
+            bool StateSet = false;
+            LeftInput.State = false;
+            RightInput.State = false;
+
+            //Check if any Input is high. If so, set state to high
+            foreach (UIElement e in TwoPol.Children)
+            {
+                if (e is Output)
+                {
+                    Output IO = (Output)e;
+                    if (IO.State)
+                    {
+                        StateSet = true;
+                        LeftInput.State = true;
+                        break;
+                    }
+                }
+            }
+
+            //Color the LED based on the internal state
+            if (StateSet)
+            {
+                //LEDRect.Fill = new SolidColorBrush(Colors.Red); 
+            }
+            else
+            {
+                // LEDRect.Fill = new SolidColorBrush(Colors.Black); 
+            }
         }
     }
 }

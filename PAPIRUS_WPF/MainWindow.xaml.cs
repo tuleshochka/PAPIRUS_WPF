@@ -42,6 +42,8 @@ namespace PAPIRUS_WPF
         private TranslateTransform moveVector;
         private Point maxMove;
 
+        private List<PowerObject> _powerList;
+
         private Canvas selectionLayer;
         private List<UserControl> selection = new List<UserControl>();
         public FrameworkElement singleElement = null;
@@ -71,11 +73,12 @@ namespace PAPIRUS_WPF
 
         public MainWindow()
         {
+            _powerList = new List<PowerObject>();
             ClickTimer = new Timer(300);
             ClickTimer.Elapsed += new ElapsedEventHandler(EvaluateClicks);
             InitializeComponent();
-            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
-            window1.ShowDialog();
+            //WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
+           //window1.ShowDialog();
 
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
@@ -109,16 +112,21 @@ namespace PAPIRUS_WPF
 
         public void SingleElementSelect(FrameworkElement element)
         {
-
+            _transform.X = 0;
+            _transform.Y = 0;
+            MovingElement = null;
             Object = element as Object;
             selection.Add(Object);
             MovingElement = Object;
-            Object.Focus();
+           
             Object.BorderBrush = Brushes.Magenta;
             inDrag = true;
             _anchorPoint = MousePosition;
-            MovingElement = element;
-            MovingElement.CaptureMouse();
+            //MovingElement.CaptureMouse();
+            //DragDrop.DoDragDrop(CircuitCanvas, Object, DragDropEffects.Link);
+           DragDrop.DoDragDrop(CircuitCanvas,Object,DragDropEffects.Copy);
+
+
         }
 
         private HitTestResultBehavior MyHitFilter (HitTestResult result)
@@ -270,7 +278,18 @@ namespace PAPIRUS_WPF
             {
 
             }
+            Object object_ = sender as Object;
+            /*if(object_ != null && e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragDrop.DoDragDrop(CircuitCanvas, object_, DragDropEffects.);
+            }*/
+
             if (inDrag)
+            {
+                inDrag = false;
+            }
+
+            /*if (inDrag)
             {
                 if(!(MovingElement is Output)) 
                 { 
@@ -299,10 +318,13 @@ namespace PAPIRUS_WPF
                     //Transform the elements location
                     Console.WriteLine(MovingElement);
                     MovingElement.RenderTransform = _transform;
-                //Update the anchor point
-                _anchorPoint = _currentPoint;
+                    Console.WriteLine(_transform.X);
+                    //Update the anchor point
+                    _anchorPoint = _currentPoint;
+
                 }
             }
+            */
         }
 
         private Point MoveLine(Point PointToMove, double AmountToMoveX, double AmountToMoveY)
@@ -319,7 +341,7 @@ namespace PAPIRUS_WPF
 			if(this.panning) {
             Mouse.Capture(null);
             this.panning = false;
-        }
+            }
             MiddleClick =  false;
             Cursor = Cursors.Arrow;
             //If there is a linking in progress
@@ -329,8 +351,9 @@ namespace PAPIRUS_WPF
                 inDrag = false;
                 var element = e.Source as FrameworkElement;
                 MovingElement.ReleaseMouseCapture();
-                MovingElement = null;
+                //MovingElement = null;
                 e.Handled = true;
+     
                 
             }
             if (_linkingStarted)
@@ -369,10 +392,10 @@ namespace PAPIRUS_WPF
                         var IO = border.Parent;
 
                         //Check if the border element is a input element in disguise
-                        if (IO is Input)
+                        if (IO is Output)
                         {
                             //Convert to a input element
-                            Input IOInput = (Input)IO;
+                            Output IOInput = (Output)IO;
 
                             //Get the center of the input relative to the canvas
                             Point inputPoint = IOInput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOInput.ActualWidth / 2, IOInput.ActualHeight / 2));
@@ -381,10 +404,11 @@ namespace PAPIRUS_WPF
                             _tempLink.EndPoint = inputPoint;
 
                             //Links the output to the input
-    //IOInput.LinkInputs(_tempOutput);
+                            IOInput.LinkInputs(_tempOutput);
 
                             //Adds to the global list
-                            
+                            _powerList.Add((PowerObject)_tempOutput);
+                            _powerList.Add((PowerObject)IOInput);
 
                             //Attaches the line to the object
                             obj.AttachInputLine(_tempLink);
@@ -426,6 +450,7 @@ namespace PAPIRUS_WPF
 
         private void CircuitCanvas_Drop_1(object sender, DragEventArgs e)
         {
+            if (inDrag == false) { 
             //Get the type of element that is dropped onto the canvas
             String[] allFormats = e.Data.GetFormats();
             //Make sure there is a format there
@@ -452,6 +477,35 @@ namespace PAPIRUS_WPF
             //Take 15 from the mouse position to center the element on the mouse
             Canvas.SetLeft(instance, p.X - 15);
             Canvas.SetTop(instance, p.Y - 15);
+            }
+            else
+            {
+                String[] allFormats = e.Data.GetFormats();
+                //Make sure there is a format there
+
+                if (allFormats.Length == 0)
+                    return;
+
+                string ItemType = allFormats[0];
+                Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
+
+                //If the format doesn't exist do nothing
+
+                if (instance == null)
+                    return;
+
+                //Add the element to the canvas
+                CircuitCanvas.Children.Add(instance);
+
+                //Get the point of the mouse relative to the canvas
+                Point p = e.GetPosition(CircuitCanvas);
+
+                //Take 15 from the mouse position to center the element on the mouse
+                Canvas.SetLeft(instance, p.X - instance.Width/2);
+                Canvas.SetTop(instance, p.Y - instance.Height/2);
+                CircuitCanvas.Children.Remove(MovingElement);
+            }
+            
         }
 
         private void CircuitCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
