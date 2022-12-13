@@ -1,5 +1,4 @@
 ﻿using PAPIRUS_WPF.Elements;
-using PAPIRUS_WPF.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,15 +82,14 @@ namespace PAPIRUS_WPF
             _powerList = new List<PowerObject>();
             ClickTimer = new Timer(300);
             ClickTimer.Elapsed += new ElapsedEventHandler(EvaluateClicks);
-            InitializeComponent();
-            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
-            this.Hide();
-            window1.Show();
+            
 
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-
+            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
+            this.Hide();
+            window1.Show();
 
         }
         public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
@@ -112,7 +110,7 @@ namespace PAPIRUS_WPF
                         Object = (Object)object_;
                         Object.isSelected = false;
                         Object.BorderBrush = Brushes.Transparent;
-                }
+                    }
                 }
 
             }

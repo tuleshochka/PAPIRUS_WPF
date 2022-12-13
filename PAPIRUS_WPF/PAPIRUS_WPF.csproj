@@ -49,8 +49,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPF_SHF_Element_lib">
-      <HintPath>..\..\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
+    <Reference Include="WPF_SHF_Element_lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\projects VScode\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Release\WPF_SHF_Element_lib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
