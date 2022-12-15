@@ -1,0 +1,38 @@
+﻿<Window x:Class="PAPIRUS_WPF.GeneratorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PAPIRUS_WPF"
+        mc:Ignorable="d"
+        Title="Параметры элемента" Height="450" Width="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Row="2" Grid.ColumnSpan="3" Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="400,3,0,0"/>
+        <Button Grid.Row="2" Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="500,3,0,0" Grid.ColumnSpan="3"/>
+        
+        <TextBlock HorizontalAlignment="Left" Margin="35,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Имя элемента"/>
+        <TextBox HorizontalAlignment="Left" Margin="160,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBlock HorizontalAlignment="Left" Margin="35,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="ru-ru" Text="Параметры элемента"/></TextBlock>
+        <DataGrid x:Name="GeneratorList" Margin="30,96,280,197" AutoGenerateColumns="True">
+            <ListBox x:Name="ElementsList">
+
+            </ListBox>
+        </DataGrid>
+    
+        
+        <Image Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="20" Height="150" Width="200">
+
+        </Image>
+    </Grid>
+</Window>
