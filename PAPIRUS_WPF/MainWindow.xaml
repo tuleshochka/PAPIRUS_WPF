@@ -201,7 +201,7 @@
             <Elements:two_pole CanMove="False"/>
             <Elements:four_pole CanMove="False"/>
             <Elements:six_pole CanMove="False"/>
-            <Elements:Generator CanMove="False"/>
+            <Elements:generator CanMove="False"/>
 
         </ListView>
     </Grid>

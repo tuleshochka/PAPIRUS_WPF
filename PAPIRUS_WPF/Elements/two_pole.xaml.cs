@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PAPIRUS_WPF.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace PAPIRUS_WPF.Elements
     /// <summary>
     /// Логика взаимодействия для two_pole.xaml
     /// </summary>
-    public partial class two_pole : Object
+    public partial class two_pole : Polaris
     {
         public two_pole()
         {

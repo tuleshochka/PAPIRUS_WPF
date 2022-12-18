@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using System.Xml.Linq;
 using System.Timers;
 using static System.Net.Mime.MediaTypeNames;
+using PAPIRUS_WPF.Models;
 
 namespace PAPIRUS_WPF
 {
@@ -26,6 +27,15 @@ namespace PAPIRUS_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        //--------данные для dialog--------------//
+        public string group;
+        public string fileName;
+
+
+        List<Object> instances = new List<Object>();
+        public int num;
+
         Point? myDragStartPoint { get; set; }
         //The boolean that signifys when an output is being linked
         private bool _linkingStarted = false;
@@ -87,17 +97,14 @@ namespace PAPIRUS_WPF
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-            //WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
-            //this.Hide();
-            //window1.Show();
+            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
+            window1.Show();
 
         }
         public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
 
 
         //--------Selection-------//
-
-
 
         public void ClearSelection()
         {
@@ -128,10 +135,8 @@ namespace PAPIRUS_WPF
                 inDrag = true;
                 _anchorPoint = MousePosition;
                 p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
-                Console.WriteLine(p2.X);
                 _anchorPoint.X = p2.X - element.Width / 2;
                 _anchorPoint.Y = p2.Y - element.Height / 2;
-                Console.WriteLine(_anchorPoint.X);
                 //MovingElement.CaptureMouse();
                 //DragDrop.DoDragDrop(CircuitCanvas, Object, DragDropEffects.Link);
 
@@ -143,10 +148,8 @@ namespace PAPIRUS_WPF
         {
             if(result.VisualHit.GetType() == typeof(UserControl))
             {
-                Console.WriteLine("result: " + (result.VisualHit));
                 return HitTestResultBehavior.Stop;
             }
-            Console.WriteLine("result: " + (result.VisualHit));
             return HitTestResultBehavior.Continue;
         }
 
@@ -165,7 +168,6 @@ namespace PAPIRUS_WPF
             {
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
-                Console.WriteLine(result.VisualHit);
                 //If the mouse has hit a border
                 if (result.VisualHit is Border)
                 {
@@ -204,14 +206,29 @@ namespace PAPIRUS_WPF
                     ClickCounter++;
                     if (ClickCounter == 2)
                     {
+                        Object = Source as Object;
                         if (selection.Count > 1)
                         {
                             ClearSelection();
                             SingleElementSelect(Source);
-                            Object = Source as Object;
                             Object.isSelected = true;
                         }
-                        GeneratorDialog gd = new GeneratorDialog();
+                        Console.WriteLine(Object.name);
+                        switch (Source)
+                        {
+                            case two_pole a: group = "Двухполюсник"; fileName = "2pole.json";
+                                break;
+                            case four_pole a:
+                                group = "Четырехполюсник"; fileName = "4pole.json";
+                                break;
+                            case six_pole a:
+                                group = "Шестиполюсник"; fileName = "6pole.json";
+                                break;
+                            case generator a:
+                                group = "Генератор";
+                                break;
+                        }
+                        GeneratorDialog gd = new GeneratorDialog(group,fileName);
                         gd.ShowDialog();
 
                     }
@@ -265,11 +282,7 @@ namespace PAPIRUS_WPF
         private void EvaluateClicks(object source, ElapsedEventArgs e)
         {
             ClickTimer.Stop();
-            //Console.WriteLine(ClickCounter.ToString());
-            //если тык два раза
-            
-                //Evaluate ClickCounter here
-                ClickCounter = 0;
+            ClickCounter = 0;
         }
 
 
@@ -295,34 +308,10 @@ namespace PAPIRUS_WPF
                     Math.Abs(e.GetPosition(CircuitCanvas).Y - _anchorPoint.Y) > 3)
                 {
                     _attachedInputLines = Object.GetInputLine();
-                    /*_currentPoint = e.GetPosition(CircuitCanvas);
-                    foreach (LineGeometry attachedLine in _attachedInputLines)
-                    {
-                        Console.WriteLine(attachedLine);
-                        attachedLine.EndPoint = MoveLine(attachedLine.EndPoint,
-                                                        (_currentPoint.X - _anchorPoint.X),
-                                                        (_currentPoint.Y - _anchorPoint.Y));
-                    }
-
-                    _attachedOutputLines = Object.GetOutputLine();
-                    //Transform the attached line if its an output (uses StartPoint)
-                    foreach (LineGeometry attachedLine in _attachedOutputLines)
-                    {
-                        Console.WriteLine(attachedLine);
-                        attachedLine.StartPoint = MoveLine(attachedLine.StartPoint,
-                                                         (_currentPoint.X - _anchorPoint.X),
-                                                        (_currentPoint.Y - _anchorPoint.Y));
-                    }*/
                     DragDrop.DoDragDrop(CircuitCanvas, Object,DragDropEffects.All);
                     inDrag=false;
                 }
             }
-
-            /*if (inDrag)
-            {
-                
-            }
-            */
         }
 
         private Point MoveLine(Point PointToMove, double AmountToMoveX, double AmountToMoveY)
@@ -395,8 +384,6 @@ namespace PAPIRUS_WPF
                             IOInput.LinkInputs(_tempOutput);
 
                             //Adds to the global list
-                            Console.WriteLine(_tempOutput);
-                            Console.WriteLine(IOInput);
                             _powerList.Add((PowerObject)_tempOutput);
                             _powerList.Add((PowerObject)IOInput);
 
@@ -450,33 +437,44 @@ namespace PAPIRUS_WPF
 
         private void CircuitCanvas_Drop_1(object sender, DragEventArgs e)
         {
-            if (inDrag == false) { 
-            //Get the type of element that is dropped onto the canvas
-            String[] allFormats = e.Data.GetFormats();
-            //Make sure there is a format there
-            
-            if (allFormats.Length == 0)
-                return;
+            if (inDrag == false) 
+            {
+                //Get the type of element that is dropped onto the canvas
+                String[] allFormats = e.Data.GetFormats();
+                //Make sure there is a format there
 
-            string ItemType = allFormats[0];
-            
-            //Create a new type of the format
-            Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
+                if (allFormats.Length == 0)
+                    return;
 
-            //If the format doesn't exist do nothing
-            
-            if (instance == null)
-                return;
+                string ItemType = allFormats[0];
 
-            //Add the element to the canvas
-            CircuitCanvas.Children.Add(instance);
+                //Create a new type of the format
+                Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
+                if (instance is Polaris)
+                {
+                    instance.name = "Эл-" + num;
+                }
+                else if(instance is Generator)
+                {
+                    instance.name = "Г-"+num;
+                }
+                Console.WriteLine(instance.name);
+                //instances.Add(instance);
+                //If the format doesn't exist do nothing
 
-            //Get the point of the mouse relative to the canvas
-            Point p = e.GetPosition(CircuitCanvas);
+                if (instance == null)
+                    return;
+
+                //Add the element to the canvas
+                CircuitCanvas.Children.Add(instance);
+
+                //Get the point of the mouse relative to the canvas
+                Point p = e.GetPosition(CircuitCanvas);
 
                 //Take 15 from the mouse position to center the element on the mouse
-            Canvas.SetLeft(instance, p.X - instance.Width / 2);
-            Canvas.SetTop(instance, p.Y - instance.Height / 2);
+                Canvas.SetLeft(instance, p.X - instance.Width / 2);
+                Canvas.SetTop(instance, p.Y - instance.Height / 2);
+                num++;
             }
             else
             {
@@ -515,7 +513,6 @@ namespace PAPIRUS_WPF
                 //center = new Point(targetPoints.X - obj.ActualWidth / 2, targetPoints.Y - obj.ActualHeight / 2);
                 foreach (LineGeometry attachedLine in _attachedInputLines)
                 {
-                    Console.WriteLine(attachedLine);
                     attachedLine.EndPoint = MoveLine(attachedLine.EndPoint,
                                                     (Math.Abs(center.X + instance.Width / 2) + _anchorPoint.X),
                                                     (Math.Abs(center.Y + instance.Height / 2)  + _anchorPoint.Y));
@@ -527,7 +524,6 @@ namespace PAPIRUS_WPF
                 //Transform the attached line if its an output (uses StartPoint)
                 foreach (LineGeometry attachedLine in _attachedOutputLines)
                 {
-                    Console.WriteLine(attachedLine);
                     attachedLine.StartPoint = MoveLine(attachedLine.StartPoint,
                                                      (Math.Abs(center.X + instance.Width / 2) + _anchorPoint.X),
                                                     (Math.Abs(center.Y + instance.Height / 2) + _anchorPoint.Y));

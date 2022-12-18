@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,61 +13,44 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WPF_SHF_Element_lib;
 
 namespace PAPIRUS_WPF
 {
+
+    public class Element
+    {
+        public string group { get; set; }
+        public string name { get; set; }
+        public string[] parameters { get; set; }
+        public List<DataGrid1_Elements> other_par { get; set; }
+        public List<MatrixElements> matrix { get; set; }
+    }
+
     /// <summary>
     /// Логика взаимодействия для GeneratorDialog.xaml
     /// </summary>
     public partial class GeneratorDialog : Window
     {
-        public GeneratorDialog()
+        private string filePath;
+        string jsonString;
+        List<Element> elementsList;
+        List<string> nameElements = new List<string>();
+        public GeneratorDialog(string group, string fileName)
         {
             InitializeComponent();
-            GeneratorList.ItemsSource= Customer.GetSampleCustomerList();
+            groupTextBox.Text = group;
+            filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
+            jsonString = File.ReadAllText(filePath);
+            elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString) ?? new List<Element>();
+            foreach(Element element in elementsList)
+            {
+                nameElements.Add(element.name);
+            }
+            listBox.ItemsSource = nameElements;
+            //GeneratorList.ItemsSource= Customer.GetSampleCustomerList();
         }
 
         
-    }
-
-
-
-    public class Customer
-    {
-        public String FirstName { get; set; }
-        public String LastName { get; set; }
-        public String Address { get; set; }
-      
-
-        // A null value for IsSubscribed can indicate 
-        // "no preference" or "no response".
-        public Boolean? IsSubscribed { get; set; }
-
-        public Customer(String firstName, String lastName,
-            String address,  Boolean? isSubscribed)
-        {
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.Address = address;
-            this.IsSubscribed = isSubscribed;
-        }
-
-        public static List<Customer> GetSampleCustomerList()
-        {
-            return new List<Customer>(new Customer[4] {
-            new Customer("A.", "Zero",
-                "12 North Third Street, Apartment 45",
-                 true),
-            new Customer("B.", "One",
-                "34 West Fifth Street, Apartment 67",
-                 false),
-            new Customer("C.", "Two",
-                "56 East Seventh Street, Apartment 89",
-                 null),
-            new Customer("D.", "Three",
-                "78 South Ninth Street, Apartment 10",
-                 true)
-        });
-        }
     }
 }

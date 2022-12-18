@@ -18,17 +18,16 @@ namespace PAPIRUS_WPF.Elements
     /// <summary>
     /// Логика взаимодействия для Generator.xaml
     /// </summary>
-    public partial class Generator : Object
+    public partial class generator : Object
     {
-        public Generator()
+        public generator()
         {
             InitializeComponent();
         }
 
         private void Object_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            GeneratorDialog generatorDialog = new GeneratorDialog();    
-            generatorDialog.ShowDialog();
+
         }
     }
 }
