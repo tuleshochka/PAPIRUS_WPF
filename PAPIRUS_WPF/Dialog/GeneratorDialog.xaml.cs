@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using WPF_SHF_Element_lib;
 
 namespace PAPIRUS_WPF
@@ -27,15 +28,17 @@ namespace PAPIRUS_WPF
         public List<MatrixElements> matrix { get; set; }
     }
 
+
     /// <summary>
     /// Логика взаимодействия для GeneratorDialog.xaml
     /// </summary>
     public partial class GeneratorDialog : Window
     {
+        public List<dataGridElements> datagridelements = new List<dataGridElements>();
         private string elementName;
         private string filePath;
         string jsonString;
-        List<Element> elementsList;
+        public List<Element> elementsList = new List<Element>();
         List<string> nameElements = new List<string>();
         public GeneratorDialog(string elementName, string fileName)
         {
@@ -45,7 +48,7 @@ namespace PAPIRUS_WPF
             if (File.Exists(filePath))
             {
                 jsonString = File.ReadAllText(filePath);
-                elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString) ?? new List<Element>();
+                elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString);
                 foreach (Element element in elementsList)
                 {
                     nameElements.Add(element.name);
@@ -57,6 +60,23 @@ namespace PAPIRUS_WPF
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             elementName = listBox.SelectedItem.ToString();
+            Element el = elementsList.Find(x => x.name == elementName);
+            Console.WriteLine(el.parameters.Count());
+            if (!string.IsNullOrEmpty(el.parameters[0]))
+            {
+                for (int i = 0; i < el.parameters.Count(); i++)
+                {
+                    datagridelements.Add(new dataGridElements { columnParam = el.parameters[i] });
+                }
+            }
+            dataGrid.ItemsSource = datagridelements;
         }
+    }
+
+    public class dataGridElements
+    {
+        public string columnParam { get; set; }
+        public string columnValue { get; set; }
+        public string columnDopusk { get; set; }
     }
 }
