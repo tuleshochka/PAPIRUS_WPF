@@ -19,7 +19,7 @@ namespace PAPIRUS_WPF.Elements
     /// <summary>
     /// Логика взаимодействия для two_pole.xaml
     /// </summary>
-    public partial class two_pole : Polaris
+    public partial class two_pole : Object
     {
         public two_pole()
         {

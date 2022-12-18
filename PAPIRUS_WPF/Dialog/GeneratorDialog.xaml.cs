@@ -32,25 +32,31 @@ namespace PAPIRUS_WPF
     /// </summary>
     public partial class GeneratorDialog : Window
     {
+        private string elementName;
         private string filePath;
         string jsonString;
         List<Element> elementsList;
         List<string> nameElements = new List<string>();
-        public GeneratorDialog(string group, string fileName)
+        public GeneratorDialog(string elementName, string fileName)
         {
             InitializeComponent();
-            groupTextBox.Text = group;
+            groupTextBox.Text = elementName;
             filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
-            jsonString = File.ReadAllText(filePath);
-            elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString) ?? new List<Element>();
-            foreach(Element element in elementsList)
+            if (File.Exists(filePath))
             {
-                nameElements.Add(element.name);
+                jsonString = File.ReadAllText(filePath);
+                elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString) ?? new List<Element>();
+                foreach (Element element in elementsList)
+                {
+                    nameElements.Add(element.name);
+                }
+                listBox.ItemsSource = nameElements;
             }
-            listBox.ItemsSource = nameElements;
-            //GeneratorList.ItemsSource= Customer.GetSampleCustomerList();
         }
 
-        
+        private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            elementName = listBox.SelectedItem.ToString();
+        }
     }
 }

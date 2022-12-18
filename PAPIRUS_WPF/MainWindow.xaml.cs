@@ -29,11 +29,9 @@ namespace PAPIRUS_WPF
     {
 
         //--------данные для dialog--------------//
-        public string group;
+        public string elementName;
         public string fileName;
 
-
-        List<Object> instances = new List<Object>();
         public int num;
 
         Point? myDragStartPoint { get; set; }
@@ -137,8 +135,6 @@ namespace PAPIRUS_WPF
                 p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
                 _anchorPoint.X = p2.X - element.Width / 2;
                 _anchorPoint.Y = p2.Y - element.Height / 2;
-                //MovingElement.CaptureMouse();
-                //DragDrop.DoDragDrop(CircuitCanvas, Object, DragDropEffects.Link);
 
             }
 
@@ -213,22 +209,22 @@ namespace PAPIRUS_WPF
                             SingleElementSelect(Source);
                             Object.isSelected = true;
                         }
-                        Console.WriteLine(Object.name);
+                        elementName = Object.name;
                         switch (Source)
                         {
-                            case two_pole a: group = "Двухполюсник"; fileName = "2pole.json";
+                            case two_pole a:
+                                fileName = "2pole.json";
                                 break;
                             case four_pole a:
-                                group = "Четырехполюсник"; fileName = "4pole.json";
+                                fileName = "4pole.json";
                                 break;
                             case six_pole a:
-                                group = "Шестиполюсник"; fileName = "6pole.json";
+                                fileName = "6pole.json";
                                 break;
-                            case generator a:
-                                group = "Генератор";
+                            case generator a:;
                                 break;
                         }
-                        GeneratorDialog gd = new GeneratorDialog(group,fileName);
+                        GeneratorDialog gd = new GeneratorDialog(elementName, fileName);
                         gd.ShowDialog();
 
                     }
@@ -450,15 +446,14 @@ namespace PAPIRUS_WPF
 
                 //Create a new type of the format
                 Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
-                if (instance is Polaris)
+                if (instance is two_pole || instance is four_pole || instance is six_pole)
                 {
                     instance.name = "Эл-" + num;
                 }
-                else if(instance is Generator)
+                else if(instance is generator)
                 {
                     instance.name = "Г-"+num;
                 }
-                Console.WriteLine(instance.name);
                 //instances.Add(instance);
                 //If the format doesn't exist do nothing
 
@@ -492,8 +487,8 @@ namespace PAPIRUS_WPF
                 if (instance == null)
                     return;
 
+                instance.name = Object.name;
                 
-
                 //Add the element to the canvas
                 CircuitCanvas.Children.Add(instance);
 
