@@ -5,34 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PAPIRUS_WPF"
         mc:Ignorable="d"
-        Title="Параметры элемента" Height="450" Width="600">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+        Title="Параметры элемента" Height="550" Width="730">
+    <Grid Margin="0,0,10,9">
 
-        <Button Grid.Row="2" Grid.ColumnSpan="3" Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="400,3,0,0"/>
-        <Button Grid.Row="2" Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="500,3,0,0" Grid.ColumnSpan="3"/>
-        
-        <TextBlock HorizontalAlignment="Left" Margin="35,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Имя элемента"/>
-        <TextBox HorizontalAlignment="Left" Margin="160,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBlock HorizontalAlignment="Left" Margin="35,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="ru-ru" Text="Параметры элемента"/></TextBlock>
-        <DataGrid x:Name="GeneratorList" Margin="30,96,280,197" AutoGenerateColumns="True">
-            <ListBox x:Name="ElementsList">
 
-            </ListBox>
-        </DataGrid>
-    
-        
-        <Image Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="20" Height="150" Width="200">
+        <Button Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="425,504,0,0"/>
+        <Button Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="525,504,0,0"/>
 
-        </Image>
+        <TextBlock HorizontalAlignment="Left" Margin="35,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Имя элемента"/>
+        <TextBox HorizontalAlignment="Left" Margin="160,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,69,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="ru-ru" Text="Параметры элемента"/></TextBlock>
+        <DataGrid Margin="25,114,395,236"/>
+
+
+        <Image VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,20,20,0" Height="174" Width="280"/>
+        <Button Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="30,504,0,0"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Margin="20,359,150,65"/>
     </Grid>
 </Window>
