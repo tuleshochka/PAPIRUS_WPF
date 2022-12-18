@@ -59,7 +59,9 @@ namespace PAPIRUS_WPF
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            elementName = listBox.SelectedItem.ToString();
+            datagridelements.Clear();
+            dataGrid.ItemsSource = null;
+           elementName = listBox.SelectedItem.ToString();
             Element el = elementsList.Find(x => x.name == elementName);
             Console.WriteLine(el.parameters.Count());
             if (!string.IsNullOrEmpty(el.parameters[0]))
@@ -68,8 +70,8 @@ namespace PAPIRUS_WPF
                 {
                     datagridelements.Add(new dataGridElements { columnParam = el.parameters[i] });
                 }
+                dataGrid.ItemsSource = datagridelements;
             }
-            dataGrid.ItemsSource = datagridelements;
         }
     }
 
