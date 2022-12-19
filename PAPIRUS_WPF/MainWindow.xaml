@@ -176,7 +176,7 @@
             </StatusBarItem>
         </StatusBar>
 
-        <ListView x:Name="ObjectSelector" Grid.Row="1" PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False">
+        <ListView x:Name="ObjectSelector" Grid.Row="1" PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False" VerticalAlignment="Top">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
@@ -194,7 +194,7 @@
                         RelativeSource={RelativeSource AncestorType=ListView}}"
                         MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
                         ItemHeight="{Binding (ListView.View).ItemHeight, 
-                        RelativeSource={RelativeSource AncestorType=ListView}}" />
+                        RelativeSource={RelativeSource AncestorType=ListView}}"/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
 
@@ -202,7 +202,9 @@
             <Elements:four_pole CanMove="False"/>
             <Elements:six_pole CanMove="False"/>
             <Elements:generator CanMove="False"/>
+          
 
         </ListView>
+          <Button Grid.Row="1" ToolTip="Добавляет новый элемент" Content="Добавить" VerticalAlignment="Bottom" Margin="15,0,25,0" Click="Button_Click"/>
     </Grid>
 </Window>

@@ -95,8 +95,7 @@ namespace PAPIRUS_WPF
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
-            window1.Show();
+            
 
         }
         public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
@@ -598,6 +597,12 @@ namespace PAPIRUS_WPF
         private void CircuitCanvas_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
+            window1.Show();
         }
     }
 }
