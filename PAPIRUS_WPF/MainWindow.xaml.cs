@@ -211,16 +211,16 @@ namespace PAPIRUS_WPF
                         elementName = Object.name;
                         switch (Source)
                         {
-                            case two_pole a:
+                            case two_pole _:
                                 fileName = "2pole.json";
                                 break;
-                            case four_pole a:
+                            case four_pole _:
                                 fileName = "4pole.json";
                                 break;
-                            case six_pole a:
+                            case six_pole _:
                                 fileName = "6pole.json";
                                 break;
-                            case generator a:;
+                            case generator _:;
                                 break;
                         }
                         GeneratorDialog gd = new GeneratorDialog(elementName, fileName);

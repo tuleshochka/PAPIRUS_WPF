@@ -25,7 +25,7 @@
 
 
         <Image VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,25,20,0" Height="157" Width="252"/>
-        <Button Content="S-матрица" Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="25,482,0,0"/>
+        <Button Content="S-матрица" Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="25,482,0,0" Click="Button_Click"/>
         <ListBox x:Name="listBox"  Margin="25,351,42,88" SelectionChanged="listBox_SelectionChanged" SelectionMode="Single" />
         <TextBlock HorizontalAlignment="Left" Margin="25,330,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="ru-ru" Text="Тип элемента"/></TextBlock>
     </Grid>

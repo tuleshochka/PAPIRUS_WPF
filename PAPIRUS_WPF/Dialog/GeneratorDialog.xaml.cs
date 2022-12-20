@@ -35,11 +35,14 @@ namespace PAPIRUS_WPF
     public partial class GeneratorDialog : Window
     {
         public List<dataGridElements> datagridelements = new List<dataGridElements>();
+        public List<double> values = new List<double>();
         private string elementName;
         private string filePath;
         string jsonString;
         public List<Element> elementsList = new List<Element>();
         List<string> nameElements = new List<string>();
+        Element el;
+        int poleNum;
         public GeneratorDialog(string elementName, string fileName)
         {
             InitializeComponent();
@@ -53,6 +56,21 @@ namespace PAPIRUS_WPF
                 {
                     nameElements.Add(element.name);
                 }
+                switch (fileName)
+                {
+                    case "2pole.json":
+                        poleNum = 1;
+                        break;
+                    case "4pole.json":
+                        poleNum = 2;
+                        break;
+                    case "6pole.json":
+                        poleNum = 3;
+                        break;
+                    case "8pole.json":
+                        poleNum = 4;
+                        break;
+                }
                 listBox.ItemsSource = nameElements;
             }
         }
@@ -61,8 +79,8 @@ namespace PAPIRUS_WPF
         {
             datagridelements.Clear();
             dataGrid.ItemsSource = null;
-           elementName = listBox.SelectedItem.ToString();
-            Element el = elementsList.Find(x => x.name == elementName);
+            elementName = listBox.SelectedItem.ToString();
+            el = elementsList.Find(x => x.name == elementName);
             Console.WriteLine(el.parameters.Count());
             if (!string.IsNullOrEmpty(el.parameters[0]))
             {
@@ -72,6 +90,29 @@ namespace PAPIRUS_WPF
                 }
                 dataGrid.ItemsSource = datagridelements;
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            int i = 0;
+            bool f = false;
+            if (!string.IsNullOrEmpty(el.parameters[0]))
+            {
+                foreach(dataGridElements element in datagridelements)
+                {
+                    var x = dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]) as TextBlock;
+                    if (string.IsNullOrEmpty(x.Text))
+                    {
+                        f = true;
+                        break;
+                    }
+                    element.columnValue = x.Text;
+                    //values.Add(x.Text);
+                    i++;
+                }
+            }
+          //  WPF_SHF_Element_lib.SMatrix window1 = new WPF_SHF_Element_lib.SMatrix(poleNum);     
+           // window1.Show();
         }
     }
 
