@@ -20,12 +20,14 @@ namespace PAPIRUS_WPF
 {
 
     public class Element
-    {
+    {   
+        public string imagePath { get; set; }
         public string group { get; set; }
         public string name { get; set; }
         public string[] parameters { get; set; }
         public List<DataGrid1_Elements> other_par { get; set; }
         public List<MatrixElements> matrix { get; set; }
+        
     }
 
 
@@ -39,6 +41,7 @@ namespace PAPIRUS_WPF
         private string elementName;
         private string filePath;
         string jsonString;
+        string imgPath;
         public List<Element> elementsList = new List<Element>();
         List<string> nameElements = new List<string>();
         Element el;
@@ -55,6 +58,7 @@ namespace PAPIRUS_WPF
                 foreach (Element element in elementsList)
                 {
                     nameElements.Add(element.name);
+                   
                 }
                 switch (fileName)
                 {
@@ -72,7 +76,9 @@ namespace PAPIRUS_WPF
                         break;
                 }
                 listBox.ItemsSource = nameElements;
+                
             }
+
         }
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -90,6 +96,16 @@ namespace PAPIRUS_WPF
                 }
                 dataGrid.ItemsSource = datagridelements;
             }
+            try
+            {
+                imgPath = el.imagePath;
+                imageElement.Source = new BitmapImage(new Uri(imgPath));
+            }
+            catch (Exception)
+            {
+                imageElement.Source = null;
+            }
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
