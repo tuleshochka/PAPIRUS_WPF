@@ -176,7 +176,7 @@
             </StatusBarItem>
         </StatusBar>
 
-        <ListView x:Name="ObjectSelector" Grid.Row="1" PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False" VerticalAlignment="Top">
+        <ListView x:Name="ObjectSelector" Grid.Row="1" PreviewMouseDown="ObjectSelector_PreviewMouseDown_1" Focusable="False" IsTextSearchEnabled="False" VerticalAlignment="Top" BorderThickness="0,0,0,0">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
