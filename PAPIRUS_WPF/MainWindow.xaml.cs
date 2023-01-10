@@ -248,7 +248,6 @@ namespace PAPIRUS_WPF
                                 SingleElementSelect(Source);
                             }
                         }
-                       
                     }
                     ClickTimer.Start();
                 }
