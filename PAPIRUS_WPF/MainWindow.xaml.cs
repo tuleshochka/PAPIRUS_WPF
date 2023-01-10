@@ -17,8 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using System.Timers;
-using static System.Net.Mime.MediaTypeNames;
-using PAPIRUS_WPF.Models;
+
 
 namespace PAPIRUS_WPF
 {
@@ -52,8 +51,9 @@ namespace PAPIRUS_WPF
         private List<PowerObject> _powerList;
 
         private Canvas selectionLayer;
-        private List<UserControl> selection = new List<UserControl>();
+       
         public FrameworkElement singleElement = null;
+        
         private Timer ClickTimer;
         private int ClickCounter;
 
@@ -105,7 +105,7 @@ namespace PAPIRUS_WPF
 
         public void ClearSelection()
         {
-            this.selection.Clear();
+            
 
                 foreach (FrameworkElement object_ in CircuitCanvas.Children)
                 {
@@ -116,16 +116,15 @@ namespace PAPIRUS_WPF
                         Object.BorderBrush = Brushes.Transparent;
                     }
                 }
-
+            Data.selection.Clear();
             }
-        
 
         public void SingleElementSelect(FrameworkElement element)
         {
 
             {
                 Object = element as Object;
-                selection.Add(Object);
+                Data.selection.Add(Object);
                 MovingElement = Object;
 
                 Object.BorderBrush = Brushes.Magenta;
@@ -150,6 +149,8 @@ namespace PAPIRUS_WPF
 
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+           
+
             //для тыка колесика
             if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
             {
@@ -163,6 +164,7 @@ namespace PAPIRUS_WPF
             {
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
+                Console.WriteLine(result.VisualHit);
                 //If the mouse has hit a border
                 if (result.VisualHit is Border)
                 {
@@ -195,46 +197,51 @@ namespace PAPIRUS_WPF
                 else if (!(result.VisualHit is Border))
                 {
                     Source = e.Source as FrameworkElement;
+                    
                     MousePosition = e.GetPosition(CircuitCanvas);
                     Keys = Keyboard.Modifiers;
                     ClickTimer.Stop();
-                    ClickCounter++;
-                    if (ClickCounter == 2)
-                    {
-                        Object = Source as Object;
-                        if (selection.Count > 1)
+                    ClickCounter++;Object = Source as Object;
+                    if (Object == null) { } 
+                    else if (ClickCounter == 2)
                         {
-                            ClearSelection();
-                            SingleElementSelect(Source);
-                            Object.isSelected = true;
-                        }
-                        elementName = Object.name;
-                        switch (Source)
-                        {
-                            case two_pole _:
-                                fileName = "2pole.json";
-                                break;
-                            case four_pole _:
-                                fileName = "4pole.json";
-                                break;
-                            case six_pole _:
-                                fileName = "6pole.json";
-                                break;
-                            case generator _:;
-                                break;
-                        }
-                        GeneratorDialog gd = new GeneratorDialog(elementName, fileName);
-                        gd.ShowDialog();
+                            if (Data.selection.Count > 1)
+                            {
+                                ClearSelection();
+                                SingleElementSelect(Source);
+                                Object.isSelected = true;
+                            }
+                            elementName = Object.name;
 
-                    }
+                            switch (Source)
+                            {
+                                case two_pole _:
+                                    fileName = "2pole.json";
+                                    break;
+                                case four_pole _:
+                                    fileName = "4pole.json";
+                                    break;
+                                case six_pole _:
+                                    fileName = "6pole.json";
+                                    break;
+                                case generator _:
+                                    ;
+                                    break;
+                            }
+                            GeneratorDialog gd = new GeneratorDialog(elementName, fileName);
+                            gd.ShowDialog();
+                        }
+
+                    
                     //в другом случае (один тык)
                     else if (ClickCounter == 1)
                     {
-                        if (Source != this.CircuitCanvas)
+                        
+                        if (!(Source is System.Windows.Controls.Canvas))
                         {
                             if (Keys == ModifierKeys.Control)
                             {
-                                if (selection.Contains(Source) == false)
+                                if (Data.selection.Contains(Source) == false)
                                 {
                                     SingleElementSelect(Source);
                                 }
@@ -246,26 +253,10 @@ namespace PAPIRUS_WPF
                                 SingleElementSelect(Source);
                             }
                         }
-                        else if (Source == this.CircuitCanvas)
+                        else if (Source is System.Windows.Controls.Canvas)
                         {
-                            if (Keys != ModifierKeys.Control)
-                            { // Nothing was clicked on the diagram
-                                if (ClickCounter < 2)
-                                {
-                                    if (Keys != ModifierKeys.Shift)
-                                    {
-                                        this.ClearSelection();
-                                        MovingSelectionIsStarted = true;
-                                        MoveSelStartPoint = MousePosition;
-                                        //CaptureMouse();
-                                    }
-                                    //this.StartAreaSelection(e.GetPosition(this.CircuitCanvas));
-                                    else
-                                    {
-                                        this.ClearSelection();
-                                    }
-                                }
-                            }
+                            Console.WriteLine("Я роботаю");
+                            this.ClearSelection(); 
                         }
                     }
                     ClickTimer.Start();
@@ -555,54 +546,28 @@ namespace PAPIRUS_WPF
 
         }
 
-        private void CircuitCanvas_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.Key == Key.Delete)
-            {
-                Point MousePosition = Mouse.GetPosition(CircuitCanvas);
-
-                //Do a hit test under the mouse position
-                HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
-                var element = result.VisualHit;
-                MessageBox.Show("Hi"+element.ToString());
-            }
-        }
-
-        private void GroupBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Delete)
-            {
-                Point MousePosition = Mouse.GetPosition(CircuitCanvas);
-
-                //Do a hit test under the mouse position
-                HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, MousePosition);
-               
-                var element = result.VisualHit;
-                
-                    CircuitCanvas.Children.Remove((UIElement)element);
-                
-                MessageBox.Show(element.ToString());
-            }
-        }
         public double Zoom()
         {
             return zoom.Value;
-        }
-
-        private void two_pole_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-
-        }
-
-        private void CircuitCanvas_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
             window1.ShowDialog();
+        }
+
+        private void Form_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                foreach (var select in Data.selection)
+                {
+                    Console.WriteLine(select);
+                    CircuitCanvas.Children.Remove(select);
+                }
+
+            }
         }
     }
 }

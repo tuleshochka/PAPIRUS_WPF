@@ -87,6 +87,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data.cs" />
     <Compile Include="Elements\four_pole.xaml.cs">
       <DependentUpon>four_pole.xaml</DependentUpon>
     </Compile>

@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace PAPIRUS_WPF.Elements
 {
     /// <summary>
@@ -60,5 +61,7 @@ namespace PAPIRUS_WPF.Elements
                 // LEDRect.Fill = new SolidColorBrush(Colors.Black); 
             }
         }
+
+      
     }
 }

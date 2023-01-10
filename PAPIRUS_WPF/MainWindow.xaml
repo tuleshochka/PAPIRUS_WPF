@@ -11,7 +11,7 @@
         ResizeMode="CanResizeWithGrip"
         MinWidth="480" MinHeight="300"
         UseLayoutRounding="True"
-        SnapsToDevicePixels="True">
+        SnapsToDevicePixels="True" KeyDown="Form_KeyDown">
 
 
     <Grid RenderTransformOrigin="0.5,0.5">
@@ -124,17 +124,17 @@
                 </ListView.Resources>
             </ListView>
         </GroupBox> -->
-        <GroupBox Grid.Column="1" Grid.Row="1" KeyDown="GroupBox_KeyDown" Focusable="True">
+        <GroupBox Grid.Column="1" Grid.Row="1"  Focusable="True">
             <ScrollViewer x:Name="DiagramScroll"
 					HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible"
 					
 					FlowDirection="LeftToRight">
-                <Canvas ButtonBase.Click="CircuitCanvas_Click"
+                <Canvas
                 x:Name="CircuitCanvas"
                 Width="1600"
 			    Height="1200"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True" Drop="CircuitCanvas_Drop_1" MouseWheel="CircuitCanvas_MouseWheel" KeyDown="CircuitCanvas_KeyDown" Focusable="True">
+                Style="{StaticResource LogicCircuitBackground}" AllowDrop="True" Drop="CircuitCanvas_Drop_1" MouseWheel="CircuitCanvas_MouseWheel" Focusable="True">
                     <Path Stroke="Black" StrokeThickness="1">
                         <Path.Data>
                             <GeometryGroup x:Name="Connections"/>
