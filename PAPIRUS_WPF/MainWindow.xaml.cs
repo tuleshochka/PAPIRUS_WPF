@@ -602,7 +602,7 @@ namespace PAPIRUS_WPF
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
-            window1.Show();
+            window1.ShowDialog();
         }
     }
 }
