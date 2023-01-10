@@ -149,7 +149,7 @@ namespace PAPIRUS_WPF
 
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-           
+            
 
             //для тыка колесика
             if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
@@ -164,7 +164,6 @@ namespace PAPIRUS_WPF
             {
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
-                Console.WriteLine(result.VisualHit);
                 //If the mouse has hit a border
                 if (result.VisualHit is Border)
                 {
@@ -197,7 +196,7 @@ namespace PAPIRUS_WPF
                 else if (!(result.VisualHit is Border))
                 {
                     Source = e.Source as FrameworkElement;
-                    
+                
                     MousePosition = e.GetPosition(CircuitCanvas);
                     Keys = Keyboard.Modifiers;
                     ClickTimer.Stop();
@@ -236,7 +235,7 @@ namespace PAPIRUS_WPF
                     //в другом случае (один тык)
                     else if (ClickCounter == 1)
                     {
-                        
+                       
                         if (!(Source is System.Windows.Controls.Canvas))
                         {
                             if (Keys == ModifierKeys.Control)
@@ -256,7 +255,7 @@ namespace PAPIRUS_WPF
                         else if (Source is System.Windows.Controls.Canvas)
                         {
                             Console.WriteLine("Я роботаю");
-                            this.ClearSelection(); 
+                            ClearSelection(); 
                         }
                     }
                     ClickTimer.Start();
@@ -568,6 +567,11 @@ namespace PAPIRUS_WPF
                 }
 
             }
+        }
+
+        private void Form_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }
