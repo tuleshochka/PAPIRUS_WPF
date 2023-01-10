@@ -200,8 +200,16 @@ namespace PAPIRUS_WPF
                     MousePosition = e.GetPosition(CircuitCanvas);
                     Keys = Keyboard.Modifiers;
                     ClickTimer.Stop();
-                    ClickCounter++;Object = Source as Object;
-                    if (Object == null) { } 
+                    ClickCounter++;
+                    Object = Source as Object;
+                    if (Object == null) 
+                    {
+                        if ((Source is System.Windows.Controls.Canvas))
+                        {
+                            Console.WriteLine("Я роботаю");
+                            ClearSelection();
+                        }
+                    } 
                     else if (ClickCounter == 2)
                         {
                             if (Data.selection.Count > 1)
@@ -235,7 +243,7 @@ namespace PAPIRUS_WPF
                     //в другом случае (один тык)
                     else if (ClickCounter == 1)
                     {
-                       
+
                         if (!(Source is System.Windows.Controls.Canvas))
                         {
                             if (Keys == ModifierKeys.Control)
@@ -244,7 +252,6 @@ namespace PAPIRUS_WPF
                                 {
                                     SingleElementSelect(Source);
                                 }
-
                             }
                             else
                             {
@@ -252,16 +259,11 @@ namespace PAPIRUS_WPF
                                 SingleElementSelect(Source);
                             }
                         }
-                        else if (Source is System.Windows.Controls.Canvas)
-                        {
-                            Console.WriteLine("Я роботаю");
-                            ClearSelection(); 
-                        }
+                        else { }
                     }
                     ClickTimer.Start();
                 }
-            }
-                
+            }  
         }
 
         private void EvaluateClicks(object source, ElapsedEventArgs e)
