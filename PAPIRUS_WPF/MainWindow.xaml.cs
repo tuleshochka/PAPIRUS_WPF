@@ -3,19 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
 using System.Timers;
 
 
@@ -47,7 +38,7 @@ namespace PAPIRUS_WPF
         public bool panning;
         private TranslateTransform moveVector;
         private Point maxMove;
-
+        
         private List<PowerObject> _powerList;
 
         private Canvas selectionLayer;
@@ -62,7 +53,6 @@ namespace PAPIRUS_WPF
         Point MousePosition;
         ModifierKeys Keys;
         Object Object;
-        Visibility visibility;
         public bool inDrag = false;
         //The anchor point of the object when being moved
         private Point _anchorPoint;
@@ -157,7 +147,6 @@ namespace PAPIRUS_WPF
                 Cursor = Cursors.SizeAll;
                 MiddleClick = true;
                 point = Mouse.GetPosition(CircuitCanvas);
-
             }
             //тык левой кнопкой
             if (e.ChangedButton == MouseButton.Left)
@@ -259,7 +248,7 @@ namespace PAPIRUS_WPF
                                 SingleElementSelect(Source);
                             }
                         }
-                        else { }
+                       
                     }
                     ClickTimer.Start();
                 }
@@ -567,7 +556,11 @@ namespace PAPIRUS_WPF
                     Console.WriteLine(select);
                     CircuitCanvas.Children.Remove(select);
                 }
-
+            }
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
+            {
+                Console.WriteLine("оно будет робить");
+            
             }
         }
 

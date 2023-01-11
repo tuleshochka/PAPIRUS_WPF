@@ -6,37 +6,38 @@
              xmlns:local="clr-namespace:PAPIRUS_WPF.Elements"
              xmlns:Papirus="clr-namespace:PAPIRUS_WPF" 
              mc:Ignorable="d" 
-           Height="60" Width="62">
+           Height="60" Width="76">
 
-    <Grid x:Name="SixPole">
+    <Grid x:Name="SixPole" >
         <!--<Polyline Stroke="Black" StrokeThickness="1" StrokeLineJoin="Round" StrokeEndLineCap="Round" Points="7,40 55,40 55,20 "/>-->
         <Path Stroke="Black" StrokeThickness="1" Fill="White">
             <Path.Data>
-                
+
                 <PathGeometry>
-                    
+
                     <PathGeometry.Figures>
                         <PathFigureCollection>
-                            <PathFigure StartPoint="12,40">
+                            <PathFigure StartPoint="16,44">
                                 <PathFigure.Segments>
                                     <PathSegmentCollection>
-                                        
-                                        <LineSegment Point="50,40" />
-                                        <ArcSegment Point="55,35" Size="5,5" IsLargeArc="False"/>
-                                        <LineSegment Point="55,25"/>
-                                        <ArcSegment Point="50,20" Size="5,5" IsLargeArc="False"/>
-                                        <LineSegment Point="44,20"/>
-                                        <ArcSegment Point="41,17" SweepDirection="Clockwise" Size="3,3" IsLargeArc="False"/>
-                                        <LineSegment Point="41,12"/>
-                                        <ArcSegment Point="36,7" Size="5,5" IsLargeArc="False"/>
-                                        <LineSegment Point="26,7"/>
-                                        <ArcSegment Point="21,12" Size="5,5" IsLargeArc="False"/>
-                                        <LineSegment Point="21,17"/>
-                                        <ArcSegment Point="18,20" SweepDirection="Clockwise" Size="3,3" IsLargeArc="False"/>
-                                        <LineSegment Point="12,20"/>
-                                        <ArcSegment Point="7,25" Size="5,5" IsLargeArc="False"/>
-                                        <LineSegment Point="7,35" />
-                                        <ArcSegment Point="12,40" Size="5,5" IsLargeArc="False"/>
+
+                                        <LineSegment Point="60,44" />
+                                        <ArcSegment Point="65,39" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="65,30"/>
+                                        <ArcSegment Point="60,25" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="52,25"/>
+                                        <ArcSegment Point="49,22" SweepDirection="Clockwise" Size="3,3" IsLargeArc="False"/>
+                                        <LineSegment Point="49,16"/>
+                                        <ArcSegment Point="44,12" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="34,12"/>
+                                        <ArcSegment Point="29,17" Size="5,5" IsLargeArc="False"/>
+
+                                        <LineSegment Point="29,22"/>
+                                        <ArcSegment Point="26,25" SweepDirection="Clockwise" Size="3,3" IsLargeArc="False"/>
+                                        <LineSegment Point="16,25"/>
+                                        <ArcSegment Point="11,30" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="11,39" />
+                                        <ArcSegment Point="16,44" Size="5,5" IsLargeArc="False"/>
 
                                     </PathSegmentCollection>
                                 </PathFigure.Segments>
@@ -46,13 +47,13 @@
                 </PathGeometry>
             </Path.Data>
         </Path>
-    
+
         <!--<Border CornerRadius="5" BorderBrush="Black" Margin="6" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         
             <Rectangle x:Name="LEDRect" RadiusX="5" RadiusY="5" Fill="White" Margin="0"></Rectangle>
         </Border>-->
-        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <local:Output x:Name="UpInput" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,30,0,0"/>
+        <local:Output x:Name="RightInput" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="65,30,0,0"/>
+        <local:Output x:Name="UpInput" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="2,4,0,0" />
     </Grid>
 </Papirus:Object>
