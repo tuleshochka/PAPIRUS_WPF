@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using WPF_SHF_Element_lib;
+using PAPIRUS_WPF.Dialog;
 
 namespace PAPIRUS_WPF
 {
@@ -28,16 +29,18 @@ namespace PAPIRUS_WPF
     /// </summary>
     public partial class GeneratorDialog : Window
     {
-        public List<dataGridElements> datagridelements = new List<dataGridElements>();
-        public List<double> values = new List<double>();
-        private string elementName;
-        private string filePath;
-        string jsonString;
-        string imgPath;
-        public List<Element> elementsList = new List<Element>();
-        List<string> nameElements = new List<string>();
-        Element el;
-        int poleNum;
+        private string filePath;  //путь до файла
+        string imgPath; //путь до картинки
+        string jsonString;  //считанный из файла json текст
+        public List<Element> elementsList = new List<Element>();  //лист элементов считанных из файла
+        List<string> nameElements = new List<string>(); //лист названий всех элементов из файла
+        int poleNum;  //сколько полюсов в полюснике
+
+        private Element el;  //выбранный пользователем элемент из ListBox
+        private List<dataGridElements> datagridelements = new List<dataGridElements>(); //для хранения параметров и их значений с dataGridView
+        private List<double> values = new List<double>();
+
+
         public GeneratorDialog(string elementName, string fileName)
         {
             InitializeComponent();
@@ -77,9 +80,7 @@ namespace PAPIRUS_WPF
         {
             datagridelements.Clear();
             dataGrid.ItemsSource = null;
-            elementName = listBox.SelectedItem.ToString();
-            el = elementsList.Find(x => x.name == elementName);
-            Console.WriteLine(el.parameters.Count());
+            el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
             if (!string.IsNullOrEmpty(el.parameters[0]))
             {
                 for (int i = 0; i < el.parameters.Count(); i++)
@@ -119,8 +120,8 @@ namespace PAPIRUS_WPF
                     i++;
                 }
             }
-          //  WPF_SHF_Element_lib.SMatrix window1 = new WPF_SHF_Element_lib.SMatrix(poleNum);     
-           // window1.Show();
+           SMatrix window1 = new SMatrix(poleNum, datagridelements, el);     
+           window1.Show();
         }
     }
 

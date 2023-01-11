@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="PAPIRUS_WPF.Elements.forSixPole"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PAPIRUS_WPF.Elements"
+             mc:Ignorable="d" 
+             d:DesignHeight="41.333" d:DesignWidth="56">
+    <Grid>
+        <Path Stroke="Black" StrokeThickness="1" Fill="White">
+            <Path.Data>
+
+                <PathGeometry>
+
+                    <PathGeometry.Figures>
+                        <PathFigureCollection>
+                            <PathFigure StartPoint="12,40">
+                                <PathFigure.Segments>
+                                    <PathSegmentCollection>
+
+                                        <LineSegment Point="50,40" />
+                                        <ArcSegment Point="55,35" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="55,25"/>
+                                        <ArcSegment Point="50,20" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="44,20"/>
+                                        <ArcSegment Point="41,17" SweepDirection="Clockwise" Size="3,3" IsLargeArc="False"/>
+                                        <LineSegment Point="41,12"/>
+                                        <ArcSegment Point="36,7" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="26,7"/>
+                                        <ArcSegment Point="21,12" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="21,17"/>
+                                        <ArcSegment Point="18,20" SweepDirection="Clockwise" Size="3,3" IsLargeArc="False"/>
+                                        <LineSegment Point="12,20"/>
+                                        <ArcSegment Point="7,25" Size="5,5" IsLargeArc="False"/>
+                                        <LineSegment Point="7,35" />
+                                        <ArcSegment Point="12,40" Size="5,5" IsLargeArc="False"/>
+
+                                    </PathSegmentCollection>
+                                </PathFigure.Segments>
+                            </PathFigure>
+                        </PathFigureCollection>
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+
+    </Grid>
+</UserControl>
