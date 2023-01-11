@@ -100,7 +100,7 @@ namespace PAPIRUS_WPF
             
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void sMatrix_Click(object sender, RoutedEventArgs e)
         {
             int i = 0;
             bool f = false;
