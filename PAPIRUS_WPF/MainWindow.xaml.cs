@@ -568,5 +568,13 @@ namespace PAPIRUS_WPF
         {
 
         }
+
+       
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            WPF_SHF_Element_lib.Window4 window4 = new WPF_SHF_Element_lib.Window4();
+            window4.ShowDialog();
+        }
     }
 }
