@@ -22,6 +22,8 @@ namespace PAPIRUS_WPF.Elements
     {
         public eight_pole()
         {
+            BorderBrush = Brushes.Transparent;
+            BorderThickness = new Thickness(2);
             InitializeComponent();
         }
     }

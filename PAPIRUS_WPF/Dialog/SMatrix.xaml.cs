@@ -27,6 +27,7 @@ namespace PAPIRUS_WPF.Dialog
         DataGridView dataGridView = new DataGridView();   //для DataGridView
 
         Entity expr;
+        
 
         public SMatrix(int poleNum, List<dataGridElements> datagridelements, Element el)
         {
@@ -48,8 +49,9 @@ namespace PAPIRUS_WPF.Dialog
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
-            if (!string.IsNullOrEmpty(el.other_par[0].headerColumn))
+            if (el.other_par.Count()!=0)
             {
+                Console.WriteLine("есть");
                 for (int i = 0; i < el.other_par.Count(); i++)
                 {
                     if (!string.IsNullOrEmpty(el.parameters[0]))
@@ -63,14 +65,14 @@ namespace PAPIRUS_WPF.Dialog
                             }
                             else
                             {
-                                el.other_par[i].formulaColumn = expr.ToString();
+                                el.other_par[i].formulaColumn = el.other_par[i].formulaColumn.ToString().Replace(el.parameters[j], (datagridelements.Find(x => x.columnParam == el.parameters[j]).columnValue).ToString());
                             }
                         }
                     }
                 }
             }
 
-            if (!string.IsNullOrEmpty(el.other_par[0].headerColumn))
+            if (el.other_par.Count() != 0)
             {
                 for (int i = 0; i < el.other_par.Count(); i++)
                 {
@@ -83,10 +85,10 @@ namespace PAPIRUS_WPF.Dialog
                         }
                         else
                         {
-                            el.other_par[i].formulaColumn = expr.ToString();
+                            el.other_par[i].formulaColumn = el.other_par[i].formulaColumn.ToString().Replace(el.other_par[j].headerColumn, el.other_par[j].formulaColumn);
                         }
                     }
-                    
+                    Console.WriteLine("H= "+el.other_par[i].formulaColumn);
                 }
             }
 
@@ -111,19 +113,21 @@ namespace PAPIRUS_WPF.Dialog
                             Console.WriteLine(el.matrix[a].element);
                         }
                     }
-
-                    for (int k = 0; k < el.other_par.Count(); k++)
+                    if(el.other_par.Count() != 0)
                     {
-                        expr = el.matrix[a].element.Replace(el.other_par[k].headerColumn, el.other_par[k].formulaColumn);
-                        if (expr.EvaluableNumerical)
+                        for (int k = 0; k < el.other_par.Count(); k++)
                         {
-                            dataGridView.Rows[j].Cells[i].Value = expr.EvalNumerical().ToString();
-                        }
-                        else
-                        {
-                            el.matrix[a].element = el.matrix[a].element.Replace(el.other_par[k].headerColumn, el.other_par[k].formulaColumn);
-                        }
-                        Console.WriteLine(el.matrix[a].element);
+                            expr = el.matrix[a].element.Replace(el.other_par[k].headerColumn, el.other_par[k].formulaColumn);
+                            if (expr.EvaluableNumerical)
+                            {
+                                dataGridView.Rows[j].Cells[i].Value = expr.EvalNumerical().ToString();
+                            }
+                            else
+                            {
+                                el.matrix[a].element = el.matrix[a].element.Replace(el.other_par[k].headerColumn, el.other_par[k].formulaColumn);
+                            }
+                            Console.WriteLine(el.matrix[a].element);
+                        }  
                     }
                     a++;
                 }

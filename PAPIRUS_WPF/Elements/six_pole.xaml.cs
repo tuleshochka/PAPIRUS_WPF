@@ -23,6 +23,8 @@ namespace PAPIRUS_WPF.Elements
         public six_pole()
         {
             InitializeComponent();
+            BorderBrush = Brushes.Transparent;
+            BorderThickness = new Thickness(2);
         }
     }
 }
