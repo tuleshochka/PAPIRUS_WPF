@@ -6,12 +6,12 @@
              xmlns:local="clr-namespace:PAPIRUS_WPF.Elements"
              mc:Ignorable="d" xmlns:Papirus="clr-namespace:PAPIRUS_WPF" 
             
-           Height="70" Width="70"
+           Height="75" Width="75"
                 MouseDoubleClick="Object_MouseDoubleClick">
     
     <Grid >
 
-        <Border CornerRadius="5" BorderBrush="Black" Margin="6" BorderThickness="1">
+        <Border CornerRadius="5" BorderBrush="Black" Margin="11" BorderThickness="1">
 
 
 
@@ -27,6 +27,6 @@
 
         </Border>
         <TextBlock Text="G" FontSize="40" Height="58" Width="27"  />
-        <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"/>
     </Grid>
 </Papirus:Object>

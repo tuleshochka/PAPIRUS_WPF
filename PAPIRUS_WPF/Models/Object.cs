@@ -33,6 +33,10 @@ namespace PAPIRUS_WPF
 
         public string name { get; set; }
 
+        public Point anchorPoint;
+
+        public Point startPoint = new Point(0,0);
+
         public bool isSelected = false;
         //The anchor point of the object when being moved
         public Point _anchorPoint;

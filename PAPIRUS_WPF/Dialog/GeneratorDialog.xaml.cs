@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using WPF_SHF_Element_lib;
 using PAPIRUS_WPF.Dialog;
+using PAPIRUS_WPF;
 
 namespace PAPIRUS_WPF
 {
@@ -120,7 +121,7 @@ namespace PAPIRUS_WPF
                     i++;
                 }
             }
-           SMatrix window1 = new SMatrix(poleNum, datagridelements, el);     
+           PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el);     
            window1.Show();
         }
     }
