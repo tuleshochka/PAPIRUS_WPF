@@ -108,15 +108,17 @@ namespace PAPIRUS_WPF
 
         private void sMatrix_Click(object sender, RoutedEventArgs e)
         {
+            jsonString = File.ReadAllText(filePath);
+            elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString);
             bool f = true;
-          
             int i = 0;
-            
+            el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
             if (!string.IsNullOrEmpty(el.parameters[0]))
             {
                 foreach(dataGridElements element in datagridelements)
                 {
                     var x = dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]) as TextBlock;
+
                     if (string.IsNullOrEmpty(x.Text))
                     {
                         f = true;
@@ -125,6 +127,7 @@ namespace PAPIRUS_WPF
                     else f = false ;
 
                     element.columnValue = x.Text;
+                    Console.WriteLine(element.columnValue);
                     //values.Add(x.Text);
                     i++;
                 }
@@ -132,6 +135,14 @@ namespace PAPIRUS_WPF
             if (f) { MessageBox.Show("Введены не все параметры"); }
             else
             {
+                if (el.other_par.Count() != 0)
+                {
+
+                    for (int z = 0; z < el.other_par.Count(); z++)
+                    {
+                        Console.WriteLine("GeneratorDialog = "+ el.other_par[z].formulaColumn);
+                    }
+                }
                 PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el);
                 window1.ShowDialog();
             }

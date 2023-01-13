@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using WPF_SHF_Element_lib;
 using AngouriMath;
 using System.Runtime.CompilerServices;
+using System.Numerics;
+using System.Xml.Linq;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -27,11 +29,9 @@ namespace PAPIRUS_WPF.Dialog
         
         System.Windows.Forms.Integration.WindowsFormsHost host =
         new System.Windows.Forms.Integration.WindowsFormsHost();
-        DataGridView dataGridView = new DataGridView();  
-            //для DataGridView
-
-        Entity expr;
-        
+        DataGridView dataGridView = new DataGridView();
+        //для DataGridView
+        private Entity expr;
 
         public SMatrix(int poleNum, List<dataGridElements> datagridelements, Element el)
         {
@@ -39,7 +39,9 @@ namespace PAPIRUS_WPF.Dialog
             host.Child = dataGridView;
             Grid.SetColumn(host, 1);
             Grid.SetRow(host, 1);
-            
+            List<dataGridElements> datagridelements1 = datagridelements;
+            Element ele = el;
+            List<string> formulaColumn = new List<string>();
             // Add the interop host control to the Grid
             // control's collection of child controls.
             this.grid.Children.Add(host);
@@ -53,46 +55,49 @@ namespace PAPIRUS_WPF.Dialog
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
-            if (el.other_par.Count()!=0)
+            if (ele.other_par.Count()!=0)
             {
-                Console.WriteLine("есть");
-                for (int i = 0; i < el.other_par.Count(); i++)
+                
+                for (int i = 0; i < ele.other_par.Count(); i++)
                 {
-                    if (!string.IsNullOrEmpty(el.parameters[0]))
+                    
+                    formulaColumn.Add(ele.other_par[i].formulaColumn.ToString());
+                    if (!string.IsNullOrEmpty(ele.parameters[0]))
                     {
-                        for (int j = 0; j < el.parameters.Count(); j++)
+                        for (int j = 0; j < ele.parameters.Count(); j++)
                         {
-                            expr = el.other_par[i].formulaColumn.ToString().Replace(el.parameters[j], (datagridelements.Find(x => x.columnParam == el.parameters[j]).columnValue).ToString());
+                            expr = ele.other_par[i].formulaColumn.ToString().Replace(ele.parameters[j], (datagridelements1.Find(x => x.columnParam == ele.parameters[j]).columnValue).ToString());
                             if(expr.EvaluableNumerical)
                             {
-                                el.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
+                                ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
                             }
                             else
                             {
-                                el.other_par[i].formulaColumn = el.other_par[i].formulaColumn.ToString().Replace(el.parameters[j], (datagridelements.Find(x => x.columnParam == el.parameters[j]).columnValue).ToString());
+                                ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.parameters[j], (datagridelements1.Find(x => x.columnParam == ele.parameters[j]).columnValue).ToString());
                             }
                         }
                     }
                 }
             }
 
-            if (el.other_par.Count() != 0)
+            if (ele.other_par.Count() != 0)
             {
-                for (int i = 0; i < el.other_par.Count(); i++)
+                for (int i = 0; i < ele.other_par.Count(); i++)
                 {
-                    for (int j = 0; j < el.other_par.Count(); j++)
+
+                    for (int j = 0; j < ele.other_par.Count(); j++)
                     {
-                        expr = el.other_par[i].formulaColumn.ToString().Replace(el.other_par[j].headerColumn, el.other_par[j].formulaColumn);
+                        expr = ele.other_par[i].formulaColumn.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
                         if (expr.EvaluableNumerical)
                         {
-                            el.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
+                            ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
                         }
                         else
                         {
-                            el.other_par[i].formulaColumn = el.other_par[i].formulaColumn.ToString().Replace(el.other_par[j].headerColumn, el.other_par[j].formulaColumn);
+                            ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
                         }
                     }
-                    Console.WriteLine("H= "+el.other_par[i].formulaColumn);
+                    
                 }
             }
 
@@ -101,33 +106,72 @@ namespace PAPIRUS_WPF.Dialog
             {
                 for (int j = 0; j < dataGridView.RowCount; j++)
                 {
-                    if (!string.IsNullOrEmpty(el.parameters[0]))
+                    if (!string.IsNullOrEmpty(ele.parameters[0]))
                     {
-                        for (int k = 0; k < el.parameters.Count(); k++)
+                        for (int k = 0; k < ele.parameters.Count(); k++)
                         {
-                            expr = el.matrix[a].element.Replace(el.parameters[k], (datagridelements.Find(x => x.columnParam == el.parameters[k]).columnValue).ToString());
+                            expr = ele.matrix[a].element.Replace(ele.parameters[k], (datagridelements1.Find(x => x.columnParam == ele.parameters[k]).columnValue).ToString());
                             if (expr.EvaluableNumerical)
                             {
-                                dataGridView.Rows[j].Cells[i].Value = ((double)expr.EvalNumerical()).ToString();
+                                Complex complex = (Complex)expr.EvalNumerical();
+                                if (complex.Imaginary == 0)
+                                {
+                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round((double)expr.EvalNumerical(), 3)).ToString();
+                                }
+                                else
+                                {
+                                    string sigh;
+                                    switch (Math.Sign(complex.Imaginary))
+                                    {
+                                        case -1:
+                                            sigh = "";
+                                            break;
+                                        default:
+                                            sigh = "+";
+                                            break;
+                                    }
+                                        
+                                        dataGridView.Rows[j].Cells[i].Value = (Math.Round(complex.Real, 3) + "" + sigh + "" + Math.Round(complex.Imaginary, 3) +"i").ToString();
+                                }
+                               
                             }
                             else
                             {
-                                el.matrix[a].element = el.matrix[a].element.Replace(el.parameters[k], (datagridelements.Find(x => x.columnParam == el.parameters[k]).columnValue).ToString());
+                                ele.matrix[a].element = ele.matrix[a].element.Replace(ele.parameters[k], (datagridelements1.Find(x => x.columnParam == ele.parameters[k]).columnValue).ToString());
                             }
                         }
                     }
-                    if(el.other_par.Count() != 0)
+                    if(ele.other_par.Count() != 0)
                     {
-                        for (int k = 0; k < el.other_par.Count(); k++)
+                        for (int k = 0; k < ele.other_par.Count(); k++)
                         {
-                            expr = el.matrix[a].element.Replace(el.other_par[k].headerColumn, el.other_par[k].formulaColumn);
+                            expr = ele.matrix[a].element.Replace(ele.other_par[k].headerColumn, ele.other_par[k].formulaColumn);
                             if (expr.EvaluableNumerical)
                             {
-                                dataGridView.Rows[j].Cells[i].Value = ((double)expr.EvalNumerical()).ToString();
+                                Complex complex = (Complex)expr.EvalNumerical();
+                                if (complex.Imaginary == 0)
+                                {
+                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round((double)expr.EvalNumerical(),3)).ToString();
+                                }
+                                else
+                                {
+                                    string sigh;
+                                    switch (Math.Sign(complex.Imaginary))
+                                    {
+                                        case -1:
+                                            sigh = "";
+                                            break;
+                                        default:
+                                            sigh = "+";
+                                            break;
+                                    }
+
+                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round(complex.Real, 3) +""+ sigh+""+ Math.Round(complex.Imaginary, 3) + "i").ToString();
+                                }
                             }
                             else
                             {
-                                el.matrix[a].element = el.matrix[a].element.Replace(el.other_par[k].headerColumn, el.other_par[k].formulaColumn);
+                                ele.matrix[a].element = ele.matrix[a].element.Replace(ele.other_par[k].headerColumn, ele.other_par[k].formulaColumn);
                             }
                         }  
                     }
