@@ -9,6 +9,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Timers;
 using WPF_SHF_Element_lib;
+using System.Windows.Shapes;
+using System.Xml.Linq;
 
 
 namespace PAPIRUS_WPF
@@ -32,30 +34,12 @@ namespace PAPIRUS_WPF
         //The output that is being linked to
         private Output _tempOutput;
         bool MiddleClick = false;  //для перемещения по canvas
-        public Point point;
-        private Point MoveSelStartPoint;
-        private Point panStart;
-        public bool panning;
-        private TranslateTransform moveVector;
-        private Point maxMove;
-        
-        private List<PowerObject> _powerList;
        
-        public FrameworkElement singleElement = null;
-        
+        private List<PowerObject> _powerList;   //хз
+      
+        //---------для подсчета нажатий--------//
         private Timer ClickTimer;
         private int ClickCounter;
-
-        public bool MovingSelectionIsStarted = false;
-        FrameworkElement Source = null;
-        Point MousePosition;
-        Point startPoint;
-        ModifierKeys Keys;
-        Object Object;
-        public bool inDrag = false;
-        //The anchor point of the object when being moved
-        //private Point _anchorPoint;
-        Object MovingElement;
 
         //The lines being connected to the input
         private List<LineGeometry> _attachedInputLines = new List<LineGeometry>();
@@ -63,10 +47,30 @@ namespace PAPIRUS_WPF
         //The lines being connected to the output
         private List<LineGeometry> _attachedOutputLines = new List<LineGeometry>();
 
+        //------для выделения-------//
+        private Point point;
+        private Point p2;
+        private Point center;
+        private FrameworkElement Source = null;
+        private Point MousePosition;
+        private Point startPoint;
+        private ModifierKeys Keys;
+        private Object Object;
+        private bool inDrag = false;
 
-        Point p2;
-        Point targetPoints;
-        Point center;
+        //------для общего выделения-------//
+        private bool selectionIsStarted = false;
+        private Point selectionStartPoint;
+        private Rectangle markerGlyph;
+        private TranslateTransform moveVector;
+        private Canvas selectionLayer;
+        public bool selectionMoving = false;
+        private Point moveStart;
+        private bool panning;
+        
+        private Point maxMove;
+
+        
 
 
         public MainWindow()
@@ -88,7 +92,8 @@ namespace PAPIRUS_WPF
 
         //--------Selection-------//
 
-        public void ClearSelection()
+
+        private void ClearSelection()
         {
             foreach (FrameworkElement object_ in CircuitCanvas.Children)
             {
@@ -98,16 +103,21 @@ namespace PAPIRUS_WPF
                     o.isSelected = false;
                     o.BorderBrush = Brushes.Transparent;
                 }
+                else if (object_ is Line)
+                {
+                    Console.WriteLine("yes");
+                    Line line = (Line)object_;
+                    line.Stroke = System.Windows.Media.Brushes.Black;
+                }
             }
         Data.selection.Clear();
         }
 
-        public void SingleElementSelect(FrameworkElement element)
+        private void SingleElementSelect(FrameworkElement element)
         {
-
+            if(element is Object)
             {
                 Object = element as Object;
-                MovingElement = Object;
                 Object.BorderBrush = Brushes.Magenta;
                 p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), Object);
                 Object.anchorPoint.X = p2.X - Object.Width / 2;
@@ -117,22 +127,57 @@ namespace PAPIRUS_WPF
                 Object.startPoint = p2;
                 Object.isSelected = true;
             }
-
+            else if (element is Line)
+            {
+                Console.WriteLine("yes");
+                Line line = (Line)element;
+                line.Stroke = System.Windows.Media.Brushes.Red;
+            }
         }
 
-        private HitTestResultBehavior MyHitFilter (HitTestResult result)
+        private void StartAreaSelection(Point point)
         {
-            if(result.VisualHit.GetType() == typeof(UserControl))
+            selectionStartPoint = point;
+            markerGlyph = (Rectangle)Application.LoadComponent(new Uri(SymbolShape.SelectionMarker, UriKind.Relative));
+            PositionGlyph(point);
+            if (selectionLayer == null)
             {
-                return HitTestResultBehavior.Stop;
+                selectionLayer = new Canvas()
+                {
+                    RenderTransform = moveVector = new TranslateTransform()
+                };
+                Panel.SetZIndex(selectionLayer, int.MaxValue);
             }
-            return HitTestResultBehavior.Continue;
+            if (this.selectionLayer.Parent != CircuitCanvas)
+            {
+                CircuitCanvas.Children.Add(this.selectionLayer);
+            }
+            CircuitCanvas.Children.Add(markerGlyph);
+            StartMove(point);
+        }
+
+        private void StartMove(Point startpoint)
+        {
+            selectionMoving = true;
+            Mouse.Capture(CircuitCanvas, CaptureMode.Element);
+            moveStart = startpoint;
+            maxMove = new Point(0, 0);
+            Rect bound = new Rect(Canvas.GetLeft(markerGlyph), Canvas.GetTop(markerGlyph), markerGlyph.Width, markerGlyph.Height);
+        }
+
+        private void PositionGlyph(Point point)
+        {
+            Rect rect = new Rect(selectionStartPoint, point);
+            Canvas.SetLeft(markerGlyph, rect.X);
+            Canvas.SetTop(markerGlyph, rect.Y);
+            markerGlyph.Width = rect.Width;
+            markerGlyph.Height = rect.Height;
+            Console.WriteLine(markerGlyph.Width);
+            Console.WriteLine(markerGlyph.Height);
         }
 
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            
-
             //для тыка колесика
             if (e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Pressed)
             {
@@ -176,7 +221,9 @@ namespace PAPIRUS_WPF
                 }
                 else if (!(result.VisualHit is Border))
                 {
+
                     Source = e.Source as FrameworkElement;
+                    Console.WriteLine(result.VisualHit);
                     MousePosition = e.GetPosition(CircuitCanvas);
                     Keys = Keyboard.Modifiers;
                     ClickTimer.Stop();
@@ -185,6 +232,7 @@ namespace PAPIRUS_WPF
                     if (e.Source as FrameworkElement is Canvas)
                     {
                         ClearSelection();
+                        StartAreaSelection(MousePosition);
                     }
 
                     else if (Object != null && ClickCounter == 2)
@@ -192,7 +240,7 @@ namespace PAPIRUS_WPF
                         if (Data.selection.Count > 1)
                         {
                             ClearSelection();
-                            SingleElementSelect(Object);
+                            SingleElementSelect(Source);
                         }
                         elementName = Object.name;
                         switch (Object)
@@ -241,7 +289,6 @@ namespace PAPIRUS_WPF
                                 }
                             }
                         }
-
                     }
                     ClickTimer.Start();
                 }
@@ -305,7 +352,34 @@ namespace PAPIRUS_WPF
                     element.anchorPoint.X = p2.X - element.Width / 2;
                     element.anchorPoint.Y = p2.Y - element.Height / 2;
                 }
-                
+            }
+            if(selectionMoving)
+            {
+                Point point = e.GetPosition(CircuitCanvas);
+                if((point.X - selectionStartPoint.X) < 0 && (point.Y - selectionStartPoint.Y) < 0)
+                {
+                    Canvas.SetLeft(markerGlyph, point.X);
+                    Canvas.SetTop(markerGlyph, point.Y);
+                    markerGlyph.Width = Math.Abs(point.X - selectionStartPoint.X);
+                    markerGlyph.Height = Math.Abs(point.Y - selectionStartPoint.Y);
+                }
+                else if ((point.X - selectionStartPoint.X) < 0 && (point.Y - selectionStartPoint.Y) > 0)
+                {
+                    Canvas.SetLeft(markerGlyph, point.X);
+                    markerGlyph.Width = Math.Abs(point.X - selectionStartPoint.X);
+                    markerGlyph.Height = point.Y - selectionStartPoint.Y;
+                }
+                else if ((point.X - selectionStartPoint.X) > 0 && (point.Y - selectionStartPoint.Y) < 0)
+                {
+                    Canvas.SetTop(markerGlyph, point.Y);
+                    markerGlyph.Width = point.X - selectionStartPoint.X;
+                    markerGlyph.Height = Math.Abs(point.Y - selectionStartPoint.Y);
+                }
+                else if ((point.X - selectionStartPoint.X) > 0 && (point.Y - selectionStartPoint.Y) > 0)
+                {
+                    markerGlyph.Width = point.X - selectionStartPoint.X;
+                    markerGlyph.Height = point.Y - selectionStartPoint.Y;
+                }
             }
         }
 
@@ -414,6 +488,33 @@ namespace PAPIRUS_WPF
                     p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
                     element.startPoint = p2;
                 }
+            }
+            if (selectionMoving)
+            {
+                selectionMoving = false;
+                Rect rect = new Rect();
+                rect.X = Canvas.GetLeft(markerGlyph);
+                rect.Y = Canvas.GetTop(markerGlyph);
+                rect.Width = markerGlyph.Width;
+                rect.Height = markerGlyph.Height;
+                Mouse.Capture(null);
+                foreach (FrameworkElement object_ in CircuitCanvas.Children)
+                {
+                    if (object_ is Object)
+                    {
+                        Object o = (Object)object_;
+                        Rect rect1 = new Rect();
+                        rect1.X = Canvas.GetLeft(o);
+                        rect1.Y = Canvas.GetTop(o);
+                        rect1.Width = o.Width;
+                        rect1.Height = o.Height;
+                        if (rect.Contains(rect1))
+                        {
+                            SingleElementSelect(o);
+                        }
+                    }
+                }
+                CircuitCanvas.Children.Remove(markerGlyph);
             }
 
         }

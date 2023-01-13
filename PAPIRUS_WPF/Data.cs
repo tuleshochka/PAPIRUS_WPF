@@ -10,7 +10,7 @@ namespace PAPIRUS_WPF
 {
     public class Data
     {
-        public static List<UserControl> selection = new List<UserControl>();
+        public static List<Object> selection = new List<Object>();
         public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();
 
     }

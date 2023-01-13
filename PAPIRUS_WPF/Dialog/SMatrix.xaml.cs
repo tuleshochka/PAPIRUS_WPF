@@ -140,7 +140,7 @@ namespace PAPIRUS_WPF.Dialog
                                 Complex complex = (Complex)expr.EvalNumerical();
                                 if (complex.Imaginary == 0)
                                 {
-                                    if (Math.Round((double)expr.EvalNumerical(), 3) <= 0.01 || Math.Round((double)expr.EvalNumerical(), 3) >= 1000)
+                                    if ((Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) <= 0.01 && Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 0 && (double)expr.EvalNumerical() != 0) || Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 1000)
                                     {
                                         dataGridView.Rows[j].Cells[i].Value = String.Format("{0:0.###E+0}", (double)expr.EvalNumerical());
                                     }
@@ -182,7 +182,7 @@ namespace PAPIRUS_WPF.Dialog
                                 Complex complex = (Complex)expr.EvalNumerical();
                                 if (complex.Imaginary == 0)
                                 {
-                                    if (Math.Round((double)expr.EvalNumerical(), 3) <= 0.01 || Math.Round((double)expr.EvalNumerical(), 3) >= 1000)
+                                    if ((Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) <= 0.01 && Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 0 && (double)expr.EvalNumerical() != 0) || Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 1000)
                                     {
                                         dataGridView.Rows[j].Cells[i].Value = String.Format("{0:0.###E+0}", (double)expr.EvalNumerical());
                                     }

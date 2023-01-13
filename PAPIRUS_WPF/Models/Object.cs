@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows;
 using System.ComponentModel;
 using System.Windows.Shapes;
+using WPF_SHF_Element_lib;
 
 namespace PAPIRUS_WPF
 {
@@ -30,6 +31,7 @@ namespace PAPIRUS_WPF
         {
             obj.SetValue(BorderBrushProperty, color);
         }
+
 
         public string name { get; set; }
 

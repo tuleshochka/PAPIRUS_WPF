@@ -1,6 +1,7 @@
-﻿<Border
+﻿<Rectangle
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	BorderBrush="{StaticResource MarkerStroke}"
-    BorderThickness="1"
+	Stroke="{StaticResource MarkerStroke}"
+    StrokeThickness="1"
+    Fill="#30F505F5"
 />
