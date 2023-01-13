@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog"
         mc:Ignorable="d"
-        Title="SMatrix" Height="360" Width="630">
+        Title="SMatrix" Height="360" Width="630" ResizeMode="CanMinimize">
     <Grid Background="White" x:Name="grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
