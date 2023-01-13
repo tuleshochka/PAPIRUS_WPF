@@ -17,6 +17,7 @@ using AngouriMath;
 using System.Runtime.CompilerServices;
 using System.Numerics;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -116,7 +117,14 @@ namespace PAPIRUS_WPF.Dialog
                                 Complex complex = (Complex)expr.EvalNumerical();
                                 if (complex.Imaginary == 0)
                                 {
-                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round((double)expr.EvalNumerical(), 3)).ToString();
+                                    if (Math.Round((double)expr.EvalNumerical(), 3) <= 0.01 || Math.Round((double)expr.EvalNumerical(), 3) >= 1000)
+                                    {
+                                        dataGridView.Rows[j].Cells[i].Value = String.Format("{0:0.###E+0}", (double)expr.EvalNumerical());
+                                    }
+                                    else
+                                    {
+                                        dataGridView.Rows[j].Cells[i].Value = (Math.Round((double)expr.EvalNumerical(), 3)).ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -151,7 +159,14 @@ namespace PAPIRUS_WPF.Dialog
                                 Complex complex = (Complex)expr.EvalNumerical();
                                 if (complex.Imaginary == 0)
                                 {
-                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round((double)expr.EvalNumerical(),3)).ToString();
+                                    if (Math.Round((double)expr.EvalNumerical(), 3) <= 0.01 || Math.Round((double)expr.EvalNumerical(), 3) >= 1000)
+                                    {
+                                        dataGridView.Rows[j].Cells[i].Value = String.Format("{0:0.###E+0}", (double)expr.EvalNumerical());
+                                    }
+                                    else
+                                    {
+                                        dataGridView.Rows[j].Cells[i].Value = (Math.Round((double)expr.EvalNumerical(), 3)).ToString();
+                                    }
                                 }
                                 else
                                 {

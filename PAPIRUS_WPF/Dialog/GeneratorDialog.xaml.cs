@@ -127,22 +127,12 @@ namespace PAPIRUS_WPF
                     else f = false ;
 
                     element.columnValue = x.Text;
-                    Console.WriteLine(element.columnValue);
-                    //values.Add(x.Text);
                     i++;
                 }
             }
             if (f) { MessageBox.Show("Введены не все параметры"); }
             else
             {
-                if (el.other_par.Count() != 0)
-                {
-
-                    for (int z = 0; z < el.other_par.Count(); z++)
-                    {
-                        Console.WriteLine("GeneratorDialog = "+ el.other_par[z].formulaColumn);
-                    }
-                }
                 PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el);
                 window1.ShowDialog();
             }

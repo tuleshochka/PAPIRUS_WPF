@@ -177,12 +177,10 @@ namespace PAPIRUS_WPF
                 else if (!(result.VisualHit is Border))
                 {
                     Source = e.Source as FrameworkElement;
-                    Console.WriteLine(Source);
                     MousePosition = e.GetPosition(CircuitCanvas);
                     Keys = Keyboard.Modifiers;
                     ClickTimer.Stop();
                     ClickCounter++;
-                    Console.WriteLine(ClickCounter);
                     Object = e.Source as Object;
                     if (e.Source as FrameworkElement is Canvas)
                     {
@@ -193,7 +191,6 @@ namespace PAPIRUS_WPF
                     {
                         if (Data.selection.Count > 1)
                         {
-                            Console.WriteLine(Object);
                             ClearSelection();
                             SingleElementSelect(Object);
                         }
@@ -514,14 +511,12 @@ namespace PAPIRUS_WPF
             {
                 foreach (var select in Data.selection)
                 {
-                    Console.WriteLine(select);
                     CircuitCanvas.Children.Remove(select);
                 }
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
             {
                 Console.WriteLine("оно будет робить");
-            
             }
         }
 
