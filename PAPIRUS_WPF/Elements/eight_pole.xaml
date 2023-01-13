@@ -10,7 +10,7 @@
 
     <Grid x:Name="EightPol">
 
-        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,-20,0,0"/>
+        <local:Input x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,-20,0,0"/>
         <local:Output x:Name="LeftInput2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,20,0,0"/>
         <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,-20,4,0"/>
         <local:Output x:Name="RightInput2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,20,4,0"/>

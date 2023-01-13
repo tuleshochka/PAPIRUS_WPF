@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
  Height="7" Width="7">
 
-    <Border BorderBrush="#FF8D8D8D" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
         <Border.Style>
             <Style TargetType="{x:Type Border}">
                 <Style.Triggers>

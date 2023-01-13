@@ -11,6 +11,7 @@ using PAPIRUS_WPF.Dialog;
 using PAPIRUS_WPF;
 using System.Windows.Forms;
 using MessageBox = System.Windows.MessageBox;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace PAPIRUS_WPF
 {
@@ -23,14 +24,50 @@ namespace PAPIRUS_WPF
         public string[] parameters { get; set; }
         public List<DataGrid1_Elements> other_par { get; set; }
         public List<MatrixElements> matrix { get; set; }
-        
+
     }
 
 
     /// <summary>
     /// Логика взаимодействия для GeneratorDialog.xaml
     /// </summary>
-    public partial class GeneratorDialog : Window
+    ///
+    public class DataGridNumericColumn : DataGridTextColumn
+    {
+        int temp=0;
+    protected override object PrepareCellForEdit(System.Windows.FrameworkElement editingElement, System.Windows.RoutedEventArgs editingEventArgs)
+    {
+        TextBox edit = editingElement as TextBox;
+        edit.PreviewTextInput += OnPreviewTextInput;
+
+        return base.PrepareCellForEdit(editingElement, editingEventArgs);
+    }
+
+    void OnPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+    {
+
+            if (int.TryParse(e.Text,out int temp)||e.Text==","||e.Text=="-")
+            {
+
+            }
+            else e.Handled = true;
+
+
+       /* try
+        {
+            Convert.ToInt32(e.Text);
+          
+        }
+        catch
+        {
+            // Show some kind of error message if you want
+
+            // Set handled to true
+            e.Handled = true;
+        }*/
+    }
+}
+     public partial class GeneratorDialog : Window
     {
         
         private string filePath;  //путь до файла
@@ -48,6 +85,7 @@ namespace PAPIRUS_WPF
         public GeneratorDialog(string elementName, string fileName)
         {
             InitializeComponent();
+            
             listBox.SelectedIndex= 0;
             groupTextBox.Text = elementName;
             filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;

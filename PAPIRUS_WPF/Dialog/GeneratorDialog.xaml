@@ -18,7 +18,7 @@
         <DataGrid x:Name="dataGrid" Margin="25,110,342,240" AutoGenerateColumns="false" CanUserAddRows="False" >
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="ColumnParam"  Header="Параметр" Binding="{Binding columnParam}" IsReadOnly="True"/>
-                <DataGridTextColumn x:Name="ColumnValue"  Header="Значение" Binding="{Binding columnValue}" Width="*"/>
+                <local:DataGridNumericColumn x:Name="ColumnValue"  Header="Значение" Binding="{Binding columnValue}" Width="*"/>
                 <DataGridTextColumn x:Name="ColumnDopusk"  Header="Допуск, %" Binding="{Binding columnDopusk}" Width="80" />
             </DataGrid.Columns>
         </DataGrid>

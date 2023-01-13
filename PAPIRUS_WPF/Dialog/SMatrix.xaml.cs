@@ -18,31 +18,35 @@ using System.Runtime.CompilerServices;
 using System.Numerics;
 using System.Xml.Linq;
 using System.Globalization;
+using MessageBox = System.Windows.MessageBox;
 
 namespace PAPIRUS_WPF.Dialog
 {
-    
+
     /// <summary>
     /// Логика взаимодействия для SMatrix.xaml
     /// </summary>
     public partial class SMatrix : Window
-    {   
-        
+    {
+
         System.Windows.Forms.Integration.WindowsFormsHost host =
         new System.Windows.Forms.Integration.WindowsFormsHost();
         DataGridView dataGridView = new DataGridView();
         //для DataGridView
         private Entity expr;
-
-        public SMatrix(int poleNum, List<dataGridElements> datagridelements, Element el)
+        Element ele;
+        List<string> formulaColumn = new List<string>();
+        List<dataGridElements> datagridelements1;
+        int poleNum;
+        public SMatrix(int polenum, List<dataGridElements> datagridelements, Element el)
         {
             InitializeComponent();
             host.Child = dataGridView;
             Grid.SetColumn(host, 1);
             Grid.SetRow(host, 1);
-            List<dataGridElements> datagridelements1 = datagridelements;
-            Element ele = el;
-            List<string> formulaColumn = new List<string>();
+            poleNum = polenum;
+            ele = el;
+            datagridelements1 = datagridelements;
             // Add the interop host control to the Grid
             // control's collection of child controls.
             this.grid.Children.Add(host);
@@ -51,32 +55,50 @@ namespace PAPIRUS_WPF.Dialog
             dataGridView.BackgroundColor = System.Drawing.Color.White;
             dataGridView.RowHeadersVisible = false;
             dataGridView.ColumnHeadersVisible = false;
+
+        }
+
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             for (int i = 0; i < poleNum; i++)
             {
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
-            if (ele.other_par.Count()!=0)
+            if (ele.other_par.Count() != 0)
             {
-                
+
                 for (int i = 0; i < ele.other_par.Count(); i++)
                 {
-                    
+
                     formulaColumn.Add(ele.other_par[i].formulaColumn.ToString());
                     if (!string.IsNullOrEmpty(ele.parameters[0]))
                     {
-                        for (int j = 0; j < ele.parameters.Count(); j++)
+                        try
                         {
-                            expr = ele.other_par[i].formulaColumn.ToString().Replace(ele.parameters[j], (datagridelements1.Find(x => x.columnParam == ele.parameters[j]).columnValue).ToString());
-                            if(expr.EvaluableNumerical)
+                            for (int j = 0; j < ele.parameters.Count(); j++)
                             {
-                                ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
-                            }
-                            else
-                            {
-                                ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.parameters[j], (datagridelements1.Find(x => x.columnParam == ele.parameters[j]).columnValue).ToString());
+                                expr = ele.other_par[i].formulaColumn.ToString().Replace(" ", "");
+
+                                expr = expr.ToString().Replace(ele.parameters[j], (datagridelements1.Find(x => x.columnParam == ele.parameters[j]).columnValue).ToString());
+                                if (expr.EvaluableNumerical)
+                                {
+                                    ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
+                                }
+                                else
+                                {
+                                    ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.parameters[j], (datagridelements1.Find(x => x.columnParam == ele.parameters[j]).columnValue).ToString());
+                                }
                             }
                         }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Произошла ошибка", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                            this.Close();
+                        }
+
                     }
                 }
             }
@@ -88,7 +110,8 @@ namespace PAPIRUS_WPF.Dialog
 
                     for (int j = 0; j < ele.other_par.Count(); j++)
                     {
-                        expr = ele.other_par[i].formulaColumn.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
+                        expr = ele.other_par[i].formulaColumn.ToString().Replace(" ", "");
+                        expr = expr.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
                         if (expr.EvaluableNumerical)
                         {
                             ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
@@ -98,7 +121,7 @@ namespace PAPIRUS_WPF.Dialog
                             ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
                         }
                     }
-                    
+
                 }
             }
 
@@ -138,10 +161,10 @@ namespace PAPIRUS_WPF.Dialog
                                             sigh = "+";
                                             break;
                                     }
-                                        
-                                        dataGridView.Rows[j].Cells[i].Value = (Math.Round(complex.Real, 3) + "" + sigh + "" + Math.Round(complex.Imaginary, 3) +"i").ToString();
+
+                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round(complex.Real, 3) + "" + sigh + "" + Math.Round(complex.Imaginary, 3) + "i").ToString();
                                 }
-                               
+
                             }
                             else
                             {
@@ -149,7 +172,7 @@ namespace PAPIRUS_WPF.Dialog
                             }
                         }
                     }
-                    if(ele.other_par.Count() != 0)
+                    if (ele.other_par.Count() != 0)
                     {
                         for (int k = 0; k < ele.other_par.Count(); k++)
                         {
@@ -181,14 +204,14 @@ namespace PAPIRUS_WPF.Dialog
                                             break;
                                     }
 
-                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round(complex.Real, 3) +""+ sigh+""+ Math.Round(complex.Imaginary, 3) + "i").ToString();
+                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round(complex.Real, 3) + "" + sigh + "" + Math.Round(complex.Imaginary, 3) + "i").ToString();
                                 }
                             }
                             else
                             {
                                 ele.matrix[a].element = ele.matrix[a].element.Replace(ele.other_par[k].headerColumn, ele.other_par[k].formulaColumn);
                             }
-                        }  
+                        }
                     }
                     a++;
                 }
@@ -196,3 +219,4 @@ namespace PAPIRUS_WPF.Dialog
         }
     }
 }
+
