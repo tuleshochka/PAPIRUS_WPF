@@ -108,7 +108,7 @@ namespace PAPIRUS_WPF.Dialog
                             expr = el.matrix[a].element.Replace(el.parameters[k], (datagridelements.Find(x => x.columnParam == el.parameters[k]).columnValue).ToString());
                             if (expr.EvaluableNumerical)
                             {
-                                dataGridView.Rows[j].Cells[i].Value = expr.EvalNumerical().ToString();
+                                dataGridView.Rows[j].Cells[i].Value = ((double)expr.EvalNumerical()).ToString();
                             }
                             else
                             {
@@ -124,7 +124,7 @@ namespace PAPIRUS_WPF.Dialog
                             expr = el.matrix[a].element.Replace(el.other_par[k].headerColumn, el.other_par[k].formulaColumn);
                             if (expr.EvaluableNumerical)
                             {
-                                dataGridView.Rows[j].Cells[i].Value = expr.EvalNumerical().ToString();
+                                dataGridView.Rows[j].Cells[i].Value = ((double)expr.EvalNumerical()).ToString();
                             }
                             else
                             {
