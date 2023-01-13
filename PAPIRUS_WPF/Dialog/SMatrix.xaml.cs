@@ -114,7 +114,6 @@ namespace PAPIRUS_WPF.Dialog
                             {
                                 el.matrix[a].element = el.matrix[a].element.Replace(el.parameters[k], (datagridelements.Find(x => x.columnParam == el.parameters[k]).columnValue).ToString());
                             }
-                            Console.WriteLine(el.matrix[a].element);
                         }
                     }
                     if(el.other_par.Count() != 0)
@@ -130,17 +129,11 @@ namespace PAPIRUS_WPF.Dialog
                             {
                                 el.matrix[a].element = el.matrix[a].element.Replace(el.other_par[k].headerColumn, el.other_par[k].formulaColumn);
                             }
-                            Console.WriteLine(el.matrix[a].element);
                         }  
                     }
                     a++;
                 }
             }
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
