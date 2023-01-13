@@ -90,19 +90,17 @@ namespace PAPIRUS_WPF
 
         public void ClearSelection()
         {
-            
-
-                foreach (FrameworkElement object_ in CircuitCanvas.Children)
+            foreach (FrameworkElement object_ in CircuitCanvas.Children)
+            {
+                if (object_ is Object) 
                 {
-                    if (object_ is Object) 
-                    {
-                        Object = (Object)object_;
-                        Object.isSelected = false;
-                        Object.BorderBrush = Brushes.Transparent;
-                    }
+                    Object o = (Object)object_;
+                    o.isSelected = false;
+                    o.BorderBrush = Brushes.Transparent;
                 }
-            Data.selection.Clear();
             }
+        Data.selection.Clear();
+        }
 
         public void SingleElementSelect(FrameworkElement element)
         {
@@ -111,13 +109,13 @@ namespace PAPIRUS_WPF
                 Object = element as Object;
                 MovingElement = Object;
                 Object.BorderBrush = Brushes.Magenta;
-                inDrag = true;
                 p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), Object);
                 Object.anchorPoint.X = p2.X - Object.Width / 2;
                 Object.anchorPoint.Y = p2.Y - Object.Height / 2;
                 Data.selection.Add(Object);
                 startPoint = MousePosition;
                 Object.startPoint = p2;
+                Object.isSelected = true;
             }
 
         }
@@ -179,31 +177,28 @@ namespace PAPIRUS_WPF
                 else if (!(result.VisualHit is Border))
                 {
                     Source = e.Source as FrameworkElement;
-                
+                    Console.WriteLine(Source);
                     MousePosition = e.GetPosition(CircuitCanvas);
                     Keys = Keyboard.Modifiers;
                     ClickTimer.Stop();
                     ClickCounter++;
+                    Console.WriteLine(ClickCounter);
                     Object = e.Source as Object;
-                    if (Object == null) 
+                    if (e.Source as FrameworkElement is Canvas)
                     {
-                        if (e.Source as FrameworkElement is Canvas)
-                        {
-                            Console.WriteLine("Я роботаю");
-                            ClearSelection();
-                        }
-                    } 
-                    else if (ClickCounter == 2)
-                        {
-                            if (Data.selection.Count > 1)
-                            {
-                                ClearSelection();
-                                SingleElementSelect(Object);
-                                Object.isSelected = true;
-                            }
-                            elementName = Object.name;
+                        ClearSelection();
+                    }
 
-                            switch (Object)
+                    else if (Object != null && ClickCounter == 2)
+                    {
+                        if (Data.selection.Count > 1)
+                        {
+                            Console.WriteLine(Object);
+                            ClearSelection();
+                            SingleElementSelect(Object);
+                        }
+                        elementName = Object.name;
+                        switch (Object)
                             {
                                 case two_pole _:
                                     fileName = "2pole.json";
@@ -220,13 +215,10 @@ namespace PAPIRUS_WPF
                             }
                             GeneratorDialog gd = new GeneratorDialog(elementName, fileName);
                             gd.ShowDialog();
-                        }
-
-                    
+                    }
                     //в другом случае (один тык)
                     else if (ClickCounter == 1)
                     {
-
                         if (!(Source is Canvas))
                         {
                             if (Keys == ModifierKeys.Control)
@@ -242,6 +234,7 @@ namespace PAPIRUS_WPF
                                 {
                                     ClearSelection();
                                     SingleElementSelect(Source);
+                                    inDrag = true;
                                 }
                                 else
                                 {
@@ -290,10 +283,6 @@ namespace PAPIRUS_WPF
                     p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
                     double left = Math.Abs(element.startPoint.X) + (mousePos.X-startPoint.X);
                     double top = Math.Abs(element.startPoint.Y) + (mousePos.Y - startPoint.Y);
-                    //double left = (mousePos.X - (mousePos.X-Math.Abs(p2.X))/2);
-                    // double top = (mousePos.Y - (mousePos.Y - Math.Abs(p2.Y)) / 2);
-                    Console.WriteLine(left.ToString());
-                    Console.WriteLine(top.ToString());
                     Canvas.SetLeft(element, left);
                     Canvas.SetTop(element, top);
                     _attachedInputLines = element.GetInputLine();
