@@ -14,17 +14,21 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WPF_SHF_Element_lib;
 using AngouriMath;
+using System.Runtime.CompilerServices;
 
 namespace PAPIRUS_WPF.Dialog
 {
+    
     /// <summary>
     /// Логика взаимодействия для SMatrix.xaml
     /// </summary>
     public partial class SMatrix : Window
-    {
+    {   
+        
         System.Windows.Forms.Integration.WindowsFormsHost host =
         new System.Windows.Forms.Integration.WindowsFormsHost();
-        DataGridView dataGridView = new DataGridView();   //для DataGridView
+        DataGridView dataGridView = new DataGridView();  
+            //для DataGridView
 
         Entity expr;
         
@@ -35,7 +39,7 @@ namespace PAPIRUS_WPF.Dialog
             host.Child = dataGridView;
             Grid.SetColumn(host, 1);
             Grid.SetRow(host, 1);
-
+            
             // Add the interop host control to the Grid
             // control's collection of child controls.
             this.grid.Children.Add(host);

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog"
         mc:Ignorable="d"
         Title="SMatrix" Height="360" Width="630">
-    <Grid x:Name="grid">
+    <Grid Background="White" x:Name="grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>

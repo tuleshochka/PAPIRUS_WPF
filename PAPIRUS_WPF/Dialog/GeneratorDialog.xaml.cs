@@ -9,6 +9,8 @@ using System.Windows.Media.Imaging;
 using WPF_SHF_Element_lib;
 using PAPIRUS_WPF.Dialog;
 using PAPIRUS_WPF;
+using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
 
 namespace PAPIRUS_WPF
 {
@@ -30,6 +32,7 @@ namespace PAPIRUS_WPF
     /// </summary>
     public partial class GeneratorDialog : Window
     {
+        
         private string filePath;  //путь до файла
         string imgPath; //путь до картинки
         string jsonString;  //считанный из файла json текст
@@ -45,6 +48,7 @@ namespace PAPIRUS_WPF
         public GeneratorDialog(string elementName, string fileName)
         {
             InitializeComponent();
+            listBox.SelectedIndex= 0;
             groupTextBox.Text = elementName;
             filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
             if (File.Exists(filePath))
@@ -104,8 +108,10 @@ namespace PAPIRUS_WPF
 
         private void sMatrix_Click(object sender, RoutedEventArgs e)
         {
+            bool f = true;
+          
             int i = 0;
-            bool f = false;
+            
             if (!string.IsNullOrEmpty(el.parameters[0]))
             {
                 foreach(dataGridElements element in datagridelements)
@@ -116,13 +122,19 @@ namespace PAPIRUS_WPF
                         f = true;
                         break;
                     }
+                    else f = false ;
+
                     element.columnValue = x.Text;
                     //values.Add(x.Text);
                     i++;
                 }
             }
-           PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el);     
-           window1.Show();
+            if (f) { MessageBox.Show("Введены не все параметры"); }
+            else
+            {
+                PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el);
+                window1.ShowDialog();
+            }
         }
     }
 
