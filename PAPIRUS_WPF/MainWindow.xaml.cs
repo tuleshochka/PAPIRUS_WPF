@@ -70,6 +70,7 @@ namespace PAPIRUS_WPF
 
         //------Для копирования и вставки-------//
         private List<Object> copyData= new List<Object>();
+        private List<Point> copyDataPos = new List<Point>();
 
 
 
@@ -658,7 +659,6 @@ namespace PAPIRUS_WPF
                 {
                     copyData.Add(data);
                 }
-
             }
 
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V)
