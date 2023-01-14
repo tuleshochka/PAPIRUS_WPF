@@ -24,7 +24,7 @@ namespace PAPIRUS_WPF.Elements
         {
             InitializeComponent();
             BorderBrush = Brushes.Transparent;
-            BorderThickness = new Thickness(2);
+            BorderThickness = new Thickness(1);
         }
     }
 }

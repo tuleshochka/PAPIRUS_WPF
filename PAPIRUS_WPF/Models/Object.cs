@@ -53,10 +53,10 @@ namespace PAPIRUS_WPF
         public bool _isInDrag = false;
 
         //The lines being connected to the input
-        public List<LineGeometry> _attachedInputLines;
+        public List<Line> _attachedInputLines;
 
         //The lines being connected to the output
-        public List<LineGeometry> _attachedOutputLines;
+        public List<Line> _attachedOutputLines;
 
         FormEditor _editor = new FormEditor();
 
@@ -73,8 +73,8 @@ namespace PAPIRUS_WPF
             //this.MouseLeftButtonUp += DragObject_MouseLeftButtonUp;
 
             //Initialize the lists
-            _attachedInputLines = new List<LineGeometry>();
-            _attachedOutputLines = new List<LineGeometry>();
+            _attachedInputLines = new List<Line>();
+            _attachedOutputLines = new List<Line>();
         }
 
 
@@ -133,7 +133,7 @@ namespace PAPIRUS_WPF
         /// </summary>
         /// <param name="sender">The element that is calling the event</param>
         /// <param name="e">The event parameters</param>
-        public void DragObject_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        /*public void DragObject_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //Make sure the object is being dragged
             if (_isInDrag)
@@ -149,7 +149,7 @@ namespace PAPIRUS_WPF
                 _transform.Y /= _editor.Zoom();
 
                 //Transform the attached line if its an input (uses EndPoint)
-                foreach (LineGeometry attachedLine in _attachedInputLines)
+                foreach (Line attachedLine in _attachedInputLines)
                 {
                     attachedLine.EndPoint = MoveLine(attachedLine.EndPoint,
                                                      (_currentPoint.X - _anchorPoint.X),
@@ -157,7 +157,7 @@ namespace PAPIRUS_WPF
                 }
 
                 //Transform the attached line if its an output (uses StartPoint)
-                foreach (LineGeometry attachedLine in _attachedOutputLines)
+                foreach (Line attachedLine in _attachedOutputLines)
                 {
                     attachedLine.StartPoint = MoveLine(attachedLine.StartPoint,
                                                      (_currentPoint.X - _anchorPoint.X),
@@ -169,7 +169,7 @@ namespace PAPIRUS_WPF
                 //Update the anchor point
                 _anchorPoint = _currentPoint;
             }
-        }
+        }*/
 
         /// <summary>
         /// Translates a lines position.
@@ -190,7 +190,7 @@ namespace PAPIRUS_WPF
         /// Adds an input line to the list of attached lines
         /// </summary>
         /// <param name="line">The line to add</param>
-        public virtual void AttachInputLine(LineGeometry line)
+        public virtual void AttachInputLine(Line line)
         {
             _attachedInputLines.Add(line);
         }
@@ -199,16 +199,16 @@ namespace PAPIRUS_WPF
         /// Adds an output line to the list of attached lines
         /// </summary>
         /// <param name="line">The line to add</param>
-        public virtual void AttachOutputLine(LineGeometry line)
+        public virtual void AttachOutputLine(Line line)
         {
             _attachedOutputLines.Add(line);
         }
 
-        public List<LineGeometry> GetOutputLine()
+        public List<Line> GetOutputLine()
         {
             return _attachedOutputLines;
         }
-        public List<LineGeometry> GetInputLine()
+        public List<Line> GetInputLine()
         {
             return _attachedInputLines;
         }
