@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using WPF_SHF_Element_lib;
 
 namespace PAPIRUS_WPF
@@ -23,7 +24,7 @@ namespace PAPIRUS_WPF
         public string elementName;
         public string fileName;
 
-        public int num;  //для счета количества элементов на canvas
+        public int num = 1;  //для счета количества элементов на canvas
 
         //The boolean that signifys when an output is being linked
         private bool _linkingStarted = false;
@@ -195,11 +196,6 @@ namespace PAPIRUS_WPF
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
                 //If the mouse has hit a border
-
-
-
-
-
                 if (result.VisualHit is Border)
                 {
                     //Get the parent class of the border
@@ -234,13 +230,6 @@ namespace PAPIRUS_WPF
 
                         e.Handled = true;
                     }
-                   
-
-
-
-
-
-
                 }
                 else if (!(result.VisualHit is Border))
                 {
@@ -281,7 +270,7 @@ namespace PAPIRUS_WPF
                                 ;
                                 break;
                         }
-                        GeneratorDialog gd = new GeneratorDialog(elementName, fileName);
+                        PoleDialog gd = new PoleDialog(elementName, fileName);
                         gd.ShowDialog();
                     }
                     //в другом случае (один тык)
@@ -695,6 +684,7 @@ namespace PAPIRUS_WPF
                 copyData.Clear();
                 foreach (Object data in Data.selection)
                 {
+                    data.startPoint = CircuitCanvas.TranslatePoint(new Point(0, 0), data);
                     copyData.Add(data);
                    
                 }
@@ -702,8 +692,9 @@ namespace PAPIRUS_WPF
 
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V)
             {
-                int p = 0;
                 var mousePos = Mouse.GetPosition(CircuitCanvas);
+                Point startPoint = copyData[0].startPoint;
+
                 foreach (Object data in copyData)
                 {
                 Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(data.GetType().ToString());
@@ -725,63 +716,12 @@ namespace PAPIRUS_WPF
                 //Add the element to the canvas
                 CircuitCanvas.Children.Add(instance);
 
-                    Object element = Data.selection[p];
-                    p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
-                    double left = Math.Abs(element.startPoint.X) + (mousePos.X - startPoint.X);
-                    double top = Math.Abs(element.startPoint.Y) + (mousePos.Y - startPoint.Y);
+                    double left = mousePos.X + (startPoint.X - data.startPoint.X);
+                    double top = mousePos.Y + (startPoint.Y - data.startPoint.Y);
                     Canvas.SetLeft(instance, left);
                     Canvas.SetTop(instance, top);
-                    _attachedInputLines = element.GetInputLine();
-                    var mouse = Mouse.GetPosition(element);
-                    center.X = mousePos.X - mouse.X;
-                    center.Y = mousePos.Y - mouse.Y;
-                    foreach (Line attachedLine in _attachedInputLines)
-                    {
-                        Point endPoint = new Point(attachedLine.X2, attachedLine.Y2);
-                        attachedLine.X2 = (MoveLine(endPoint,
-                        (center.X + element.Width / 2 + element.anchorPoint.X),
-                        (center.Y + element.Height / 2 + element.anchorPoint.Y))).X;
-                        attachedLine.Y2 = (MoveLine(endPoint,
-                        (center.X + element.Width / 2 + element.anchorPoint.X),
-                        (center.Y + element.Height / 2 + element.anchorPoint.Y))).Y;
-                    }
-
-                    _attachedOutputLines = element.GetOutputLine();
-                    //Transform the attached line if its an output (uses StartPoint)
-                    foreach (Line attachedLine in _attachedOutputLines)
-                    {
-                        Point startPoint = new Point(attachedLine.X1, attachedLine.Y1);
-                        attachedLine.X1 = (MoveLine(startPoint,
-                                                         (Math.Abs(center.X + element.Width / 2) + element.anchorPoint.X),
-                        (Math.Abs(center.Y + element.Height / 2) + element.anchorPoint.Y))).X;
-                        attachedLine.Y1 = (MoveLine(startPoint,
-                        (Math.Abs(center.X + element.Width / 2) + element.anchorPoint.X),
-                                                        (Math.Abs(center.Y + element.Height / 2) + element.anchorPoint.Y))).Y;
-                    }
-                    element.anchorPoint.X = p2.X - element.Width / 2;
-                    element.anchorPoint.Y = p2.Y - element.Height / 2;
-                    num++;
-                 p++;
+                num++;
             }
-               
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // Point position = Mouse.GetPosition(CircuitCanvas);
-            // Canvas.SetLeft(copyData[0], position.X);
-            // Canvas.SetTop(copyData[0], position.Y);
-            // CircuitCanvas.Children.Add(copyData[0]);
-               
             }
         }
 
@@ -789,8 +729,6 @@ namespace PAPIRUS_WPF
         {
 
         }
-
-
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
