@@ -33,6 +33,7 @@ namespace PAPIRUS_WPF
         private LineGeometry _tempLink;
         //The output that is being linked to
         private Output _tempOutput;
+        private Input _tempInput;
         bool MiddleClick = false;  //для перемещения по canvas
        
         private List<PowerObject> _powerList;   //хз
@@ -191,6 +192,11 @@ namespace PAPIRUS_WPF
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
                 //If the mouse has hit a border
+
+
+
+
+
                 if (result.VisualHit is Border)
                 {
                     //Get the parent class of the border
@@ -218,6 +224,13 @@ namespace PAPIRUS_WPF
 
                         e.Handled = true;
                     }
+                   
+
+
+
+
+
+
                 }
                 else if (!(result.VisualHit is Border))
                 {
@@ -465,6 +478,7 @@ namespace PAPIRUS_WPF
                             //Set linked to true
                             linked = true;
                         }
+                       
                     }
                 }
 
@@ -617,7 +631,17 @@ namespace PAPIRUS_WPF
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
             {
+                Clipboard.SetDataObject(Data.selection[0]);
                 Console.WriteLine("оно будет робить");
+            }
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V)
+            {
+                 var a = Clipboard.GetDataObject();
+                Point position = Mouse.GetPosition(CircuitCanvas);
+                Canvas.SetLeft(a, position.X);
+                Canvas.SetTop(a, position.Y);
+                CircuitCanvas.Children.Add(a);
+                Console.WriteLine(a.ToString());
             }
         }
 

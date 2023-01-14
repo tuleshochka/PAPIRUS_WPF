@@ -53,7 +53,7 @@
             <Rectangle x:Name="LEDRect" RadiusX="5" RadiusY="5" Fill="White" Margin="0"></Rectangle>
         </Border>-->
         <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,30,0,0"/>
-        <local:Output x:Name="RightInput" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="65,30,0,0"/>
+        <local:Output x:Name="RightInput"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,12,0,0"/>
         <local:Output x:Name="UpInput" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="6,4,0,0" />
     </Grid>
 </Papirus:Object>
