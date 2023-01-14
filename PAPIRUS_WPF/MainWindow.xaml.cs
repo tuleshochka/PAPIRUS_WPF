@@ -68,7 +68,7 @@ namespace PAPIRUS_WPF
         public bool selectionMoving = false;
         private Point moveStart;
         private bool panning;
-        
+        private Object clipBoardRef;
         private Point maxMove;
 
         
@@ -631,12 +631,14 @@ namespace PAPIRUS_WPF
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
             {
+                clipBoardRef = Data.selection[0];
+                Clipboard.SetData("myControl", "it doesn't matter");
                 Clipboard.SetDataObject(Data.selection[0]);
                 Console.WriteLine("оно будет робить");
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V)
             {
-                 var a = Clipboard.GetDataObject();
+                var a = Clipboard.GetDataObject();
                 Point position = Mouse.GetPosition(CircuitCanvas);
                 Canvas.SetLeft(a, position.X);
                 Canvas.SetTop(a, position.Y);
