@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace PAPIRUS_WPF
 {
     public static class Data
     {
         public static List<Object> selection = new List<Object>();
+        public static List<Line> selectedWires = new List<Line>();
         public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();
 
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject

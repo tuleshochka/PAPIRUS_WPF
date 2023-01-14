@@ -111,6 +111,7 @@ namespace PAPIRUS_WPF
                 }
             }
             Data.selection.Clear();
+            Data.selectedWires.Clear();
         }
 
         private void SingleElementSelect(FrameworkElement element)
@@ -125,12 +126,16 @@ namespace PAPIRUS_WPF
                 Data.selection.Add(Object);
                 startPoint = MousePosition;
                 Object.startPoint = p2;
+                Object obj = Object;
+                Console.WriteLine(obj.GetType());
+                
                 Object.isSelected = true;
             }
             else if (element is Line)
             {
                 Line line = (Line)element;
                 line.Stroke = Brushes.Magenta;
+                Data.selectedWires.Add(line);
             }
         }
 
@@ -206,7 +211,7 @@ namespace PAPIRUS_WPF
                     {
                         //Cast to output
                         Output IOOutput = (Output)IO;
-
+                        startPoint = e.GetPosition(CircuitCanvas);
                         //Get the center of the output relative to the canvas
                         Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
 
@@ -293,7 +298,7 @@ namespace PAPIRUS_WPF
                             }
                             else
                             {
-                                if (Data.selection.Contains(Source) == false)
+                                if (Data.selection.Contains(Source) == false && Data.selectedWires.Contains(Source) == false)
                                 {
                                     ClearSelection();
                                     SingleElementSelect(Source);
@@ -303,7 +308,6 @@ namespace PAPIRUS_WPF
                                 {
                                     inDrag = true;
                                     startPoint = MousePosition;
-
                                 }
                             }
                         }
@@ -327,9 +331,28 @@ namespace PAPIRUS_WPF
             if (_linkingStarted)
             {
                 ClearSelection();
+                Point currentPoint = e.GetPosition(CircuitCanvas);
                 //Move the link endpoint to the current location of the mouse
-                _tempLink.X2 = (e.GetPosition(CircuitCanvas).X)-1;
-                _tempLink.Y2 = (e.GetPosition(CircuitCanvas).Y)-1;
+                if((currentPoint.X - startPoint.X) > 0 && (currentPoint.Y - startPoint.Y) > 0)
+                {
+                    _tempLink.X2 = (e.GetPosition(CircuitCanvas).X) - 1;
+                    _tempLink.Y2 = (e.GetPosition(CircuitCanvas).Y) - 1;
+                }
+                if ((currentPoint.X - startPoint.X) < 0 && (currentPoint.Y - startPoint.Y) < 0)
+                {
+                    _tempLink.X2 = (e.GetPosition(CircuitCanvas).X) + 1;
+                    _tempLink.Y2 = (e.GetPosition(CircuitCanvas).Y) + 1;
+                }
+                if ((currentPoint.X - startPoint.X) < 0 && (currentPoint.Y - startPoint.Y) > 0)
+                {
+                    _tempLink.X2 = (e.GetPosition(CircuitCanvas).X) + 1;
+                    _tempLink.Y2 = (e.GetPosition(CircuitCanvas).Y) - 1;
+                }
+                if ((currentPoint.X - startPoint.X) > 0 && (currentPoint.Y - startPoint.Y) < 0)
+                {
+                    _tempLink.X2 = (e.GetPosition(CircuitCanvas).X) - 1;
+                    _tempLink.Y2 = (e.GetPosition(CircuitCanvas).Y) + 1;
+                }
                 e.Handled = true;
             }
             else
@@ -524,6 +547,7 @@ namespace PAPIRUS_WPF
                 rect.Width = markerGlyph.Width;
                 rect.Height = markerGlyph.Height;
                 Mouse.Capture(null);
+                
                 foreach (FrameworkElement object_ in CircuitCanvas.Children)
                 {
                     if (object_ is Object)
@@ -647,9 +671,23 @@ namespace PAPIRUS_WPF
            
             if (e.Key == Key.Delete)
             {
-                foreach (var select in Data.selection)
+                foreach (var element in Data.selection)
                 {
-                    CircuitCanvas.Children.Remove(select);
+                    CircuitCanvas.Children.Remove(element);
+                    _attachedInputLines = element.GetInputLine();
+                    foreach(var wire in _attachedInputLines)
+                    {
+                        CircuitCanvas.Children.Remove(wire);
+                    }
+                    _attachedOutputLines = element.GetOutputLine();
+                    foreach (var wire in _attachedOutputLines)
+                    {
+                        CircuitCanvas.Children.Remove(wire);
+                    }
+                }
+                foreach(var wire in Data.selectedWires)
+                {
+                    CircuitCanvas.Children.Remove(wire);
                 }
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
