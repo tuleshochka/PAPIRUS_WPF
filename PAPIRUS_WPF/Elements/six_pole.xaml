@@ -12,9 +12,7 @@
         <!--<Polyline Stroke="Black" StrokeThickness="1" StrokeLineJoin="Round" StrokeEndLineCap="Round" Points="7,40 55,40 55,20 "/>-->
         <Path Stroke="Black" StrokeThickness="1" Fill="White">
             <Path.Data>
-
                 <PathGeometry>
-
                     <PathGeometry.Figures>
                         <PathFigureCollection>
                             <PathFigure StartPoint="16,44">
