@@ -3,14 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Timers;
-using WPF_SHF_Element_lib;
 using System.Windows.Shapes;
-using System.Xml.Linq;
+using WPF_SHF_Element_lib;
 
 namespace PAPIRUS_WPF
 {
@@ -67,10 +66,11 @@ namespace PAPIRUS_WPF
         public bool selectionMoving = false;
         private Point moveStart;
         private bool panning;
-        private Object clipBoardRef;
         private Point maxMove;
 
-        
+        //------Для копирования и вставки-------//
+        private List<Object> copyData= new List<Object>();
+
 
 
         public MainWindow()
@@ -575,10 +575,10 @@ namespace PAPIRUS_WPF
                 return;
 
             string ItemType = allFormats[0];
-
+            Console.WriteLine(ItemType);
             //Create a new type of the format
             Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
-            if (instance is two_pole || instance is four_pole || instance is six_pole)
+            if (instance is two_pole || instance is four_pole || instance is six_pole || instance is eight_pole)
             {
                 instance.name = "Эл-" + num;
             }
@@ -643,6 +643,7 @@ namespace PAPIRUS_WPF
 
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
+           
             if (e.Key == Key.Delete)
             {
                 foreach (var select in Data.selection)
@@ -652,19 +653,96 @@ namespace PAPIRUS_WPF
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
             {
-                clipBoardRef = Data.selection[0];
-                Clipboard.SetData("myControl", "it doesn't matter");
-                Clipboard.SetDataObject(Data.selection[0]);
-                Console.WriteLine("оно будет робить");
+                copyData.Clear();
+                foreach (Object data in Data.selection)
+                {
+                    copyData.Add(data);
+                }
+
             }
+
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.V)
             {
-                var a = Clipboard.GetDataObject();
-                Point position = Mouse.GetPosition(CircuitCanvas);
-                Canvas.SetLeft(a, position.X);
-                Canvas.SetTop(a, position.Y);
-                CircuitCanvas.Children.Add(a);
-                Console.WriteLine(a.ToString());
+                int p = 0;
+                var mousePos = Mouse.GetPosition(CircuitCanvas);
+                foreach (Object data in copyData)
+                {
+                Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(data.GetType().ToString());
+                Console.WriteLine(instance.ToString());
+                if (instance is two_pole || instance is four_pole || instance is six_pole || instance is eight_pole )
+                {
+                    instance.name = "Эл-" + num;
+                }
+                else if (instance is generator)
+                {
+                    instance.name = "Г-" + num;
+                }
+                //instances.Add(instance);
+                //If the format doesn't exist do nothing
+
+                if (instance == null)
+                    return;
+
+                //Add the element to the canvas
+                CircuitCanvas.Children.Add(instance);
+
+                    Object element = Data.selection[p];
+                    p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
+                    double left = Math.Abs(element.startPoint.X) + (mousePos.X - startPoint.X);
+                    double top = Math.Abs(element.startPoint.Y) + (mousePos.Y - startPoint.Y);
+                    Canvas.SetLeft(instance, left);
+                    Canvas.SetTop(instance, top);
+                    _attachedInputLines = element.GetInputLine();
+                    var mouse = Mouse.GetPosition(element);
+                    center.X = mousePos.X - mouse.X;
+                    center.Y = mousePos.Y - mouse.Y;
+                    foreach (Line attachedLine in _attachedInputLines)
+                    {
+                        Point endPoint = new Point(attachedLine.X2, attachedLine.Y2);
+                        attachedLine.X2 = (MoveLine(endPoint,
+                        (center.X + element.Width / 2 + element.anchorPoint.X),
+                        (center.Y + element.Height / 2 + element.anchorPoint.Y))).X;
+                        attachedLine.Y2 = (MoveLine(endPoint,
+                        (center.X + element.Width / 2 + element.anchorPoint.X),
+                        (center.Y + element.Height / 2 + element.anchorPoint.Y))).Y;
+                    }
+
+                    _attachedOutputLines = element.GetOutputLine();
+                    //Transform the attached line if its an output (uses StartPoint)
+                    foreach (Line attachedLine in _attachedOutputLines)
+                    {
+                        Point startPoint = new Point(attachedLine.X1, attachedLine.Y1);
+                        attachedLine.X1 = (MoveLine(startPoint,
+                                                         (Math.Abs(center.X + element.Width / 2) + element.anchorPoint.X),
+                        (Math.Abs(center.Y + element.Height / 2) + element.anchorPoint.Y))).X;
+                        attachedLine.Y1 = (MoveLine(startPoint,
+                        (Math.Abs(center.X + element.Width / 2) + element.anchorPoint.X),
+                                                        (Math.Abs(center.Y + element.Height / 2) + element.anchorPoint.Y))).Y;
+                    }
+                    element.anchorPoint.X = p2.X - element.Width / 2;
+                    element.anchorPoint.Y = p2.Y - element.Height / 2;
+                    num++;
+                 p++;
+            }
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // Point position = Mouse.GetPosition(CircuitCanvas);
+            // Canvas.SetLeft(copyData[0], position.X);
+            // Canvas.SetTop(copyData[0], position.Y);
+            // CircuitCanvas.Children.Add(copyData[0]);
+               
             }
         }
 
