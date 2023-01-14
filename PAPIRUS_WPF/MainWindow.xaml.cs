@@ -195,11 +195,6 @@ namespace PAPIRUS_WPF
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
                 //If the mouse has hit a border
-
-
-
-
-
                 if (result.VisualHit is Border)
                 {
                     //Get the parent class of the border
@@ -234,13 +229,6 @@ namespace PAPIRUS_WPF
 
                         e.Handled = true;
                     }
-                   
-
-
-
-
-
-
                 }
                 else if (!(result.VisualHit is Border))
                 {
@@ -281,7 +269,7 @@ namespace PAPIRUS_WPF
                                 ;
                                 break;
                         }
-                        GeneratorDialog gd = new GeneratorDialog(elementName, fileName);
+                        PoleDialog gd = new PoleDialog(elementName, fileName);
                         gd.ShowDialog();
                     }
                     //в другом случае (один тык)

@@ -1,21 +1,24 @@
-﻿<Window x:Class="PAPIRUS_WPF.Dialog.GeneratorDialog"
+﻿<Window x:Class="PAPIRUS_WPF.PoleDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog"
+        xmlns:local="clr-namespace:PAPIRUS_WPF"
         mc:Ignorable="d"
-        Title="Параметры Генератора" Height="565" Width="679" ResizeMode="CanMinimize">
-    <Grid>
+        Title="Параметры элемента" Height="565" Width="679" ResizeMode="CanMinimize">
+    <Grid Margin="0,0,0,0">
+
+
         <Button Content="OK"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="412,482,0,0"/>
         <Button Content="Отмена"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="537,482,0,0"/>
 
         <TextBlock HorizontalAlignment="Left" Margin="26,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Имя элемента"/>
         <TextBox x:Name="groupTextBox" HorizontalAlignment="Left" Margin="130,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="162" Height="25"/>
         <TextBlock HorizontalAlignment="Left" Margin="26,70,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="ru-ru" Text="Параметры элемента"/></TextBlock>
-        <DataGrid x:Name="dataGrid" Margin="25,149,342,240" AutoGenerateColumns="false" CanUserAddRows="False" >
+        <DataGrid x:Name="dataGrid" Margin="25,110,342,240" AutoGenerateColumns="false" CanUserAddRows="False" >
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="ColumnParam"  Header="Параметр" Binding="{Binding columnParam}" IsReadOnly="True"/>
+                <local:DataGridNumericColumn x:Name="ColumnValue"  Header="Значение" Binding="{Binding columnValue}" Width="*"/>
                 <DataGridTextColumn x:Name="ColumnDopusk"  Header="Допуск, %" Binding="{Binding columnDopusk}" Width="80" />
             </DataGrid.Columns>
         </DataGrid>
@@ -25,7 +28,5 @@
         <Button x:Name="sMatrix" Content="S-матрица" Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="25,482,0,0" Click="sMatrix_Click"/>
         <ListBox x:Name="listBox"  Margin="25,351,42,88" SelectionChanged="listBox_SelectionChanged" SelectionMode="Single" />
         <TextBlock HorizontalAlignment="Left" Margin="25,330,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="ru-ru" Text="Тип элемента"/></TextBlock>
-        <RadioButton Content="RadioButton" HorizontalAlignment="Left" Margin="26,115,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.355,0.636"/>
-        <RadioButton Content="RadioButton" HorizontalAlignment="Left" Margin="169,118,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.355,0.636"/>
     </Grid>
 </Window>
