@@ -696,6 +696,7 @@ namespace PAPIRUS_WPF
                 foreach (Object data in Data.selection)
                 {
                     copyData.Add(data);
+                   
                 }
             }
 

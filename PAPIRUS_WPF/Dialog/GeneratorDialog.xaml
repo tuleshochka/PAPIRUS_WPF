@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PAPIRUS_WPF"
         mc:Ignorable="d"
-        Title="Параметры элемента" Height="565" Width="679" ResizeMode="CanMinimize">
-    <Grid Margin="0,0,0,0">
+        Title="Параметры элемента" Height="565" Width="679" ResizeMode="CanMinimize" Background="White">
+    <Grid Background="White" Margin="0,0,0,0">
 
 
         <Button Content="OK"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="412,482,0,0"/>
