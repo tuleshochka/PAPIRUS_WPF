@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PAPIRUS_WPF.Dialog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,10 +13,16 @@ namespace PAPIRUS_WPF
 {
     public static class Data
     {
+        //---------для MainForm-------------//
         public static List<Object> selection = new List<Object>();
         public static List<Line> selectedWires = new List<Line>();
         public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();
 
+        //---------для GeneratorDialog-------------//
+        public static List<Limits> dataLimits = new List<Limits>();  //
+        public static List<Specific> dataSpecifics = new List<Specific>();
+
+        //----------найти родительский элемент-------------//
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             //get parent item

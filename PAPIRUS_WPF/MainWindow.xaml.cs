@@ -1,4 +1,5 @@
-﻿using PAPIRUS_WPF.Elements;
+﻿using PAPIRUS_WPF.Dialog;
+using PAPIRUS_WPF.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -255,23 +256,31 @@ namespace PAPIRUS_WPF
                             SingleElementSelect(Source);
                         }
                         elementName = Object.name;
-                        switch (Object)
+                        if(Object is generator)
                         {
-                            case two_pole _:
-                                fileName = "2pole.json";
-                                break;
-                            case four_pole _:
-                                fileName = "4pole.json";
-                                break;
-                            case six_pole _:
-                                fileName = "6pole.json";
-                                break;
-                            case generator _:
-                                ;
-                                break;
+                            GeneratorDialog gd = new GeneratorDialog(elementName);
+                            gd.ShowDialog();
                         }
-                        PoleDialog gd = new PoleDialog(elementName, fileName);
-                        gd.ShowDialog();
+                        else
+                        {
+                            switch (Object)
+                            {
+                                case two_pole _:
+                                    fileName = "2pole.json";
+                                    break;
+                                case four_pole _:
+                                    fileName = "4pole.json";
+                                    break;
+                                case six_pole _:
+                                    fileName = "6pole.json";
+                                    break;
+                                case generator _:
+                                    ;
+                                    break;
+                            }
+                            PoleDialog gd = new PoleDialog(elementName, fileName);
+                            gd.ShowDialog();
+                        }
                     }
                     //в другом случае (один тык)
                     else if (ClickCounter == 1)
