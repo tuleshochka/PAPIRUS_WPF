@@ -740,7 +740,7 @@ namespace PAPIRUS_WPF
 
         private void Form_MouseDown(object sender, MouseButtonEventArgs e)
         {
-
+    
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
