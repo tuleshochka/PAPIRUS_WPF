@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Timers;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -22,10 +23,10 @@ namespace PAPIRUS_WPF
     {
 
         //--------данные для dialog--------------//
-        public string elementName;
-        public string fileName;
+        private string elementName;
+        private string fileName;
 
-        public int num = 1;  //для счета количества элементов на canvas
+        private int num = 1;  //для счета количества элементов на canvas
 
         //The boolean that signifys when an output is being linked
         private bool _linkingStarted = false;
@@ -34,7 +35,7 @@ namespace PAPIRUS_WPF
         //The output that is being linked to
         private Output _tempOutput;
         private Input _tempInput;
-        bool MiddleClick = false;  //для перемещения по canvas
+        private bool MiddleClick = false;  //для перемещения по canvas
 
         private List<PowerObject> _powerList;   //хз
 
@@ -56,7 +57,7 @@ namespace PAPIRUS_WPF
         private Point MousePosition;
         private Point startPoint;
         private ModifierKeys Keys;
-        private Object Object;
+        private Object startObject;
         private bool inDrag = false;
 
         //------для общего выделения-------//
@@ -65,7 +66,7 @@ namespace PAPIRUS_WPF
         private Rectangle markerGlyph;
         private TranslateTransform moveVector;
         private Canvas selectionLayer;
-        public bool selectionMoving = false;
+        private bool selectionMoving = false;
         private Point moveStart;
         private bool panning;
         private Point maxMove;
@@ -74,7 +75,8 @@ namespace PAPIRUS_WPF
         private List<Object> copyData= new List<Object>();
         private List<Point> copyDataPos = new List<Point>();
 
-
+        //-------подключение к генератору----------//
+        private bool generatorConnect = false;
 
         public MainWindow()
         {
@@ -93,9 +95,20 @@ namespace PAPIRUS_WPF
         public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
 
 
+        private void SetElementName(Object instance)
+        {
+            if (instance is generator)
+            {
+                instance.name = "Г-" + num;
+            }
+            else
+            {
+                instance.name = "Эл-" + num;
+            }
+            num++;
+        }
+
         //--------Selection-------//
-
-
         private void ClearSelection()
         {
             foreach (FrameworkElement object_ in CircuitCanvas.Children)
@@ -120,18 +133,16 @@ namespace PAPIRUS_WPF
         {
             if (element is Object)
             {
-                Object = element as Object;
-                Object.BorderBrush = Brushes.Magenta;
-                p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), Object);
-                Object.anchorPoint.X = p2.X - Object.Width / 2;
-                Object.anchorPoint.Y = p2.Y - Object.Height / 2;
-                Data.selection.Add(Object);
+                Object obj = element as Object;
+                Console.WriteLine(obj.generatorConnected);
+                obj.BorderBrush = Brushes.Magenta;
+                p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), obj);
+                obj.anchorPoint.X = p2.X - obj.Width / 2;
+                obj.anchorPoint.Y = p2.Y - obj.Height / 2;
+                Data.selection.Add(obj);
                 startPoint = MousePosition;
-                Object.startPoint = p2;
-                Object obj = Object;
-                Console.WriteLine(obj.GetType());
-                
-                Object.isSelected = true;
+                obj.startPoint = p2;
+                obj.isSelected = true;
             }
             else if (element is Line)
             {
@@ -178,8 +189,14 @@ namespace PAPIRUS_WPF
             Canvas.SetTop(markerGlyph, rect.Y);
             markerGlyph.Width = rect.Width;
             markerGlyph.Height = rect.Height;
-            Console.WriteLine(markerGlyph.Width);
-            Console.WriteLine(markerGlyph.Height);
+        }
+
+        private Point MoveLine(Point PointToMove, double AmountToMoveX, double AmountToMoveY)
+        {
+            Point transformedPoint = new Point();
+            transformedPoint.X = PointToMove.X + AmountToMoveX;
+            transformedPoint.Y = PointToMove.Y + AmountToMoveY;
+            return transformedPoint;
         }
 
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -194,6 +211,8 @@ namespace PAPIRUS_WPF
             //тык левой кнопкой
             if (e.ChangedButton == MouseButton.Left)
             {
+                Source = e.Source as FrameworkElement;
+                startObject = e.Source as Object;
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
                 //If the mouse has hit a border
@@ -206,6 +225,10 @@ namespace PAPIRUS_WPF
                     //If the parent class is an Output
                     if (IO is Output)
                     {
+                        if(startObject is generator  || startObject.generatorConnected == true)
+                        {
+                            generatorConnect = true;
+                        }
                         //Cast to output
                         Output IOOutput = (Output)IO;
                         startPoint = e.GetPosition(CircuitCanvas);
@@ -222,8 +245,6 @@ namespace PAPIRUS_WPF
                         _tempLink.Stroke = Brushes.Black;
                         _tempLink.StrokeThickness = 1;
 
-                        //Assign it to the list of connections to be displayed
-                        //Connections.Children.Add(_tempLink);
                         CircuitCanvas.Children.Add(_tempLink);
 
                         //Assign the temporary output to the current output
@@ -234,36 +255,32 @@ namespace PAPIRUS_WPF
                 }
                 else if (!(result.VisualHit is Border))
                 {
-
-                    Source = e.Source as FrameworkElement;
-                    Console.WriteLine(result.VisualHit);
                     MousePosition = e.GetPosition(CircuitCanvas);
                     Keys = Keyboard.Modifiers;
                     ClickTimer.Stop();
                     ClickCounter++;
-                    Object = e.Source as Object;
                     if (e.Source as FrameworkElement is Canvas)
                     {
                         ClearSelection();
                         StartAreaSelection(MousePosition);
                     }
 
-                    else if (Object != null && ClickCounter == 2)
+                    else if (startObject != null && ClickCounter == 2)
                     {
                         if (Data.selection.Count > 1)
                         {
                             ClearSelection();
                             SingleElementSelect(Source);
                         }
-                        elementName = Object.name;
-                        if(Object is generator)
+                        elementName = startObject.name;
+                        if(startObject is generator)
                         {
                             GeneratorDialog gd = new GeneratorDialog(elementName);
                             gd.ShowDialog();
                         }
                         else
                         {
-                            switch (Object)
+                            switch (startObject)
                             {
                                 case two_pole _:
                                     fileName = "2pole.json";
@@ -427,25 +444,11 @@ namespace PAPIRUS_WPF
             }
         }
 
-        private Point MoveLine(Point PointToMove, double AmountToMoveX, double AmountToMoveY)
-        {
-            Point transformedPoint = new Point();
-            transformedPoint.X = PointToMove.X + AmountToMoveX;
-            transformedPoint.Y = PointToMove.Y + AmountToMoveY;
-            return transformedPoint;
-        }
-
         private void CircuitCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
 
-            if (this.panning)
-            {
-                Mouse.Capture(null);
-                this.panning = false;
-            }
             MiddleClick = false;
             Cursor = Cursors.Arrow;
-            //If there is a linking in progress
 
             if (_linkingStarted)
             {
@@ -457,16 +460,10 @@ namespace PAPIRUS_WPF
 
                 if (BaseType == typeof(Object))
                 {
-                    //Convert to a circuit object
                     Object obj = (Object)e.Source;
-
-                    //Get the position of the mouse relative to the circuit object
                     Point MousePosition = e.GetPosition(obj);
-
-                    //Get the element underneath the mouse
                     HitTestResult result = VisualTreeHelper.HitTest(obj, MousePosition);
 
-                    //Return if there is no element under the cursor
                     if (result == null || result.VisualHit == null)
                     {
                         //Remove the temporary line
@@ -485,7 +482,14 @@ namespace PAPIRUS_WPF
                         //Check if the border element is a input element in disguise
                         if (IO is Output)
                         {
-                            //Convert to a input element
+                            if(generatorConnect == true )
+                            {
+                                obj.generatorConnected = true;
+                            }
+                            else if (obj is generator || obj.generatorConnected == true)
+                            {
+                                startObject.generatorConnected = true;
+                            }
                             Output IOInput = (Output)IO;
 
                             //Get the center of the input relative to the canvas
@@ -510,6 +514,7 @@ namespace PAPIRUS_WPF
 
                             //Set linked to true
                             linked = true;
+                            generatorConnect = false;
                         }
                        
                     }
@@ -598,33 +603,17 @@ namespace PAPIRUS_WPF
                 return;
 
             string ItemType = allFormats[0];
-            Console.WriteLine(ItemType);
             //Create a new type of the format
             Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
-            if (instance is two_pole || instance is four_pole || instance is six_pole || instance is eight_pole)
-            {
-                instance.name = "Эл-" + num;
-            }
-            else if (instance is generator)
-            {
-                instance.name = "Г-" + num;
-            }
-            //instances.Add(instance);
-            //If the format doesn't exist do nothing
 
             if (instance == null)
                 return;
+            SetElementName(instance);
 
-            //Add the element to the canvas
             CircuitCanvas.Children.Add(instance);
-
-            //Get the point of the mouse relative to the canvas
             Point p = e.GetPosition(CircuitCanvas);
-
-            //Take 15 from the mouse position to center the element on the mouse
             Canvas.SetLeft(instance, p.X - instance.Width / 2);
             Canvas.SetTop(instance, p.Y - instance.Height / 2);
-            num++;
         }
 
         private void CircuitCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -706,31 +695,21 @@ namespace PAPIRUS_WPF
 
                 foreach (Object data in copyData)
                 {
-                Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(data.GetType().ToString());
-                Console.WriteLine(instance.ToString());
-                if (instance is two_pole || instance is four_pole || instance is six_pole || instance is eight_pole )
-                {
-                    instance.name = "Эл-" + num;
-                }
-                else if (instance is generator)
-                {
-                    instance.name = "Г-" + num;
-                }
-                //instances.Add(instance);
-                //If the format doesn't exist do nothing
+                    Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(data.GetType().ToString());
+                    if (instance == null)
+                        return;
+                    SetElementName(instance);
+                    //instances.Add(instance);
+                    //If the format doesn't exist do nothing
 
-                if (instance == null)
-                    return;
-
-                //Add the element to the canvas
-                CircuitCanvas.Children.Add(instance);
+                    //Add the element to the canvas
+                    CircuitCanvas.Children.Add(instance);
 
                     double left = mousePos.X + (startPoint.X - data.startPoint.X);
                     double top = mousePos.Y + (startPoint.Y - data.startPoint.Y);
                     Canvas.SetLeft(instance, left);
                     Canvas.SetTop(instance, top);
-                num++;
-            }
+                }
             }
         }
 
@@ -744,7 +723,6 @@ namespace PAPIRUS_WPF
             WPF_SHF_Element_lib.Window4 window4 = new WPF_SHF_Element_lib.Window4();
             window4.ShowDialog();
         }
-
 
     }
 }

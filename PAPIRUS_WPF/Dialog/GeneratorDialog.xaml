@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Параметры Генератора" Height="565" Width="679" ResizeMode="CanMinimize">
     <Grid>
-        <Button x:Name="OkButton" Content="OK"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="412,482,0,0" Click="OkButton_Click"/>
+        <Button x:Name="OkButton" Content="Применить"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="412,482,0,0" Click="OkButton_Click"/>
         <Button Content="Отмена"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="537,482,0,0"/>
 
         <TextBlock HorizontalAlignment="Left" Margin="26,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Имя элемента"/>
@@ -28,7 +28,6 @@
         </DataGrid>
 
         <Image x:Name="imageElement" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,25,20,0" Height="152" Width="247"/>
-        <Button x:Name="sMatrix" Content="S-матрица" Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="25,482,0,0"/>
         <ListBox x:Name="listBox"  Margin="25,351,42,88"  SelectionMode="Single">
             <ListBoxItem Content="Генератор"/>
         </ListBox>

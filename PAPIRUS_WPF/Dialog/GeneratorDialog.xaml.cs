@@ -89,7 +89,6 @@ namespace PAPIRUS_WPF.Dialog
         private void RadioButtonLimits_Checked(object sender, RoutedEventArgs e)
         {
             dataGridLimits.Visibility = Visibility.Visible;
-            
         }
 
         private void RadioButtonDopusk_Checked(object sender, RoutedEventArgs e)
@@ -110,7 +109,6 @@ namespace PAPIRUS_WPF.Dialog
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-
                 LimitsSaveData();
                 SpesificSaveData();
         }
