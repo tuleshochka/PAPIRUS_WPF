@@ -74,7 +74,7 @@ namespace PAPIRUS_WPF.Dialog
                 {
 
                     formulaColumn.Add(ele.other_par[i].formulaColumn.ToString());
-                    if (!string.IsNullOrEmpty(ele.parameters[0]))
+                    if ((ele.parameters.Count())!=0)
                     {
                         try
                         {
@@ -82,14 +82,14 @@ namespace PAPIRUS_WPF.Dialog
                             {
                                 expr = ele.other_par[i].formulaColumn.ToString().Replace(" ", "");
 
-                                expr = expr.ToString().Replace(ele.parameters[j], (datagridelements1.Find(x => x.columnParam == ele.parameters[j]).columnValue).ToString());
+                                expr = expr.ToString().Replace(ele.parameters[j].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[j].paramColumn + " (" + ele.parameters[j].unitColumn + ")").columnValue).ToString());
                                 if (expr.EvaluableNumerical)
                                 {
                                     ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
                                 }
                                 else
                                 {
-                                    ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.parameters[j], (datagridelements1.Find(x => x.columnParam == ele.parameters[j]).columnValue).ToString());
+                                    ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.parameters[j].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[i].paramColumn + " (" + ele.parameters[i].unitColumn + ")").columnValue).ToString());
                                 }
                             }
                         }
@@ -130,11 +130,11 @@ namespace PAPIRUS_WPF.Dialog
             {
                 for (int j = 0; j < dataGridView.RowCount; j++)
                 {
-                    if (!string.IsNullOrEmpty(ele.parameters[0]))
+                    if ((ele.parameters.Count()) != 0)
                     {
                         for (int k = 0; k < ele.parameters.Count(); k++)
                         {
-                            expr = ele.matrix[a].element.Replace(ele.parameters[k], (datagridelements1.Find(x => x.columnParam == ele.parameters[k]).columnValue).ToString());
+                            expr = ele.matrix[a].element.Replace(ele.parameters[k].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[k].paramColumn + " (" + ele.parameters[k].unitColumn + ")").columnValue).ToString());
                             if (expr.EvaluableNumerical)
                             {
                                 Complex complex = (Complex)expr.EvalNumerical();
@@ -168,7 +168,7 @@ namespace PAPIRUS_WPF.Dialog
                             }
                             else
                             {
-                                ele.matrix[a].element = ele.matrix[a].element.Replace(ele.parameters[k], (datagridelements1.Find(x => x.columnParam == ele.parameters[k]).columnValue).ToString());
+                                ele.matrix[a].element = ele.matrix[a].element.Replace(ele.parameters[k].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[k].paramColumn + " (" + ele.parameters[k].unitColumn + ")").columnValue).ToString());
                             }
                         }
                     }

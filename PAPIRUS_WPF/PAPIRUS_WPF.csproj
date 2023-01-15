@@ -114,6 +114,33 @@
     <Compile Include="Dialog\SMatrix.xaml.cs">
       <DependentUpon>SMatrix.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialog\Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\fourteen_pole.xaml.cs">
+      <DependentUpon>fourteen_pole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\eighteen_pole.xaml.cs">
+      <DependentUpon>eighteen_pole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\twenteetwo_pole.xaml.cs">
+      <DependentUpon>twenteetwo_pole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\twentee_pole.xaml.cs">
+      <DependentUpon>twentee_pole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\sixteen_pole .xaml.cs">
+      <DependentUpon>sixteen_pole .xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\twelve_pole.xaml.cs">
+      <DependentUpon>twelve_pole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\ten_pole.xaml.cs">
+      <DependentUpon>ten_pole.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Elements\multi_pole.xaml.cs">
+      <DependentUpon>multi_pole.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Elements\eight_pole.xaml.cs">
       <DependentUpon>eight_pole.xaml</DependentUpon>
     </Compile>
@@ -156,6 +183,42 @@
     <Page Include="Dialog\SMatrix.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog\Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Elements\fourteen_pole.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Elements\eighteen_pole.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Elements\twenteetwo_pole.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Elements\twentee_pole.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Elements\sixteen_pole .xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Elements\twelve_pole.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Elements\ten_pole.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Elements\multi_pole.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Elements\eight_pole.xaml">
       <SubType>Designer</SubType>

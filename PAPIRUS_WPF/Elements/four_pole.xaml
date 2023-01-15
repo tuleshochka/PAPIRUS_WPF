@@ -13,5 +13,6 @@
         <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4"/>
         <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"/>
         <Rectangle x:Name="LEDRect" Stroke="Black" RadiusX="5" RadiusY="5" Fill="White" Margin="11"/>
+        <Ellipse Width="4" Height="4" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15"></Ellipse>
     </Grid>
 </Papirus:Object>

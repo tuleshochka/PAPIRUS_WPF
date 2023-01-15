@@ -6,11 +6,11 @@
              xmlns:local="clr-namespace:PAPIRUS_WPF.Elements"
              xmlns:Papirus="clr-namespace:PAPIRUS_WPF" 
              mc:Ignorable="d" 
-           Height="60" Width="76">
+           Height="54" Width="76">
 
     <Grid x:Name="SixPole" >
         <!--<Polyline Stroke="Black" StrokeThickness="1" StrokeLineJoin="Round" StrokeEndLineCap="Round" Points="7,40 55,40 55,20 "/>-->
-        <Path Stroke="Black" StrokeThickness="1" Fill="White">
+       <!-- <Path Stroke="Black" StrokeThickness="1" Fill="White">
             <Path.Data>
                 <PathGeometry>
                     <PathGeometry.Figures>
@@ -44,14 +44,16 @@
                     </PathGeometry.Figures>
                 </PathGeometry>
             </Path.Data>
-        </Path>
+        </Path>-->
 
         <!--<Border CornerRadius="5" BorderBrush="Black" Margin="6" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         
             <Rectangle x:Name="LEDRect" RadiusX="5" RadiusY="5" Fill="White" Margin="0"></Rectangle>
         </Border>-->
-        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,30,0,0"/>
-        <local:Output x:Name="RightInput"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,12,0,0"/>
-        <local:Output x:Name="UpInput" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="6,4,0,0" />
+        <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4"/>
+        <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"/>
+        <local:Output x:Name="Top" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,4,0,0"/>
+        <Rectangle x:Name="LEDRect" Stroke="Black" RadiusX="5" RadiusY="5" Fill="White" Margin="11"/>
+        <Ellipse Width="4" Height="4" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15"></Ellipse>
     </Grid>
 </Papirus:Object>

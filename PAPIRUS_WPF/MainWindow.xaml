@@ -7,7 +7,7 @@
         xmlns:Elements="clr-namespace:PAPIRUS_WPF.Elements" x:Class="PAPIRUS_WPF.MainWindow"
         x:Name="Form"
         mc:Ignorable="d"
-        Title="MainWindow" Height="480" Width="800"
+        Title="MainWindow" Height="495" Width="805"
         ResizeMode="CanResizeWithGrip"
         MinWidth="480" MinHeight="300"
         UseLayoutRounding="True"
@@ -203,8 +203,8 @@
             <Elements:four_pole CanMove="False"/>
             <Elements:six_pole CanMove="False"/>
             <Elements:eight_pole CanMove="False"/>
+            <Elements:multi_pole CanMove="False"/>
             <Elements:generator CanMove="False"/>
-
         </ListView>
     </Grid>
 </Window>

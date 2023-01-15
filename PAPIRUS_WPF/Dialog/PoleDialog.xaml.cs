@@ -21,7 +21,7 @@ namespace PAPIRUS_WPF
         public string imagePath { get; set; }
         public string group { get; set; }
         public string name { get; set; }
-        public string[] parameters { get; set; }
+        public List<DataGrid1_Parameters> parameters { get; set; }
         public List<DataGrid1_Elements> other_par { get; set; }
         public List<MatrixElements> matrix { get; set; }
 
@@ -124,11 +124,12 @@ namespace PAPIRUS_WPF
             datagridelements.Clear();
             dataGrid.ItemsSource = null;
             el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
-            if (!string.IsNullOrEmpty(el.parameters[0]))
+            if (el.parameters.Count()!=0)
             {
                 for (int i = 0; i < el.parameters.Count(); i++)
                 {
-                    datagridelements.Add(new dataGridElements { columnParam = el.parameters[i] });
+
+                    datagridelements.Add(new dataGridElements { columnParam = el.parameters[i].paramColumn +" ("+ el.parameters[i].unitColumn + ")" });
                 }
                 dataGrid.ItemsSource = datagridelements;
             }
@@ -151,7 +152,7 @@ namespace PAPIRUS_WPF
             bool f = true;
             int i = 0;
             el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
-            if (!string.IsNullOrEmpty(el.parameters[0]))
+            if (el.parameters.Count() != 0)
             {
                 foreach(dataGridElements element in datagridelements)
                 {
