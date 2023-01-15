@@ -77,11 +77,13 @@ namespace PAPIRUS_WPF
 
         //-------подключение к генератору----------//
         private bool generatorConnect = false;
+        private List<Object> connectedElements;
 
         public MainWindow()
         {
             InitializeComponent();
             _powerList = new List<PowerObject>();
+            connectedElements = new List<Object>();
             ClickTimer = new Timer(300);
             ClickTimer.Elapsed += new ElapsedEventHandler(EvaluateClicks);
             
@@ -211,6 +213,7 @@ namespace PAPIRUS_WPF
             //тык левой кнопкой
             if (e.ChangedButton == MouseButton.Left)
             {
+                Console.WriteLine(e.GetPosition(CircuitCanvas));
                 Source = e.Source as FrameworkElement;
                 startObject = e.Source as Object;
                 //Do a hit test under the mouse position
@@ -490,6 +493,7 @@ namespace PAPIRUS_WPF
                             {
                                 startObject.generatorConnected = true;
                             }
+
                             Output IOInput = (Output)IO;
 
                             //Get the center of the input relative to the canvas
@@ -505,6 +509,9 @@ namespace PAPIRUS_WPF
                             //Adds to the global list
                             _powerList.Add((PowerObject)_tempOutput);
                             _powerList.Add((PowerObject)IOInput);
+
+                            connectedElements.Add(startObject);
+                            connectedElements.Add(obj);
 
                             //Attaches the line to the object
                             obj.AttachInputLine(_tempLink);

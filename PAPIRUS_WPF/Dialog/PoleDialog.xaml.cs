@@ -34,7 +34,6 @@ namespace PAPIRUS_WPF
     ///
     public class DataGridNumericColumn : DataGridTextColumn
     {
-        int temp=0;
     protected override object PrepareCellForEdit(System.Windows.FrameworkElement editingElement, System.Windows.RoutedEventArgs editingEventArgs)
     {
         TextBox edit = editingElement as TextBox;

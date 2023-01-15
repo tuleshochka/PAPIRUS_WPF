@@ -99,7 +99,7 @@
     </Reference>
     <Reference Include="WPF_SHF_Element_lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\projects VScode\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
+      <HintPath>..\..\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +117,8 @@
     <Compile Include="Dialog\multi_pole_select.xaml.cs">
       <DependentUpon>multi_pole_select.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DoublyLinkedList\DoublyLinkedList.cs" />
+    <Compile Include="DoublyLinkedList\DoublyNode.cs" />
     <Compile Include="Elements\fourteen_pole.xaml.cs">
       <DependentUpon>fourteen_pole.xaml</DependentUpon>
     </Compile>
