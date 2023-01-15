@@ -294,8 +294,13 @@ namespace PAPIRUS_WPF
                                 case six_pole _:
                                     fileName = "6pole.json";
                                     break;
+                                case eight_pole _:
+                                    fileName = "8pole.json";
+                                    break;
                                 case generator _:
                                     ;
+                                    break;
+                                    default: fileName = "multipole.json";
                                     break;
                             }
                             PoleDialog gd = new PoleDialog(elementName, fileName);
