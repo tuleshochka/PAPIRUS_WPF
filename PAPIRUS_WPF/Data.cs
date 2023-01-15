@@ -17,6 +17,7 @@ namespace PAPIRUS_WPF
         public static List<Object> selection = new List<Object>();
         public static List<Line> selectedWires = new List<Line>();
         public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();
+        public static Object multiPole;
 
         //---------для GeneratorDialog-------------//
         public static List<Limits> dataLimits = new List<Limits>();  //

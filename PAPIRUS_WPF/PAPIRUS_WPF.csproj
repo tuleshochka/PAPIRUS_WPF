@@ -114,8 +114,8 @@
     <Compile Include="Dialog\SMatrix.xaml.cs">
       <DependentUpon>SMatrix.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
+    <Compile Include="Dialog\multi_pole_select.xaml.cs">
+      <DependentUpon>multi_pole_select.xaml</DependentUpon>
     </Compile>
     <Compile Include="Elements\fourteen_pole.xaml.cs">
       <DependentUpon>fourteen_pole.xaml</DependentUpon>
@@ -184,7 +184,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialog\Window1.xaml">
+    <Page Include="Dialog\multi_pole_select.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -608,12 +608,30 @@ namespace PAPIRUS_WPF
 
             if (instance == null)
                 return;
-            SetElementName(instance);
-
-            CircuitCanvas.Children.Add(instance);
-            Point p = e.GetPosition(CircuitCanvas);
-            Canvas.SetLeft(instance, p.X - instance.Width / 2);
-            Canvas.SetTop(instance, p.Y - instance.Height / 2);
+            
+            if (instance is multi_pole)
+            {
+                multi_pole_select multi_Pole_Select = new multi_pole_select();
+                multi_Pole_Select.ShowDialog();
+                instance = Data.multiPole;
+                if (instance != null)
+                { 
+                 SetElementName(instance);
+                CircuitCanvas.Children.Add(instance);
+                Point p = e.GetPosition(CircuitCanvas);
+                Canvas.SetLeft(instance, p.X - instance.Width / 2);
+                Canvas.SetTop(instance, p.Y - instance.Height / 2);
+                }
+               
+            }
+            else
+            {
+                SetElementName(instance);
+                CircuitCanvas.Children.Add(instance);
+                Point p = e.GetPosition(CircuitCanvas);
+                Canvas.SetLeft(instance, p.X - instance.Width / 2);
+                Canvas.SetTop(instance, p.Y - instance.Height / 2);
+            }
         }
 
         private void CircuitCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
