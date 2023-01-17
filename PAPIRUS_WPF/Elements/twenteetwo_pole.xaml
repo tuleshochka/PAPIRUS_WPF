@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
            Height="70" Width="76">
 
-    <Grid x:Name="EightPol">
+    <Grid x:Name="EightPol" Loaded="EightPol_Loaded">
 
         <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,-30,0,0"/>
         <local:Output x:Name="LeftInput2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0"/>
@@ -23,16 +23,16 @@
         <local:Output x:Name="Top3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-30,-54,0,0"/>
         <Rectangle x:Name="LEDRect" Stroke="Black" RadiusX="5" RadiusY="5" Fill="White" Margin="11"/>
         <Ellipse Width="4" Height="4" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,-30,0,0"></Ellipse>
-        <TextBlock HorizontalAlignment="Left" Margin="-11,12,0,0" Text="1" FontSize="12"/>
-        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-11,0,0,0" Text="2" FontSize="12"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,42,-10,-30" Text="7" FontSize="12"/>
-        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="-11,0,0,12" Text="3" FontSize="12"/>
-        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20,0,0,-13" Text="4" FontSize="12"/>
-        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,-13" Text="6" FontSize="12"/>
-        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,34.5,-14" Text="5" FontSize="12"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,27,-10,-15" Text="8" FontSize="12"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,10,-10,2" Text="9" FontSize="12"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,-18,46,30" Text="11" FontSize="12"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,-18,20,30" Text="10" FontSize="12"/>
+        <TextBlock HorizontalAlignment="Left" Margin="-11,12,0,43" Text="1" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-11,0,0,0" Text="2" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,42,-10,14" Text="7" FontSize="12" Foreground="Blue"/>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="-11,0,0,12" Text="3" FontSize="12" Foreground="Blue"/>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20,0,0,-13" Text="4" FontSize="12" Foreground="Blue"/>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,-13" Text="6" FontSize="12" Foreground="Blue"/>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,34.5,-13" Text="5" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,27,-10,30" Text="8" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,12,-10,43" Text="9" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,-18,48,73" Text="11" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,-18,16,73" Text="10" FontSize="12" Foreground="Blue"/>
     </Grid>
 </Papirus:Object>

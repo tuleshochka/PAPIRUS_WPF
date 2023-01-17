@@ -20,11 +20,60 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class multi_pole : Object
     {
+
         public multi_pole()
         {
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
             InitializeComponent();
+            
+
+        }
+
+        private void EightPol_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (CanMove == false)
+            {
+                foreach (TextBlock tb in utils.GetControls<TextBlock>(EightPol))
+                {
+                    tb.Visibility = Visibility.Hidden;
+                }
+            }
+        }
+    }
+    static class utils
+    {
+        public static IEnumerable<T> GetControls<T>(this DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+                    foreach (T childOfChild in GetControls<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+
+                }
+
+
+
+
+
+
+
+
+
+
+            }
+
         }
     }
 }
+
+

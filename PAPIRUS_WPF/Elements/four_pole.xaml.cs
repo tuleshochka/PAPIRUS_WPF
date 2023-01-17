@@ -31,6 +31,7 @@ namespace PAPIRUS_WPF.Elements
             InitializeComponent();
             LeftInput.StateChanged += FourPoleStateChanged;
             RightInput.StateChanged += FourPoleStateChanged;
+            
         }
 
         private void FourPoleStateChanged()
@@ -63,6 +64,17 @@ namespace PAPIRUS_WPF.Elements
             else
             {
                 // LEDRect.Fill = new SolidColorBrush(Colors.Black); 
+            }
+        }
+
+        private void TwoPol_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (CanMove == false)
+            {
+                foreach (TextBlock tb in utils.GetControls<TextBlock>(TwoPol))
+                {
+                    tb.Visibility = Visibility.Hidden;
+                }
             }
         }
     }

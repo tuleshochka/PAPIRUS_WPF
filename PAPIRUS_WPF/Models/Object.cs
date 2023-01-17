@@ -20,10 +20,11 @@ namespace PAPIRUS_WPF
         /// Allows the circuit objects to be able to be frozen.
         /// </summary>
         public bool CanMove
-        {
+        {   
             get { return (bool)GetValue(CanMoveProperty); }
             set { SetValue(CanMoveProperty, value); }
         }
+        
 
         public string name { get; set; }
         public bool isSelected = false;
@@ -43,10 +44,14 @@ namespace PAPIRUS_WPF
         /// </summary>
         public Object()
         {
+
             //Initialize the lists
             _attachedInputLines = new List<Line>();
             _attachedOutputLines = new List<Line>();
             connectedElements = new List<Object>();
+             
+           
+            
         }
 
         public List<Object> connectedElements;

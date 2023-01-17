@@ -8,13 +8,14 @@
              mc:Ignorable="d" 
            Height="54" Width="76">
   
-    <Grid x:Name="TwoPol" >
+    <Grid x:Name="TwoPol" Loaded="TwoPol_Loaded" >
        
         <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4"/>
         
         <Rectangle x:Name="LEDRect" RadiusX="5" RadiusY="5" Stroke="Black" Fill="White" Margin="11"/>
         <Ellipse Width="4" Height="4" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="13"></Ellipse>
-        <TextBlock HorizontalAlignment="Left" Margin="15,12,0,0" Text="1" FontSize="12"/>
+        <TextBlock HorizontalAlignment="Left" Margin="-11,19,0,19" Text="1" FontSize="12" Foreground="Blue"/>
        
+      
     </Grid>
 </Papirus:Object>

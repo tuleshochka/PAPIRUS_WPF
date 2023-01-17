@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
            Height="54" Width="76">
 
-    <Grid x:Name="SixPole" >
+    <Grid x:Name="SixPole" Loaded="SixPole_Loaded" >
         <!--<Polyline Stroke="Black" StrokeThickness="1" StrokeLineJoin="Round" StrokeEndLineCap="Round" Points="7,40 55,40 55,20 "/>-->
        <!-- <Path Stroke="Black" StrokeThickness="1" Fill="White">
             <Path.Data>
@@ -55,5 +55,10 @@
         <local:Output x:Name="Top" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,4,0,0"/>
         <Rectangle x:Name="LEDRect" Stroke="Black" RadiusX="5" RadiusY="5" Fill="White" Margin="11"/>
         <Ellipse Width="4" Height="4" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15"></Ellipse>
+     
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-11,0,0,0" Text="1" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-11,0" Text="2" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-20,0,0" Text="3" FontSize="12" Foreground="Blue"/>
+
     </Grid>
 </Papirus:Object>

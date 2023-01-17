@@ -25,6 +25,19 @@ namespace PAPIRUS_WPF.Elements
             InitializeComponent();
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
+
+            
+        }
+
+        private void SixPole_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (CanMove == false)
+            {
+                foreach (TextBlock tb in utils.GetControls<TextBlock>(SixPole))
+                {
+                    tb.Visibility = Visibility.Hidden;
+                }
+            }
         }
     }
 }

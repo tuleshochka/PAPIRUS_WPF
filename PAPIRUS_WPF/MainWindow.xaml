@@ -199,12 +199,12 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
 
-            <Elements:two_pole CanMove="False"/>
-            <Elements:four_pole CanMove="False"/>
-            <Elements:six_pole CanMove="False"/>
-            <Elements:eight_pole CanMove="False"/>
-            <Elements:multi_pole CanMove="False"/>
-            <Elements:generator CanMove="False"/>
+            <Elements:two_pole CanMove="false"/>
+            <Elements:four_pole CanMove="false"/>
+            <Elements:six_pole CanMove="false"/>
+            <Elements:eight_pole CanMove="false"/>
+            <Elements:multi_pole CanMove="false"/>
+            <Elements:generator CanMove="false"/>
         </ListView>
     </Grid>
 </Window>

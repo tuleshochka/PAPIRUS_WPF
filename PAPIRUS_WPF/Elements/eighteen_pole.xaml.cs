@@ -25,6 +25,24 @@ namespace PAPIRUS_WPF.Elements
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
             InitializeComponent();
+            if (CanMove == false)
+            {
+                foreach (TextBlock tb in utils.GetControls<TextBlock>(EightPol))
+                {
+                    tb.Visibility = Visibility.Hidden;
+                }
+            }
+        }
+
+        private void EightPol_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (CanMove == false)
+            {
+                foreach (TextBlock tb in utils.GetControls<TextBlock>(EightPol))
+                {
+                    tb.Visibility = Visibility.Hidden;
+                }
+            }
         }
     }
 }
