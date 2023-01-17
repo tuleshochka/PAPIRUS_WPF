@@ -58,7 +58,7 @@ namespace PAPIRUS_WPF
         private string filePath;  //путь до файла
         string imgPath; //путь до картинки
         string jsonString;  //считанный из файла json текст
-        public List<Element> elementsList = new List<Element>();  //лист элементов считанных из файла
+        private List<Element> elementsList = new List<Element>();  //лист элементов считанных из файла
         List<string> nameElements = new List<string>(); //лист названий всех элементов из файла
         int poleNum;  //сколько полюсов в полюснике
 
@@ -66,11 +66,12 @@ namespace PAPIRUS_WPF
         private List<dataGridElements> datagridelements = new List<dataGridElements>(); //для хранения параметров и их значений с dataGridView
         private List<double> values = new List<double>();
 
+        private bool generatorConnected;
 
-        public PoleDialog(string elementName, string fileName)
+        public PoleDialog(string elementName, string fileName, Object _element)
         {
             InitializeComponent();
-            
+            generatorConnected = _element.generatorConnected;
             listBox.SelectedIndex= 0;
             groupTextBox.Text = elementName;
             filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
@@ -99,9 +100,7 @@ namespace PAPIRUS_WPF
                         break;
                 }
                 listBox.ItemsSource = nameElements;
-                
             }
-
         }
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -157,7 +156,7 @@ namespace PAPIRUS_WPF
             if (f) { MessageBox.Show("Введены не все параметры"); }
             else
             {
-                PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el);
+                PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el, generatorConnected);
                 window1.ShowDialog();
             }
         }

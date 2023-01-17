@@ -38,9 +38,12 @@ namespace PAPIRUS_WPF.Dialog
         List<string> formulaColumn = new List<string>();
         List<dataGridElements> datagridelements1;
         int poleNum;
-        public SMatrix(int polenum, List<dataGridElements> datagridelements, Element el)
+        private bool generatorCon;
+
+        public SMatrix(int polenum, List<dataGridElements> datagridelements, Element el, bool generatorConnected)
         {
             InitializeComponent();
+            generatorCon = generatorConnected;
             host.Child = dataGridView;
             Grid.SetColumn(host, 1);
             Grid.SetRow(host, 1);
@@ -269,9 +272,15 @@ namespace PAPIRUS_WPF.Dialog
         {
             Console.WriteLine(Data.specificFrequency);
             string temp = originalString.Replace(" ", "");
-            temp = temp.Replace("w", "2*pi*f");
-            temp = temp.Replace("f", Data.specificFrequency.ToString());
-            Console.WriteLine(temp);
+            if(generatorCon)
+            {
+                temp = temp.Replace("w", "2*pi*f");
+                temp = temp.Replace("f", Data.specificFrequency.ToString());
+            }
+            else if(!generatorCon && (temp.Contains("w") || temp.Contains("f")))
+            {
+                MessageBox.Show("Элемент не подключен к генератору");
+            }
             return temp;
         }
          

@@ -23,7 +23,7 @@
         <DataGrid x:Name="dataGridSpecific" Margin="25,149,265,251" AutoGenerateColumns="false" CanUserAddRows="False">
             <DataGrid.Columns>
                 <local:DataGridNumericColumn x:Name="Frequency"  Header="Частота (Гц)" Binding="{Binding frequency}" Width="*"/>
-                <local:DataGridNumericColumn x:Name="Tolerance"  Header="Допуск (Гц)" Binding="{Binding tolerance}" Width="*"/>
+                <local:DataGridNumericColumn x:Name="Tolerance"  Header="Допуск (%)" Binding="{Binding tolerance}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 

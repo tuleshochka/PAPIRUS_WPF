@@ -116,7 +116,7 @@ namespace PAPIRUS_WPF.Dialog
             SpesificSaveData();
             if(RadioButtonDopusk.IsChecked == true)
             {
-                Data.specificFrequency = specifics[0].frequency - specifics[0].tolerance;
+                Data.specificFrequency = specifics[0].frequency - ((specifics[0].frequency*specifics[0].tolerance)/100);
             }
             else
             {

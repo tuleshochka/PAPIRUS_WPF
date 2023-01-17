@@ -384,7 +384,7 @@ namespace PAPIRUS_WPF
                                     default: fileName = "multipole.json";
                                     break;
                             }
-                            PoleDialog gd = new PoleDialog(elementName, fileName);
+                            PoleDialog gd = new PoleDialog(elementName, fileName,startObject);
                             gd.ShowDialog();
                         }
                     }
