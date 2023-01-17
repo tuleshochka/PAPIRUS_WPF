@@ -201,7 +201,7 @@ namespace PAPIRUS_WPF
             return transformedPoint;
         }
 
-        private void GetGeneratorConnected(Object startObject)
+        private void SetGeneratorConnection(Object startObject)
         {
             foreach (Object obj in startObject.connectedElements)
             {
@@ -210,25 +210,73 @@ namespace PAPIRUS_WPF
                     obj.generatorConnected = true;
                     if (obj.connectedElements.Count() > 1)
                     {
-                        GetGeneratorConnected(obj);
+                        SetGeneratorConnection(obj);
                     }
                 }
             }
         }
 
-        private void RemoveGeneratorConnected(Object startObject)
+        private void RemoveGeneratorConnection(Object startObject)
         {
             foreach (Object obj in startObject.connectedElements)
             {
+                
                 if (obj.generatorConnected == true)
                 {
-                    obj.generatorConnected = false;
-                    if (obj.connectedElements.Count() > 1)
+                    if(!(IsGeneratorConnected(obj, startObject)))
                     {
-                        RemoveGeneratorConnected(obj);
+                        obj.generatorConnected = false;
+                        if (obj.connectedElements.Count() > 1)
+                        {
+                            RemoveGeneratorConnection(obj);
+                        }
                     }
                 }
             }
+        }
+
+        private bool IsGeneratorConnected(Object _object, Object startObject)
+        {
+            var generator = _object.connectedElements.Where(o => o is generator);
+            if (generator.Count() > 0)
+            {
+                return true;
+            }
+            else
+            {
+                var connected = _object.connectedElements.Where(o => o!=startObject);
+                foreach (Object obj in connected)
+                {
+                    if(IsGeneratorConnected(obj,_object))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        private void RemoveElement(Object element)
+        {
+            if (element.generatorConnected == true)
+            {
+                RemoveGeneratorConnection(element);
+            }
+            _attachedInputLines = element.GetInputLine();
+            foreach (var wire in _attachedInputLines)
+            {
+                CircuitCanvas.Children.Remove(wire);
+            }
+            _attachedOutputLines = element.GetOutputLine();
+            foreach (var wire in _attachedOutputLines)
+            {
+                CircuitCanvas.Children.Remove(wire);
+            }
+            foreach (Object obj in element.connectedElements)
+            {
+                obj.connectedElements.Remove(element);
+            }
+            CircuitCanvas.Children.Remove(element);
         }
 
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -245,6 +293,10 @@ namespace PAPIRUS_WPF
             {
                 Source = e.Source as FrameworkElement;
                 startObject = e.Source as Object;
+                if(startObject != null)
+                {
+                    Console.WriteLine("IsGeneratorConnected: " + IsGeneratorConnected(startObject, startObject));
+                }
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
                 //If the mouse has hit a border
@@ -525,8 +577,8 @@ namespace PAPIRUS_WPF
                             {
                                 obj.generatorConnected = true;
                                 startObject.generatorConnected= true;
-                                GetGeneratorConnected(startObject);
-                                GetGeneratorConnected(obj);
+                                SetGeneratorConnection(startObject);
+                                SetGeneratorConnection(obj);
                             }
 
                             Output IOInput = (Output)IO;
@@ -720,22 +772,7 @@ namespace PAPIRUS_WPF
             {
                 foreach (var element in Data.selection)
                 {
-                    if (element.generatorConnected == true)
-                    {
-                        RemoveGeneratorConnected(element);
-                    }
-                    CircuitCanvas.Children.Remove(element);
-                    _attachedInputLines = element.GetInputLine();
-                    foreach(var wire in _attachedInputLines)
-                    {
-                        CircuitCanvas.Children.Remove(wire);
-                    }
-                    _attachedOutputLines = element.GetOutputLine();
-                    foreach (var wire in _attachedOutputLines)
-                    {
-                        CircuitCanvas.Children.Remove(wire);
-                    }
-
+                    RemoveElement(element);
                 }
                 foreach(var wire in Data.selectedWires)
                 {
@@ -774,6 +811,17 @@ namespace PAPIRUS_WPF
                     double top = mousePos.Y + (startPoint.Y - data.startPoint.Y);
                     Canvas.SetLeft(instance, left);
                     Canvas.SetTop(instance, top);
+                }
+            }
+
+            if(e.Key == Key.Escape)
+            {
+                if(_linkingStarted)
+                {
+                    CircuitCanvas.Children.Remove(_tempLink);
+                    _tempLink = null;
+                    _linkingStarted = false;
+                    e.Handled = true;
                 }
             }
         }
