@@ -80,9 +80,8 @@ namespace PAPIRUS_WPF.Dialog
                         {
                             for (int j = 0; j < ele.parameters.Count(); j++)
                             {
-                                expr = ele.other_par[i].formulaColumn.ToString().Replace(" ", "");
-
-                                expr = expr.ToString().Replace(ele.parameters[j].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[j].paramColumn + " (" + ele.parameters[j].unitColumn + ")").columnValue).ToString());
+                                string temp = OptimizeString(ele.other_par[i].formulaColumn.ToString());
+                                expr = temp.ToString().Replace(ele.parameters[j].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[j].paramColumn + " (" + ele.parameters[j].unitColumn + ")").columnValue).ToString());
                                 if (expr.EvaluableNumerical)
                                 {
                                     ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
@@ -110,8 +109,8 @@ namespace PAPIRUS_WPF.Dialog
 
                     for (int j = 0; j < ele.other_par.Count(); j++)
                     {
-                        expr = ele.other_par[i].formulaColumn.ToString().Replace(" ", "");
-                        expr = expr.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
+                        string temp = OptimizeString(ele.other_par[i].formulaColumn.ToString());
+                        expr = temp.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
                         if (expr.EvaluableNumerical)
                         {
                             ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
@@ -134,7 +133,8 @@ namespace PAPIRUS_WPF.Dialog
                     {
                         for (int k = 0; k < ele.parameters.Count(); k++)
                         {
-                            expr = ele.matrix[a].element.Replace(ele.parameters[k].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[k].paramColumn + " (" + ele.parameters[k].unitColumn + ")").columnValue).ToString());
+                            string temp = OptimizeString(ele.matrix[a].element);
+                            expr = temp.Replace(ele.parameters[k].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[k].paramColumn + " (" + ele.parameters[k].unitColumn + ")").columnValue).ToString());
                             if (expr.EvaluableNumerical)
                             {
                                 Complex complex = (Complex)expr.EvalNumerical();
@@ -151,18 +151,42 @@ namespace PAPIRUS_WPF.Dialog
                                 }
                                 else
                                 {
-                                    string sigh;
+
+                                    string sigh = "+";
                                     switch (Math.Sign(complex.Imaginary))
                                     {
                                         case -1:
                                             sigh = "";
                                             break;
-                                        default:
+                                        case 1:
+                                            sigh = "+";
+                                            break;
+                                        case 0:
                                             sigh = "+";
                                             break;
                                     }
+                                    Console.WriteLine(sigh);
+                                    string real = null, imaginary = null;
 
-                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round(complex.Real, 3) + "" + sigh + "" + Math.Round(complex.Imaginary, 3) + "i").ToString();
+                                    if ((Math.Abs(Math.Round(complex.Real, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Real, 3)) >= 0 && complex.Real != 0) || Math.Abs(Math.Round(complex.Real, 3)) >= 1000)
+                                    {
+
+                                        real = String.Format("{0:0.###E+0}", complex.Real);
+                                    }
+                                    else
+                                    {
+                                        real = (Math.Round(complex.Real, 3)).ToString();
+                                    }
+                                    if ((Math.Abs(Math.Round(complex.Imaginary, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Imaginary, 3)) >= 0 && complex.Imaginary != 0) || Math.Abs(Math.Round(complex.Imaginary, 3)) >= 1000)
+                                    {
+                                        imaginary = String.Format("{0:0.###E+0}", complex.Imaginary);
+                                    }
+                                    else
+                                    {
+                                        imaginary = (Math.Round(complex.Imaginary, 3)).ToString();
+                                    }
+                                    dataGridView.Rows[j].Cells[i].Value = real + "" + sigh + imaginary + "i";
+
                                 }
 
                             }
@@ -176,7 +200,8 @@ namespace PAPIRUS_WPF.Dialog
                     {
                         for (int k = 0; k < ele.other_par.Count(); k++)
                         {
-                            expr = ele.matrix[a].element.Replace(ele.other_par[k].headerColumn, ele.other_par[k].formulaColumn);
+                            string temp = OptimizeString(ele.matrix[a].element);
+                            expr = temp.Replace(ele.other_par[k].headerColumn, ele.other_par[k].formulaColumn);
                             if (expr.EvaluableNumerical)
                             {
                                 Complex complex = (Complex)expr.EvalNumerical();
@@ -193,20 +218,42 @@ namespace PAPIRUS_WPF.Dialog
                                 }
                                 else
                                 {
-                                    string sigh;
+                                    string sigh = "+";
                                     switch (Math.Sign(complex.Imaginary))
                                     {
                                         case -1:
                                             sigh = "";
                                             break;
-                                        default:
+                                        case 1:
+                                            sigh = "+";
+                                            break;
+                                        case 0:
                                             sigh = "+";
                                             break;
                                     }
+                                    Console.WriteLine(sigh);
+                                    string real = null, imaginary = null;
 
-                                    dataGridView.Rows[j].Cells[i].Value = (Math.Round(complex.Real, 3) + "" + sigh + "" + Math.Round(complex.Imaginary, 3) + "i").ToString();
+                                    if ((Math.Abs(Math.Round(complex.Real, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Real, 3)) >= 0 && complex.Real != 0) || Math.Abs(Math.Round(complex.Real, 3)) >= 1000)
+                                    {
+
+                                        real = String.Format("{0:0.###E+0}", complex.Real);
+                                    }
+                                    else
+                                    {
+                                        real = (Math.Round(complex.Real, 3)).ToString();
+                                    }
+                                    if ((Math.Abs(Math.Round(complex.Imaginary, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Imaginary, 3)) >= 0 && complex.Imaginary != 0) || Math.Abs(Math.Round(complex.Imaginary, 3)) >= 1000)
+                                    {
+                                        imaginary = String.Format("{0:0.###E+0}", complex.Imaginary);
+                                    }
+                                    else
+                                    {
+                                        imaginary = (Math.Round(complex.Imaginary, 3)).ToString();
+                                    }
+                                    dataGridView.Rows[j].Cells[i].Value = real + "" + sigh + imaginary + "i";
                                 }
-                            }
+                                }
                             else
                             {
                                 ele.matrix[a].element = ele.matrix[a].element.Replace(ele.other_par[k].headerColumn, ele.other_par[k].formulaColumn);
@@ -217,6 +264,17 @@ namespace PAPIRUS_WPF.Dialog
                 }
             }
         }
+
+        private string OptimizeString(string originalString)
+        {
+            Console.WriteLine(Data.specificFrequency);
+            string temp = originalString.Replace(" ", "");
+            temp = temp.Replace("w", "2*pi*f");
+            temp = temp.Replace("f", Data.specificFrequency.ToString());
+            Console.WriteLine(temp);
+            return temp;
+        }
+         
     }
 }
 

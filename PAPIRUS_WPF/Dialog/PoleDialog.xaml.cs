@@ -45,7 +45,7 @@ namespace PAPIRUS_WPF
     void OnPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
     {
 
-            if (int.TryParse(e.Text,out int temp)||e.Text==","||e.Text=="-")
+            if (int.TryParse(e.Text,out int temp)||e.Text=="."||e.Text=="-")
             {
 
             }
@@ -120,8 +120,8 @@ namespace PAPIRUS_WPF
             }
             try
             {
-                imgPath = el.imagePath;
-                imageElement.Source = new BitmapImage(new Uri(imgPath));
+                
+                imageElement.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + el.imagePath));
             }
             catch (Exception)
             {

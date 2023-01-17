@@ -201,6 +201,36 @@ namespace PAPIRUS_WPF
             return transformedPoint;
         }
 
+        private void GetGeneratorConnected(Object startObject)
+        {
+            foreach (Object obj in startObject.connectedElements)
+            {
+                if(obj.generatorConnected == false)
+                {
+                    obj.generatorConnected = true;
+                    if (obj.connectedElements.Count() > 1)
+                    {
+                        GetGeneratorConnected(obj);
+                    }
+                }
+            }
+        }
+
+        private void RemoveGeneratorConnected(Object startObject)
+        {
+            foreach (Object obj in startObject.connectedElements)
+            {
+                if (obj.generatorConnected == true)
+                {
+                    obj.generatorConnected = false;
+                    if (obj.connectedElements.Count() > 1)
+                    {
+                        RemoveGeneratorConnected(obj);
+                    }
+                }
+            }
+        }
+
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //для тыка колесика
@@ -213,7 +243,6 @@ namespace PAPIRUS_WPF
             //тык левой кнопкой
             if (e.ChangedButton == MouseButton.Left)
             {
-                Console.WriteLine(e.GetPosition(CircuitCanvas));
                 Source = e.Source as FrameworkElement;
                 startObject = e.Source as Object;
                 //Do a hit test under the mouse position
@@ -490,13 +519,14 @@ namespace PAPIRUS_WPF
                         //Check if the border element is a input element in disguise
                         if (IO is Output)
                         {
-                            if(generatorConnect == true )
+                            obj.connectedElements.Add(startObject);
+                            startObject.connectedElements.Add(obj);
+                            if(generatorConnect == true || obj is generator || obj.generatorConnected == true)
                             {
                                 obj.generatorConnected = true;
-                            }
-                            else if (obj is generator || obj.generatorConnected == true)
-                            {
-                                startObject.generatorConnected = true;
+                                startObject.generatorConnected= true;
+                                GetGeneratorConnected(startObject);
+                                GetGeneratorConnected(obj);
                             }
 
                             Output IOInput = (Output)IO;
@@ -690,6 +720,10 @@ namespace PAPIRUS_WPF
             {
                 foreach (var element in Data.selection)
                 {
+                    if (element.generatorConnected == true)
+                    {
+                        RemoveGeneratorConnected(element);
+                    }
                     CircuitCanvas.Children.Remove(element);
                     _attachedInputLines = element.GetInputLine();
                     foreach(var wire in _attachedInputLines)
@@ -701,6 +735,7 @@ namespace PAPIRUS_WPF
                     {
                         CircuitCanvas.Children.Remove(wire);
                     }
+
                 }
                 foreach(var wire in Data.selectedWires)
                 {
@@ -754,5 +789,6 @@ namespace PAPIRUS_WPF
             window4.ShowDialog();
         }
 
+       
     }
 }

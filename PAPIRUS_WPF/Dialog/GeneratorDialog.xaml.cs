@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace PAPIRUS_WPF.Dialog
         void OnPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
 
-            if (int.TryParse(e.Text, out int temp) || e.Text == "," || e.Text == "-")
+            if (int.TryParse(e.Text, out int temp) || e.Text == "." || e.Text == "-")
             {
 
             }
@@ -59,6 +60,8 @@ namespace PAPIRUS_WPF.Dialog
         private List<Limits> limits = new List<Limits>();
 
         private List<Specific> specifics = new List<Specific>();
+
+        CultureInfo culture = new CultureInfo("en");
 
         public GeneratorDialog(string elementName)
         {
@@ -109,8 +112,16 @@ namespace PAPIRUS_WPF.Dialog
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-                LimitsSaveData();
-                SpesificSaveData();
+            LimitsSaveData();
+            SpesificSaveData();
+            if(RadioButtonDopusk.IsChecked == true)
+            {
+                Data.specificFrequency = specifics[0].frequency - specifics[0].tolerance;
+            }
+            else
+            {
+                Data.specificFrequency = limits[0].lowerLimit;
+            }
         }
 
         private void LimitsSaveData()
@@ -126,7 +137,7 @@ namespace PAPIRUS_WPF.Dialog
                         var x = column.GetCellContent(item) as TextBlock;
                         if (!(string.IsNullOrEmpty(x.Text)))
                         {
-                            limits[0].lowerLimit = double.Parse(x.Text.Replace(" ", ""));
+                            limits[0].lowerLimit = double.Parse(x.Text.Replace(" ", ""), culture);
                         }
                     }
                     if (i == 1)
@@ -134,7 +145,7 @@ namespace PAPIRUS_WPF.Dialog
                         var x = column.GetCellContent(item) as TextBlock;
                         if (!(string.IsNullOrEmpty(x.Text)))
                         {
-                            limits[0].upperLimit = double.Parse(x.Text.Replace(" ", ""));
+                            limits[0].upperLimit = double.Parse(x.Text.Replace(" ", ""), culture);
                         }
                     }
                     if(i == 2)
@@ -142,7 +153,7 @@ namespace PAPIRUS_WPF.Dialog
                         var x = column.GetCellContent(item) as TextBlock;
                         if (!(string.IsNullOrEmpty(x.Text)))
                         {
-                            limits[0].frequencyStep = double.Parse(x.Text.Replace(" ", ""));
+                            limits[0].frequencyStep = double.Parse(x.Text.Replace(" ", ""), culture);
                         }
                     }
                 }
@@ -164,7 +175,8 @@ namespace PAPIRUS_WPF.Dialog
                         var x = column.GetCellContent(item) as TextBlock;
                         if (!(string.IsNullOrEmpty(x.Text)))
                         {
-                            specifics[0].frequency = double.Parse(x.Text.Replace(" ", ""));
+                            
+                            specifics[0].frequency = Double.Parse(x.Text.Replace(" ", ""),culture);
                         }
                     }
 
@@ -173,7 +185,7 @@ namespace PAPIRUS_WPF.Dialog
                         var x = column.GetCellContent(item) as TextBlock;
                         if (!(string.IsNullOrEmpty(x.Text)))
                         {
-                            specifics[0].tolerance = double.Parse(x.Text.Replace(" ", ""));
+                            specifics[0].tolerance = double.Parse(x.Text.Replace(" ", ""), culture);
                         }
                     }
                 }

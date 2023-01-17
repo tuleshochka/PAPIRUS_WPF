@@ -46,7 +46,10 @@ namespace PAPIRUS_WPF
             //Initialize the lists
             _attachedInputLines = new List<Line>();
             _attachedOutputLines = new List<Line>();
+            connectedElements = new List<Object>();
         }
+
+        public List<Object> connectedElements;
 
         public virtual void AttachInputLine(Line line)
         {
