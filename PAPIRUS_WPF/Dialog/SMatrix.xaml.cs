@@ -70,62 +70,8 @@ namespace PAPIRUS_WPF.Dialog
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
-            if (ele.other_par.Count() != 0)
-            {
 
-                for (int i = 0; i < ele.other_par.Count(); i++)
-                {
-
-                    formulaColumn.Add(ele.other_par[i].formulaColumn.ToString());
-                    if ((ele.parameters.Count())!=0)
-                    {
-                        try
-                        {
-                            for (int j = 0; j < ele.parameters.Count(); j++)
-                            {
-                                string temp = OptimizeString(ele.other_par[i].formulaColumn.ToString());
-                                expr = temp.ToString().Replace(ele.parameters[j].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[j].paramColumn + " (" + ele.parameters[j].unitColumn + ")").columnValue).ToString());
-                                if (expr.EvaluableNumerical)
-                                {
-                                    ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
-                                }
-                                else
-                                {
-                                    ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.parameters[j].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[i].paramColumn + " (" + ele.parameters[i].unitColumn + ")").columnValue).ToString());
-                                }
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            MessageBox.Show("Произошла ошибка", "", MessageBoxButton.OK, MessageBoxImage.Error);
-                            this.Close();
-                        }
-
-                    }
-                }
-            }
-
-            if (ele.other_par.Count() != 0)
-            {
-                for (int i = 0; i < ele.other_par.Count(); i++)
-                {
-
-                    for (int j = 0; j < ele.other_par.Count(); j++)
-                    {
-                        string temp = OptimizeString(ele.other_par[i].formulaColumn.ToString());
-                        expr = temp.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
-                        if (expr.EvaluableNumerical)
-                        {
-                            ele.other_par[i].formulaColumn = expr.EvalNumerical().ToString();
-                        }
-                        else
-                        {
-                            ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.ToString().Replace(ele.other_par[j].headerColumn, ele.other_par[j].formulaColumn);
-                        }
-                    }
-
-                }
-            }
+            CalculateIntermediateValues();
 
             int a = 0;
             for (int i = 0; i < dataGridView.ColumnCount; i++)
@@ -268,10 +214,19 @@ namespace PAPIRUS_WPF.Dialog
             }
         }
 
+        Dictionary<string, string> operators = new Dictionary<string, string>()
+        {
+            {"+-","-"},
+            {"--","+"},
+        };
+
         private string OptimizeString(string originalString)
         {
-            Console.WriteLine(Data.specificFrequency);
             string temp = originalString.Replace(" ", "");
+            foreach(var _operator in operators)
+            {
+                temp = temp.Replace(_operator.Key, _operator.Value);
+            }
             if(generatorCon)
             {
                 temp = temp.Replace("w", "2*pi*f");
@@ -283,7 +238,74 @@ namespace PAPIRUS_WPF.Dialog
             }
             return temp;
         }
-         
+
+        private void CalculateIntermediateValues()
+        {
+            if (ele.other_par.Count() != 0)
+            {
+                CalculateIntermediateValues_params();
+                CalculateIntermediateValues_cycle();
+            }
+        }
+
+        private void CalculateIntermediateValues_params()
+        {
+            for (int i = 0; i < ele.other_par.Count(); i++)
+            {
+                formulaColumn.Add(ele.other_par[i].formulaColumn);
+                if ((ele.parameters.Count()) != 0)
+                {
+                    try
+                    {
+                        for (int j = 0; j < ele.parameters.Count(); j++)
+                        {
+                            string temp = OptimizeString(ele.other_par[i].formulaColumn);
+                            expr = OptimizeString(temp.Replace(ele.parameters[j].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[j].paramColumn + " (" + ele.parameters[j].unitColumn + ")").columnValue)));
+                            if (expr.EvaluableNumerical)
+                            {
+                                ele.other_par[i].formulaColumn = ((double)expr.EvalNumerical()).ToString();
+                                Console.WriteLine(ele.other_par[i].formulaColumn);
+                            }
+                            else
+                            {
+                                ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.Replace(ele.parameters[j].paramColumn, (datagridelements1.Find(x => x.columnParam == ele.parameters[j].paramColumn + " (" + ele.parameters[j].unitColumn + ")").columnValue));
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Произошла ошибка", "", MessageBoxButton.OK, MessageBoxImage.Error);
+                        this.Close();
+                    }
+                }
+            }
+        }
+
+        private void CalculateIntermediateValues_cycle()
+        {
+            for (int i = 0; i < ele.other_par.Count(); i++)
+            {
+                if (!(((Entity)ele.other_par[i].formulaColumn).EvaluableNumerical))
+                {
+                    foreach(var value in ele.other_par.Where(el => el != ele.other_par[i]))
+                    {
+                        expr = ele.other_par[i].formulaColumn.Replace(value.headerColumn, value.formulaColumn);
+                        if (expr.EvaluableNumerical)
+                        {
+                            ele.other_par[i].formulaColumn = (expr.EvalNumerical()).ToString();
+                        }
+                        else
+                        {
+                            ele.other_par[i].formulaColumn = ele.other_par[i].formulaColumn.Replace(value.headerColumn, value.formulaColumn);
+                        }
+                    }
+                }
+            }
+            if(ele.other_par.Exists(x => !(((Entity)x.formulaColumn).EvaluableNumerical)))
+            {
+                CalculateIntermediateValues_cycle();
+            }
+        }
     }
 }
 
