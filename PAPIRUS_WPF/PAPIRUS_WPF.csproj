@@ -170,9 +170,7 @@
     </Compile>
     <Compile Include="IRotatable.cs" />
     <Compile Include="ITableSnapshop.cs" />
-    <Compile Include="Models\Generator.cs" />
     <Compile Include="Models\Object.cs" />
-    <Compile Include="Models\Polaris.cs" />
     <Compile Include="Models\PowerObject.cs" />
     <Compile Include="RowId.cs" />
     <Compile Include="Models\Symbol.cs" />

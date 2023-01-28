@@ -177,10 +177,5 @@ namespace PAPIRUS_WPF
         }
     }
 
-    public class dataGridElements
-    {
-        public string columnParam { get; set; }
-        public string columnValue { get; set; }
-        public string columnDopusk { get; set; }
-    }
+
 }

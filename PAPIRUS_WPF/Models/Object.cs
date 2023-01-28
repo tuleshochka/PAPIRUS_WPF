@@ -39,19 +39,22 @@ namespace PAPIRUS_WPF
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        //---------сохраненный элемент-----------//
+        public Element insideElement;
+
+        //------сохраненные параметры-------------//
+        public List<dataGridElements> insideParams;
+
         /// <summary>
         /// Creates a new Circuit Object to be manipulated
         /// </summary>
         public Object()
         {
-
             //Initialize the lists
             _attachedInputLines = new List<Line>();
             _attachedOutputLines = new List<Line>();
             connectedElements = new List<Object>();
-             
-           
-            
+            insideParams = new List<dataGridElements>();
         }
 
         public List<Object> connectedElements;
