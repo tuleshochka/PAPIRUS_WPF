@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PAPIRUS_WPF.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -20,39 +21,7 @@ namespace PAPIRUS_WPF.Dialog
     /// </summary>
     /// 
 
-    public class DataGridNumericColumn : DataGridTextColumn
-    {
-        protected override object PrepareCellForEdit(System.Windows.FrameworkElement editingElement, System.Windows.RoutedEventArgs editingEventArgs)
-        {
-            TextBox edit = editingElement as TextBox;
-            edit.PreviewTextInput += OnPreviewTextInput;
 
-            return base.PrepareCellForEdit(editingElement, editingEventArgs);
-        }
-
-        void OnPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-
-            if (int.TryParse(e.Text, out int temp) || e.Text == "." || e.Text == "-")
-            {
-
-            }
-            else e.Handled = true;
-        }
-    }
-
-    public class Limits
-    {
-        public double lowerLimit { get; set; }
-        public double upperLimit { get; set; }
-        public double frequencyStep { get; set; }
-    }
-
-    public class Specific
-    {
-        public double frequency { get; set; }
-        public double tolerance { get; set; }
-    }
 
     public partial class GeneratorDialog : Window
     {

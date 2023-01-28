@@ -1,4 +1,4 @@
-﻿using PAPIRUS_WPF.Dialog;
+﻿using PAPIRUS_WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +24,7 @@ namespace PAPIRUS_WPF
         public static List<Specific> dataSpecifics = new List<Specific>();
         public static double specificFrequency = 2.5;
 
-        public class dataGridElements
-        {
-            public string columnParam { get; set; }
-            public string columnValue { get; set; }
-            public string columnDopusk { get; set; }
-        }
+
 
         //----------найти родительский элемент-------------//
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject

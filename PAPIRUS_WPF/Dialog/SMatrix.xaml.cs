@@ -20,6 +20,8 @@ using System.Xml.Linq;
 using System.Globalization;
 using MessageBox = System.Windows.MessageBox;
 using System.Text.RegularExpressions;
+using PAPIRUS_WPF.Models;
+using Element = PAPIRUS_WPF.Models.Element;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -36,7 +38,7 @@ namespace PAPIRUS_WPF.Dialog
         //для DataGridView
         private Entity expr;
         Element ele;
-        List<dataGridElements> datagridelements1;
+        List<DataGridElements> datagridelements1;
         int poleNum;
         private bool generatorCon;
         Dictionary<string, string> operators = new Dictionary<string, string>()
@@ -45,7 +47,7 @@ namespace PAPIRUS_WPF.Dialog
             {"--","+"},
         };
 
-        public SMatrix(int polenum, List<dataGridElements> datagridelements, Element el, bool generatorConnected)
+        public SMatrix(int polenum, List<DataGridElements> datagridelements, Element el, bool generatorConnected)
         {
             InitializeComponent();
             this.WindowState = WindowState.Minimized;

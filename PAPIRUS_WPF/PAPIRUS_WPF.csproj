@@ -164,15 +164,17 @@
     <Compile Include="Elements\two_pole.xaml.cs">
       <DependentUpon>two_pole.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FormEditor.cs" />
     <Compile Include="Dialog\PoleDialog.xaml.cs">
       <DependentUpon>PoleDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IRotatable.cs" />
-    <Compile Include="ITableSnapshop.cs" />
+    <Compile Include="Interfaces\IRotatable.cs" />
+    <Compile Include="Models\DataGridElements.cs" />
+    <Compile Include="Models\DataGridNumericColumn.cs" />
+    <Compile Include="Models\Element.cs" />
+    <Compile Include="Models\Limits.cs" />
     <Compile Include="Models\Object.cs" />
     <Compile Include="Models\PowerObject.cs" />
-    <Compile Include="RowId.cs" />
+    <Compile Include="Models\Specific.cs" />
     <Compile Include="Models\Symbol.cs" />
     <Compile Include="Models\GridPoint.cs" />
     <Compile Include="Models\SymbolShape.cs" />

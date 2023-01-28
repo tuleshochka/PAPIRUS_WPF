@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog"
+        xmlns:local1="clr-namespace:PAPIRUS_WPF.Models"
+        xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog" 
         mc:Ignorable="d"
         Title="Параметры Генератора" Height="565" Width="679" ResizeMode="CanMinimize">
     <Grid>
@@ -15,15 +16,15 @@
         <TextBlock HorizontalAlignment="Left" Margin="26,70,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="ru-ru" Text="Параметры элемента"/></TextBlock>
         <DataGrid x:Name="dataGridLimits" Margin="25,149,265,251" AutoGenerateColumns="false" CanUserAddRows="False" >
             <DataGrid.Columns>
-                <local:DataGridNumericColumn x:Name="LowerLimit"  Header="Нижний предел (Гц)" Binding="{Binding lowerLimit}" Width="130"/>
-                <local:DataGridNumericColumn x:Name="UpperLimit"  Header="Верхний предел (Гц)" Binding="{Binding upperLimit}" Width="130"/>
-                <local:DataGridNumericColumn x:Name="FrequencyStep"  Header="Шаг по частоте" Binding="{Binding frequencyStep}" Width="*"/>
+                <local1:DataGridNumericColumn x:Name="LowerLimit"  Header="Нижний предел (Гц)" Binding="{Binding lowerLimit}" Width="130"/>
+                <local1:DataGridNumericColumn x:Name="UpperLimit"  Header="Верхний предел (Гц)" Binding="{Binding upperLimit}" Width="130"/>
+                <local1:DataGridNumericColumn x:Name="FrequencyStep"  Header="Шаг по частоте" Binding="{Binding frequencyStep}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid x:Name="dataGridSpecific" Margin="25,149,265,251" AutoGenerateColumns="false" CanUserAddRows="False">
             <DataGrid.Columns>
-                <local:DataGridNumericColumn x:Name="Frequency"  Header="Частота (Гц)" Binding="{Binding frequency}" Width="*"/>
-                <local:DataGridNumericColumn x:Name="Tolerance"  Header="Допуск (%)" Binding="{Binding tolerance}" Width="*"/>
+                <local1:DataGridNumericColumn x:Name="Frequency"  Header="Частота (Гц)" Binding="{Binding frequency}" Width="*"/>
+                <local1:DataGridNumericColumn x:Name="Tolerance"  Header="Допуск (%)" Binding="{Binding tolerance}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 

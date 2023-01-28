@@ -12,55 +12,17 @@ using PAPIRUS_WPF;
 using System.Windows.Forms;
 using MessageBox = System.Windows.MessageBox;
 using TextBox = System.Windows.Controls.TextBox;
+using PAPIRUS_WPF.Models;
+using Element = PAPIRUS_WPF.Models.Element;
+using System.Xml.Linq;
 
 namespace PAPIRUS_WPF
 {
-
-    public class Element
-    {   
-        public string imagePath { get; set; }
-        public string group { get; set; }
-        public string name { get; set; }
-        public List<DataGrid1_Parameters> parameters { get; set; }
-        public List<DataGrid1_Elements> other_par { get; set; }
-        public List<MatrixElements> matrix { get; set; }
-
-    }
-
 
     /// <summary>
     /// Логика взаимодействия для GeneratorDialog.xaml
     /// </summary>
     ///
-    public class DataGridNumericColumn : DataGridTextColumn
-    {
-    protected override object PrepareCellForEdit(System.Windows.FrameworkElement editingElement, System.Windows.RoutedEventArgs editingEventArgs)
-    {
-        TextBox edit = editingElement as TextBox;
-        edit.PreviewTextInput += OnPreviewTextInput;
-        edit.TextChanged += OnTextChanged;
-        return base.PrepareCellForEdit(editingElement, editingEventArgs);
-    }
-        void OnTextChanged(object sender,TextChangedEventArgs e) 
-        {
-            TextBox edit = sender as TextBox;
-            if (!(int.TryParse(edit.Text, out int temp) || edit.Text == "." || edit.Text == "-")) 
-            {
-                edit.TextChanged -= OnTextChanged;
-                edit.Text = "";
-            }
-        }
-
-    void OnPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-    {
-
-            if (int.TryParse(e.Text,out int temp)||e.Text=="."||e.Text=="-")
-            {
-
-            }
-            else e.Handled = true; 
-    }
-    }
      public partial class PoleDialog : Window
     {
         
@@ -72,15 +34,16 @@ namespace PAPIRUS_WPF
         int poleNum;  //сколько полюсов в полюснике
 
         private Element el;  //выбранный пользователем элемент из ListBox
-        private List<dataGridElements> datagridelements = new List<dataGridElements>(); //для хранения параметров и их значений с dataGridView
+        private List<DataGridElements> datagridelements = new List<DataGridElements>(); //для хранения параметров и их значений с dataGridView
         private List<double> values = new List<double>();
+        private Object _object;
 
         private bool generatorConnected;
 
         public PoleDialog(string elementName, string fileName, Object _element)
         {
             InitializeComponent();
-            Console.WriteLine(_element.generatorConnected);
+            _object = _element;
             generatorConnected = _element.generatorConnected;
             listBox.SelectedIndex= 0;
             groupTextBox.Text = elementName;
@@ -122,14 +85,12 @@ namespace PAPIRUS_WPF
             {
                 for (int i = 0; i < el.parameters.Count(); i++)
                 {
-
-                    datagridelements.Add(new dataGridElements { columnParam = el.parameters[i].paramColumn +" ("+ el.parameters[i].unitColumn + ")" });
+                    datagridelements.Add(new DataGridElements { columnParam = el.parameters[i].paramColumn +" ("+ el.parameters[i].unitColumn + ")" });
                 }
                 dataGrid.ItemsSource = datagridelements;
             }
             try
             {
-                
                 imageElement.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + el.imagePath));
             }
             catch (Exception)
@@ -141,6 +102,26 @@ namespace PAPIRUS_WPF
 
         private void sMatrix_Click(object sender, RoutedEventArgs e)
         {
+            if (!SaveData()) { MessageBox.Show("Введены не все параметры"); }
+            else
+            {
+                PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el, generatorConnected);
+                window1.ShowDialog();
+            }
+        }
+
+        private void OKButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!SaveData()) { MessageBox.Show("Введены не все параметры"); }
+            else
+            {
+                _object.insideElement = el;
+                _object.insideParams = datagridelements;
+            }
+        }
+
+        private bool SaveData()
+        {
             jsonString = File.ReadAllText(filePath);
             elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString);
             bool f = true;
@@ -148,7 +129,7 @@ namespace PAPIRUS_WPF
             el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
             if (el.parameters.Count() != 0)
             {
-                foreach(dataGridElements element in datagridelements)
+                foreach (DataGridElements element in datagridelements)
                 {
                     var x = dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]) as TextBlock;
 
@@ -157,18 +138,12 @@ namespace PAPIRUS_WPF
                         f = true;
                         break;
                     }
-                    else f = false ;
-
+                    else f = false;
                     element.columnValue = x.Text;
                     i++;
                 }
             }
-            if (f) { MessageBox.Show("Введены не все параметры"); }
-            else
-            {
-                PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el, generatorConnected);
-                window1.ShowDialog();
-            }
+            return f;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -176,6 +151,4 @@ namespace PAPIRUS_WPF
             this.Close();
         }
     }
-
-
 }
