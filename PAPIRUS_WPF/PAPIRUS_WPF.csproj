@@ -99,7 +99,7 @@
     </Reference>
     <Reference Include="WPF_SHF_Element_lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
+      <HintPath>D:\projects VScode\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

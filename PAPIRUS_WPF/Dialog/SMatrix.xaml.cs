@@ -48,6 +48,7 @@ namespace PAPIRUS_WPF.Dialog
         public SMatrix(int polenum, List<dataGridElements> datagridelements, Element el, bool generatorConnected)
         {
             InitializeComponent();
+            this.WindowState = WindowState.Minimized;
             generatorCon = generatorConnected;
             host.Child = dataGridView;
             Grid.SetColumn(host, 1);
@@ -177,6 +178,7 @@ namespace PAPIRUS_WPF.Dialog
                                 ele.other_par[i].formulaColumn = temp;
                             }
                         }
+                        this.WindowState = WindowState.Normal;
                     }
                     catch (Exception e)
                     {                        

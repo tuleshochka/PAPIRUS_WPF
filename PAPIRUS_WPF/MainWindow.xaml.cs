@@ -11,8 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Xml.Linq;
-using WPF_SHF_Element_lib;
+
 
 namespace PAPIRUS_WPF
 {

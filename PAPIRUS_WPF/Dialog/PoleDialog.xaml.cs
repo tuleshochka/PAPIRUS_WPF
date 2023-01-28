@@ -38,9 +38,18 @@ namespace PAPIRUS_WPF
     {
         TextBox edit = editingElement as TextBox;
         edit.PreviewTextInput += OnPreviewTextInput;
-
+        edit.TextChanged += OnTextChanged;
         return base.PrepareCellForEdit(editingElement, editingEventArgs);
     }
+        void OnTextChanged(object sender,TextChangedEventArgs e) 
+        {
+            TextBox edit = sender as TextBox;
+            if (!(int.TryParse(edit.Text, out int temp) || edit.Text == "." || edit.Text == "-")) 
+            {
+                edit.TextChanged -= OnTextChanged;
+                edit.Text = "";
+            }
+        }
 
     void OnPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
     {
@@ -49,7 +58,7 @@ namespace PAPIRUS_WPF
             {
 
             }
-            else e.Handled = true;
+            else e.Handled = true; 
     }
     }
      public partial class PoleDialog : Window
@@ -160,6 +169,11 @@ namespace PAPIRUS_WPF
                 PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el, generatorConnected);
                 window1.ShowDialog();
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 
