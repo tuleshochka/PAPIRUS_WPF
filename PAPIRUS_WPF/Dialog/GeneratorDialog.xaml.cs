@@ -83,7 +83,7 @@ namespace PAPIRUS_WPF.Dialog
             }
             else
             {
-                specifics.Add(new Specific { frequency = 5, tolerance = 5 });
+                specifics.Add(new Specific { frequency = 5, tolerance = 50 });
             }
             dataGridLimits.ItemsSource = limits;
             dataGridSpecific.ItemsSource = specifics;

@@ -220,10 +220,9 @@ namespace PAPIRUS_WPF
         {
             foreach (Object obj in startObject.connectedElements)
             {
-                
                 if (obj.generatorConnected == true)
                 {
-                    if(!(IsGeneratorConnected(obj, startObject)))
+                    if(!(IsGeneratorConnected(obj, startObject)) || startObject is generator)
                     {
                         obj.generatorConnected = false;
                         if (obj.connectedElements.Count() > 1)

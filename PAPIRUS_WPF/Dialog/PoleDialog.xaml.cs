@@ -71,6 +71,7 @@ namespace PAPIRUS_WPF
         public PoleDialog(string elementName, string fileName, Object _element)
         {
             InitializeComponent();
+            Console.WriteLine(_element.generatorConnected);
             generatorConnected = _element.generatorConnected;
             listBox.SelectedIndex= 0;
             groupTextBox.Text = elementName;

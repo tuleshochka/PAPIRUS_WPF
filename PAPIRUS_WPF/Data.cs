@@ -22,7 +22,7 @@ namespace PAPIRUS_WPF
         //---------для GeneratorDialog-------------//
         public static List<Limits> dataLimits = new List<Limits>();  //
         public static List<Specific> dataSpecifics = new List<Specific>();
-        public static double specificFrequency;
+        public static double specificFrequency = 2.5;
 
         //----------найти родительский элемент-------------//
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
