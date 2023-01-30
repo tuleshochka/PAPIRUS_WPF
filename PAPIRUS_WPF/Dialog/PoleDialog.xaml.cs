@@ -16,13 +16,15 @@ using PAPIRUS_WPF.Models;
 using Element = PAPIRUS_WPF.Models.Element;
 using System.Xml.Linq;
 
-namespace PAPIRUS_WPF
+namespace PAPIRUS_WPF.Dialog
 {
 
     /// <summary>
     /// Логика взаимодействия для GeneratorDialog.xaml
     /// </summary>
     ///
+
+
      public partial class PoleDialog : Window
     {
         
