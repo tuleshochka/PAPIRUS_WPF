@@ -835,6 +835,18 @@ namespace PAPIRUS_WPF
             window4.ShowDialog();
         }
 
-       
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Calculation calc = new Calculation();
+            calc.Show();
+
+
+
+
+
+
+
+
+        }
     }
 }
