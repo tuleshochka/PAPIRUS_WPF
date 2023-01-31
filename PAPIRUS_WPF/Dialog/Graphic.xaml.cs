@@ -16,12 +16,12 @@ namespace PAPIRUS_WPF.Dialog
     /// <summary>
     /// Логика взаимодействия для Calculation.xaml
     /// </summary>
-    public partial class Calculation : Window
+    public partial class Graphic : Window
     {
         public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }
         public Func<double, string> YFormatter { get; set; }
-        public Calculation()
+        public Graphic()
         {
             InitializeComponent();
 

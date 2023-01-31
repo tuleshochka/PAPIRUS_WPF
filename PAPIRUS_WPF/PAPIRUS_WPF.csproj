@@ -114,8 +114,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Data.cs" />
-    <Compile Include="Dialog\Calculation.xaml.cs">
-      <DependentUpon>Calculation.xaml</DependentUpon>
+    <Compile Include="Dialog\Graphic.xaml.cs">
+      <DependentUpon>Graphic.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialog\GeneratorDialog.xaml.cs">
       <DependentUpon>GeneratorDialog.xaml</DependentUpon>
@@ -187,7 +187,7 @@
     <Compile Include="Models\Symbol.cs" />
     <Compile Include="Models\GridPoint.cs" />
     <Compile Include="Models\SymbolShape.cs" />
-    <Page Include="Dialog\Calculation.xaml">
+    <Page Include="Dialog\Graphic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
