@@ -30,18 +30,22 @@ namespace PAPIRUS_WPF.Dialog
                 new LineSeries
                 {
                     Title = "АЧХ",
+                    Stroke= Brushes.Red,
+                    Fill = Brushes.Transparent,
                     Values = new ChartValues<ObservablePoint>
-                    {
+                           {
                        new ObservablePoint(x:0,y:10),
                        new ObservablePoint(x:2,y:11),
                        new ObservablePoint(x:3,y:12),
                        new ObservablePoint(x:4,y:13),
                        new ObservablePoint(x:6,y:14)
                     }
-                },
-                 new LineSeries
-                {
-                    Title = "ФЧХ",
+                  },
+                     new LineSeries
+                 {
+                        Title = "ФЧХ",
+                        Stroke= Brushes.Blue,
+                    Fill = Brushes.Transparent,
                     Values = new ChartValues<ObservablePoint>
                     {
                        new ObservablePoint(x:10,y:10),
@@ -54,7 +58,7 @@ namespace PAPIRUS_WPF.Dialog
 
             };
             DataContext = this;
-            
+
         }
     }
 }
