@@ -837,7 +837,7 @@ namespace PAPIRUS_WPF
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Calculation calc = new Calculation();
+            Graphic calc = new Graphic();
             calc.Show();
 
 
