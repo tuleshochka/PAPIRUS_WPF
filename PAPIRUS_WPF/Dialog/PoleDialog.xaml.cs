@@ -15,6 +15,7 @@ using TextBox = System.Windows.Controls.TextBox;
 using PAPIRUS_WPF.Models;
 using Element = PAPIRUS_WPF.Models.Element;
 using System.Xml.Linq;
+using System.Reflection;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -24,6 +25,11 @@ namespace PAPIRUS_WPF.Dialog
     /// </summary>
     ///
 
+    public class PoleInsideElementsAndParams
+    {
+        public Element element { get; set; }
+        public List<DataGridElements> parameters = new List<DataGridElements>();
+    }
 
      public partial class PoleDialog : Window
     {
@@ -35,15 +41,18 @@ namespace PAPIRUS_WPF.Dialog
         List<string> nameElements = new List<string>(); //лист названий всех элементов из файла
         int poleNum;  //сколько полюсов в полюснике
 
+        private List<PoleInsideElementsAndParams> listOfElements;
         private Element el;  //выбранный пользователем элемент из ListBox
         private List<DataGridElements> datagridelements = new List<DataGridElements>(); //для хранения параметров и их значений с dataGridView
         private List<double> values = new List<double>();
         private Object _object;
 
         private bool generatorConnected;
+        private bool isFirst = true;
 
         public PoleDialog(string elementName, string fileName, Object _element)
         {
+            listOfElements = new List<PoleInsideElementsAndParams>();
             InitializeComponent();
             _object = _element;
             generatorConnected = _element.generatorConnected;
@@ -56,8 +65,7 @@ namespace PAPIRUS_WPF.Dialog
                 elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString);
                 foreach (Element element in elementsList)
                 {
-                    nameElements.Add(element.name);
-                   
+                    listOfElements.Add( new PoleInsideElementsAndParams { element = element });
                 }
                 switch (fileName)
                 {
@@ -74,32 +82,95 @@ namespace PAPIRUS_WPF.Dialog
                         poleNum = 4;
                         break;
                 }
-                listBox.ItemsSource = nameElements;
             }
+
+            listBox.ItemsSource = listOfElements.Select(x => x.element.name);
+            if (_object.insideElement != null)
+            {
+                listOfElements.Clear();
+                datagridelements.Clear();
+                foreach (PoleInsideElementsAndParams element in _object.insideParams)
+                {
+                    listOfElements.Add(element);
+                }
+                el = _object.insideElement;
+                int index = listOfElements.FindIndex(x => x.element.name == el.name);
+                foreach (DataGridElements element in _object.insideParams[index].parameters)
+                {
+                    datagridelements.Add(element);
+                }
+                listBox.SelectedItem = el.name;
+                dataGrid.ItemsSource = datagridelements;
+            }
+            else
+            {
+                el = elementsList[0];
+                listBox.SelectedIndex = 0;
+            }
+            isFirst = false;
+
         }
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            datagridelements.Clear();
-            dataGrid.ItemsSource = null;
-            el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
-            if (el.parameters.Count()!=0)
+            if (!isFirst)
             {
-                for (int i = 0; i < el.parameters.Count(); i++)
+                SaveData(el);
+                datagridelements.Clear();
+                dataGrid.ItemsSource = null;
+                el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
+                int index = listOfElements.FindIndex(x => x.element.name == el.name);
+
+                if (el.parameters.Count() != 0)
                 {
-                    datagridelements.Add(new DataGridElements { columnParam = el.parameters[i].paramColumn +" ("+ el.parameters[i].unitColumn + ")" });
+                    for (int i = 0; i < el.parameters.Count(); i++)
+                    {
+                        datagridelements.Add(new DataGridElements { columnParam = el.parameters[i].paramColumn + " (" + el.parameters[i].unitColumn + ")" });
+                        if (listOfElements[index].parameters.Count != 0)
+                        {
+                            datagridelements[i].columnValue = listOfElements[index].parameters[i].columnValue;
+                            datagridelements[i].columnDopusk = listOfElements[index].parameters[i].columnDopusk;
+                        }
+                    }
+                    dataGrid.ItemsSource = datagridelements;
                 }
-                dataGrid.ItemsSource = datagridelements;
+                try
+                {
+                    imageElement.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + el.imagePath));
+                }
+                catch (Exception)
+                {
+                    imageElement.Source = null;
+                }
             }
-            try
+            else
             {
-                imageElement.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + el.imagePath));
+                datagridelements.Clear();
+                dataGrid.ItemsSource = null;
+                el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
+                int index = listOfElements.FindIndex(x => x.element.name == el.name);
+                if (el.parameters.Count() != 0)
+                {
+                    for (int i = 0; i < el.parameters.Count(); i++)
+                    {
+                        datagridelements.Add(new DataGridElements { columnParam = el.parameters[i].paramColumn + " (" + el.parameters[i].unitColumn + ")" });
+                        if (listOfElements[index].parameters.Count != 0)
+                        {
+                            datagridelements[i].columnValue = listOfElements[index].parameters[i].columnValue;
+                            datagridelements[i].columnDopusk = listOfElements[index].parameters[i].columnDopusk;
+                        }
+                    }
+                    dataGrid.ItemsSource = datagridelements;
+                }
+                try
+                {
+                    imageElement.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + el.imagePath));
+                }
+                catch (Exception)
+                {
+                    imageElement.Source = null;
+                }
             }
-            catch (Exception)
-            {
-                imageElement.Source = null;
-            }
-            
         }
 
         private void sMatrix_Click(object sender, RoutedEventArgs e)
@@ -118,17 +189,22 @@ namespace PAPIRUS_WPF.Dialog
             else
             {
                 _object.insideElement = el;
-                _object.insideParams = datagridelements;
+                _object.insideParams.Clear();
+                foreach(PoleInsideElementsAndParams element in listOfElements)
+                {
+                    _object.insideParams.Add(element);
+                }
+                this.Close();
             }
         }
 
         private bool SaveData()
         {
-            jsonString = File.ReadAllText(filePath);
-            elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString);
-            bool f = true;
+            bool f = false;
             int i = 0;
             el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
+            int index = listOfElements.FindIndex(x => x.element.name == el.name);
+            listOfElements[index].parameters.Clear();
             if (el.parameters.Count() != 0)
             {
                 foreach (DataGridElements element in datagridelements)
@@ -137,18 +213,59 @@ namespace PAPIRUS_WPF.Dialog
 
                     if (string.IsNullOrEmpty(x.Text))
                     {
-                        f = true;
+                        f = false;
                         break;
                     }
-                    else f = false;
+                    else f = true;
                     element.columnValue = x.Text;
                     i++;
+                    listOfElements[index].parameters.Add(element);
                 }
             }
             return f;
         }
 
+        private void SaveData(Element elem)
+        {
+            int i = 0;
+            int index = listOfElements.FindIndex(x => x.element.name == elem.name);
+            listOfElements[index].parameters.Clear();
+           
+            if (elem.parameters.Count() != 0)
+            {
+                foreach (DataGridElements element in datagridelements)
+                {
+                    var x = dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]) as TextBlock;
+                    var y = dataGrid.Columns[2].GetCellContent(dataGrid.Items[i]) as TextBlock;
+                    if (string.IsNullOrEmpty(x.Text))
+                    {
+                        element.columnValue = "";
+                    }
+                    else
+                    {
+                        element.columnValue = x.Text;
+                    }
+                    if (string.IsNullOrEmpty(y.Text))
+                    {
+                        element.columnDopusk = "";
+                    }
+                    else
+                    {
+                        element.columnDopusk = x.Text;
+                    }
+                    listOfElements[index].parameters.Add(element);
+                    i++;
+                }
+            }
+        }
+
+
         private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
