@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using WPF_SHF_Element_lib;
 using PAPIRUS_WPF.Models;
 using Element = PAPIRUS_WPF.Models.Element;
+using PAPIRUS_WPF.Dialog;
 
 namespace PAPIRUS_WPF
 {
@@ -45,7 +46,7 @@ namespace PAPIRUS_WPF
         public Element insideElement;
 
         //------сохраненные параметры-------------//
-        public List<DataGridElements> insideParams;
+        public List<PoleInsideElementsAndParams> insideParams = new List<PoleInsideElementsAndParams>();
 
         /// <summary>
         /// Creates a new Circuit Object to be manipulated
@@ -56,7 +57,6 @@ namespace PAPIRUS_WPF
             _attachedInputLines = new List<Line>();
             _attachedOutputLines = new List<Line>();
             connectedElements = new List<Object>();
-            insideParams = new List<DataGridElements>();
         }
 
         public List<Object> connectedElements;

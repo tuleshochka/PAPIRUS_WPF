@@ -11,7 +11,7 @@
 
 
         <Button Content="OK" x:Name="OKButton" Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="412,482,0,0" Click="OKButton_Click"/>
-        <Button Content="Отмена"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="537,482,0,0"/>
+        <Button Content="Отмена"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="537,482,0,0" Click="Button_Click_1"/>
 
         <TextBlock HorizontalAlignment="Left" Margin="26,30,0,0"  TextWrapping="Wrap" VerticalAlignment="Top" Text="Имя элемента"/>
         <TextBox x:Name="groupTextBox" HorizontalAlignment="Left" IsReadOnly="True" Margin="130,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="162" Height="25"/>
