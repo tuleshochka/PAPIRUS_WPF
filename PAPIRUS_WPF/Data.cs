@@ -1,4 +1,6 @@
-﻿using PAPIRUS_WPF.Models;
+﻿using LiveCharts.Defaults;
+using LiveCharts;
+using PAPIRUS_WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace PAPIRUS_WPF
         public static List<Line> selectedWires = new List<Line>();
         public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();
         public static Object multiPole;
+
 
         //---------для GeneratorDialog-------------//
         public static List<Limits> dataLimits = new List<Limits>();  //
@@ -42,5 +45,18 @@ namespace PAPIRUS_WPF
             else
                 return FindParent<T>(parentObject);
         }
-    }
+
+
+        //----------АЧХ и ФЧХ-------------//
+        //Тут храним точки
+        public static ChartValues<ObservablePoint> frec = new ChartValues<ObservablePoint>();
+        public static ChartValues<ObservablePoint> phase = new ChartValues<ObservablePoint>();
+
+        /*вариант заполнения 
+            for (int i = 0; i< 10; i++)
+            {
+                Data.frec.Add(new ObservablePoint(i, -i));
+            }
+        */
+}
 }
