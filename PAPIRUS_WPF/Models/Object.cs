@@ -14,6 +14,7 @@ using PAPIRUS_WPF.Models;
 using Element = PAPIRUS_WPF.Models.Element;
 using PAPIRUS_WPF.Dialog;
 using System.Numerics;
+using PAPIRUS_WPF.Elements;
 
 namespace PAPIRUS_WPF
 {
@@ -29,8 +30,17 @@ namespace PAPIRUS_WPF
             set { SetValue(CanMoveProperty, value); }
         }
 
+        public virtual List<Output> listOfOutput { get; set; }
+
+        public List<Output> GetOutputs()
+        {
+            return listOfOutput;
+        }
+
+        public virtual int group { get; set; }
 
         public Complex[,] matrix;
+        public List<MatrixElement> matrixElements;
 
         public string name { get; set; }
         public bool isSelected = false;
@@ -60,9 +70,23 @@ namespace PAPIRUS_WPF
             _attachedInputLines = new List<Line>();
             _attachedOutputLines = new List<Line>();
             connectedElements = new List<Object>();
+            matrixElements = new List<MatrixElement>();
         }
 
         public List<Object> connectedElements;
+
+        public void FillME()
+        {
+            int k = 0;
+            for (int i =0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    matrixElements.Add(new MatrixElement {rowIndex = i,columnIndex =j, value = matrix[i, j], unique =  k});
+                    k++;
+                }
+            }
+        }
 
         public virtual void AttachInputLine(Line line)
         {

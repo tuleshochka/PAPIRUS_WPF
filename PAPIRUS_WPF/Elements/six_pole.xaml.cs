@@ -20,13 +20,17 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class six_pole : Object
     {
+        public override List<Output> listOfOutput { get; set; } = new List<Output>();
+
         public six_pole()
         {
             InitializeComponent();
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
+            listOfOutput.Add(LeftInput);
+            listOfOutput.Add(RightInput);
+            listOfOutput.Add(Top);
 
-            
         }
 
         private void SixPole_Loaded(object sender, RoutedEventArgs e)

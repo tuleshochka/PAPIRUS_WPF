@@ -22,11 +22,15 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class two_pole : Object
     {
+
+        public override List<Output> listOfOutput { get; set; } = new List<Output>();
+
         public two_pole()
         {
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
             InitializeComponent();
+            listOfOutput.Add(LeftInput);
             LeftInput.StateChanged += Two_PoleStateChanged;
         }
 
