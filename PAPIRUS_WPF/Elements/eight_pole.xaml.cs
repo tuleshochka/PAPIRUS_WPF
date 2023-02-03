@@ -32,7 +32,7 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(LeftInput2);
             listOfOutput.Add(RightInput2);
             listOfOutput.Add(RightInput);
-            group = 4; //!!!!
+            group = 4;
         }
 
         private void EightPol_Loaded(object sender, RoutedEventArgs e)

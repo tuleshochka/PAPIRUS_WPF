@@ -20,6 +20,7 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class fourteen_pole : Object
     {
+        public override int group { get => base.group; set => base.group = value; }
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
 
         public fourteen_pole()
@@ -34,6 +35,7 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(RightInput);
             listOfOutput.Add(Top2);
             listOfOutput.Add(Top3);
+            group = 7;
         }
 
         private void EightPol_Loaded(object sender, RoutedEventArgs e)

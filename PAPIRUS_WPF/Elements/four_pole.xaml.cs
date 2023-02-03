@@ -20,7 +20,7 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class four_pole : Object
     {
-
+        public override int group { get => base.group; set => base.group = value; }
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
 
         public four_pole()
@@ -32,7 +32,7 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(RightInput);
             LeftInput.StateChanged += FourPoleStateChanged;
             RightInput.StateChanged += FourPoleStateChanged;
-            
+            group = 2;
         }
 
         private void FourPoleStateChanged()

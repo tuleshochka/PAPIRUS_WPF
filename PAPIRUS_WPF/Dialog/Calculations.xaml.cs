@@ -32,6 +32,8 @@ namespace PAPIRUS_WPF.Dialog
             {
                 if (RadioButtonSMatrix.IsChecked == true)
                 {
+                    SMatrixCalculation calc = new SMatrixCalculation();
+                    calc.CalculateTotal(Data.elements);
                 }
             }
             else

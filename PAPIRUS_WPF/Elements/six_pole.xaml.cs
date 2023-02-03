@@ -21,7 +21,7 @@ namespace PAPIRUS_WPF.Elements
     public partial class six_pole : Object
     {
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
-
+        public override int group { get => base.group; set => base.group = value; }
         public six_pole()
         {
             InitializeComponent();
@@ -30,7 +30,7 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(LeftInput);
             listOfOutput.Add(RightInput);
             listOfOutput.Add(Top);
-
+            group = 3;
         }
 
         private void SixPole_Loaded(object sender, RoutedEventArgs e)
