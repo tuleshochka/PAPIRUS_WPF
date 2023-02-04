@@ -48,6 +48,7 @@ namespace PAPIRUS_WPF
                     if (!(output.isLinked())) //тут надо вставлять текст блоки
                     {
                         free.Add(i);
+                        output.index = i;
                         for (int k = 0; k < _object.matrix.GetLength(1); k++)
                         {
                             MatrixElement mx = _object.matrixElements.First(x => x.unique == k + number * j);
@@ -71,6 +72,7 @@ namespace PAPIRUS_WPF
                     if (output.isLinked()) //тут надо вставлять текст блоки
                     {
                         connected.Add(i);
+                        output.index = i;
                         for (int k = 0; k < _object.matrix.GetLength(1); k++)
                         {
                             MatrixElement mx = _object.matrixElements.Find(x => x.unique == k + number * j);
@@ -145,6 +147,17 @@ namespace PAPIRUS_WPF
                     w++;
                 }
                 q++;
+            }
+
+            int[,] EMatrix = new int[connected.Last(), connected.Last()];
+            q = connected.First();
+            w = connected.First();
+            for (int n = 0; n < EMatrix.GetLength(0); n++)
+            {
+                for (int m = 0; m < EMatrix.GetLength(1); m++)
+                {
+
+                }
             }
         }
 
