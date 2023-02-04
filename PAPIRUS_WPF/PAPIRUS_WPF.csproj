@@ -105,7 +105,7 @@
     </Reference>
     <Reference Include="WPF_SHF_Element_lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\projects VScode\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
+      <HintPath>..\..\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +114,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Data.cs" />
+    <Compile Include="Dialog\Calculations.xaml.cs">
+      <DependentUpon>Calculations.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialog\Graphic.xaml.cs">
       <DependentUpon>Graphic.xaml</DependentUpon>
     </Compile>
@@ -187,6 +190,11 @@
     <Compile Include="Models\Symbol.cs" />
     <Compile Include="Models\GridPoint.cs" />
     <Compile Include="Models\SymbolShape.cs" />
+    <Compile Include="SMatrixCalculation.cs" />
+    <Page Include="Dialog\Calculations.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialog\Graphic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

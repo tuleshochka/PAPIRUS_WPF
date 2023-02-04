@@ -16,6 +16,7 @@ using PAPIRUS_WPF.Models;
 using Element = PAPIRUS_WPF.Models.Element;
 using System.Xml.Linq;
 using System.Reflection;
+using System.Numerics;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -193,6 +194,19 @@ namespace PAPIRUS_WPF.Dialog
                 foreach(PoleInsideElementsAndParams element in listOfElements)
                 {
                     _object.insideParams.Add(element);
+                }
+                int number = el.group;
+                SMatrixCalculation calculation = new SMatrixCalculation();
+                Complex[,] matrix = new Complex[number, number];
+                try
+                {
+                    matrix = calculation.Calculate(el, _object.generatorConnected, datagridelements);
+                    _object.matrix = matrix;
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                    this.Close();
                 }
                 this.Close();
             }

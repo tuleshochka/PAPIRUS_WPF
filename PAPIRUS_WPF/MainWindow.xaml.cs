@@ -76,13 +76,13 @@ namespace PAPIRUS_WPF
 
         //-------подключение к генератору----------//
         private bool generatorConnect = false;
-        private List<Object> connectedElements;
+        private List<Object> elements;
 
         public MainWindow()
         {
             InitializeComponent();
             _powerList = new List<PowerObject>();
-            connectedElements = new List<Object>();
+            elements = new List<Object>();
             ClickTimer = new Timer(300);
             ClickTimer.Elapsed += new ElapsedEventHandler(EvaluateClicks);
             
@@ -595,9 +595,6 @@ namespace PAPIRUS_WPF
                             _powerList.Add((PowerObject)_tempOutput);
                             _powerList.Add((PowerObject)IOInput);
 
-                            connectedElements.Add(startObject);
-                            connectedElements.Add(obj);
-
                             //Attaches the line to the object
                             obj.AttachInputLine(_tempLink);
 
@@ -724,6 +721,7 @@ namespace PAPIRUS_WPF
                 Canvas.SetLeft(instance, p.X - instance.Width / 2);
                 Canvas.SetTop(instance, p.Y - instance.Height / 2);
             }
+            elements.Add(instance);
         }
 
         private void CircuitCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -837,8 +835,8 @@ namespace PAPIRUS_WPF
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Graphic calc = new Graphic();
-            calc.Show();
+            Calculations calc = new Calculations();
+            calc.ShowDialog();
 
 
 

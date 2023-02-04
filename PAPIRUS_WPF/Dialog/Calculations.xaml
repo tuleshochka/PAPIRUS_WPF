@@ -1,0 +1,45 @@
+﻿<Window x:Class="PAPIRUS_WPF.Dialog.Calculations"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog"
+        mc:Ignorable="d"
+        Title="Calculations" Height="353" Width="720" ResizeMode="CanMinimize">
+    <DockPanel>
+        <Border >
+            <Grid>
+                <GroupBox Header="Результат расчёта" Margin="10,10,354,151">
+                    <StackPanel>
+                        <RadioButton x:Name="RadioButtonSMatrix" Content="S-матрица" HorizontalAlignment="Left" Margin="1,5,0,0" VerticalAlignment="Top" />
+                        <RadioButton x:Name="RadioButtonDMatrix" Content="D-матрица" HorizontalAlignment="Left" Margin="1,5,0,0"  VerticalAlignment="Top" />
+                        <RadioButton x:Name="RadioButtonReflection" Content="Коэффициенты отражения по входам" Margin="1,5,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  />
+                        <RadioButton x:Name="RadioButtonLoad" Content="Коэффициенты передачи в нагрузку" Margin="1,5,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <RadioButton x:Name="RadioButtonPower" Content="Коэффициенты передачи по мощности" Margin="1,5,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Представление результата" Margin="13,173,354,72">
+                    <StackPanel>
+                        <RadioButton x:Name="RadioButtonViaMatrix" Content="В виде матрицы" HorizontalAlignment="Left" Margin="1,5,0,0" VerticalAlignment="Top" />
+                        <RadioButton x:Name="RadioButtonViaGraphic" Content="В виде графика ЧХ одного из элементов" HorizontalAlignment="Left" Margin="1,5,0,0" VerticalAlignment="Top" />
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Данные для вычислений" Margin="369,10,10,72">
+                    <WrapPanel>
+                        <Label Content="Количество точек" Margin="20,5,0,0"/>
+                        <TextBox x:Name="DotsNumber" Width="150" Margin="10,5,0,0" />
+                        <Label Content="Элемент матрицы" Margin="19,5,0,0"/>
+                        <TextBox x:Name="MatrixElement1" Width="50" Margin="10,5,0,0"/>
+                        <TextBox x:Name="MatrixElement2" Width="50" Margin="10,5,0,0"/>
+                        <Label Content="Номер выхода" Margin="37,5,0,0"/>
+                        <TextBox x:Name="OutputNumber" Width="50" Margin="10,5,0,0"/>
+                    </WrapPanel>
+                </GroupBox>
+                <CheckBox Content="Чувствительность" HorizontalAlignment="Left" Margin="13,274,0,0" VerticalAlignment="Top"/>
+                <Button Content="OK" x:Name="OKButton" Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top"  Margin="457,268,0,0" Click="OKButton_Click"/>
+                <Button Content="Отмена"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="584,268,0,0"/>
+            </Grid>
+        </Border>
+    </DockPanel>
+
+</Window>

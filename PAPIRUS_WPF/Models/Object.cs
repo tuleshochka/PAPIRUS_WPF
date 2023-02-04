@@ -13,6 +13,7 @@ using WPF_SHF_Element_lib;
 using PAPIRUS_WPF.Models;
 using Element = PAPIRUS_WPF.Models.Element;
 using PAPIRUS_WPF.Dialog;
+using System.Numerics;
 
 namespace PAPIRUS_WPF
 {
@@ -34,6 +35,9 @@ namespace PAPIRUS_WPF
             set { SetValue(DefaultNumberVisibleProperty, value); }
         }
 
+
+
+        public Complex[,] matrix;
 
         public string name { get; set; }
         public bool isSelected = false;
