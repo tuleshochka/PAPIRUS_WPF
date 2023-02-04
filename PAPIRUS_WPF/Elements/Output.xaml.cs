@@ -30,6 +30,7 @@ namespace PAPIRUS_WPF.Elements
         public delegate void StateChangedHandler();
         public Output _state_;
         public int index;
+        public string outPos;
 
         // The state of the output
         public bool _state;

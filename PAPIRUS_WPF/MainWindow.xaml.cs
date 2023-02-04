@@ -23,7 +23,7 @@ namespace PAPIRUS_WPF
     {
 
         //--------данные для dialog--------------//
-        private string elementName;
+        public string elementName;
         private string fileName;
 
         private int num = 1;  //для счета количества элементов на canvas

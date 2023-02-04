@@ -33,6 +33,7 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(LeftInput);
             group = 1;
             LeftInput.StateChanged += Two_PoleStateChanged;
+            LeftInput.outPos = 0;
         }
 
         private void Two_PoleStateChanged()

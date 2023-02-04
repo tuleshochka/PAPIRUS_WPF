@@ -19,6 +19,7 @@ using System.Windows.Documents;
 using AngouriMath.Extensions;
 using PAPIRUS_WPF.Elements;
 using static AngouriMath.Entity;
+using System.Windows.Controls;
 
 namespace PAPIRUS_WPF
 {
@@ -31,6 +32,7 @@ namespace PAPIRUS_WPF
 
         public void CalculateTotal(List<Object> elements) // расчет общей S-матрицы
         {
+            var window = System.Windows.Application.Current.MainWindow;
             List<Complex[,]> allMatrix = elements.Select(x => x.matrix).ToList();
             //Object totalMatrix = elements.Aggregate((x, y) => Sum(x, y));
 
@@ -47,6 +49,14 @@ namespace PAPIRUS_WPF
                     j = _object.GetOutputs().FindIndex(x => x == output);
                     if (!(output.isLinked())) //тут надо вставлять текст блоки
                     {
+                        
+                        Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
+                        Console.WriteLine(p.X +"+"+ p.Y);
+                        TextBlock text = new TextBlock();
+                        text.Text = i.ToString();
+                        (window as MainWindow).CircuitCanvas.Children.Add(text);
+                        Canvas.SetLeft(text, Math.Abs(p.X));
+                        Canvas.SetTop(text, Math.Abs(p.Y));
                         free.Add(i);
                         output.index = i;
                         for (int k = 0; k < _object.matrix.GetLength(1); k++)
@@ -56,7 +66,6 @@ namespace PAPIRUS_WPF
                             mx = _object.matrixElements.First(x => x.unique == number * k + j);
                             mx.columnIndex = i;
                         }
-
                         i++;
                     }
                     j++;
@@ -67,11 +76,13 @@ namespace PAPIRUS_WPF
                 int number = _object.group;
                 int j = 0;
                 foreach (Output output in _object.GetOutputs())
+                    
                 {
                     j = _object.GetOutputs().FindIndex(x => x == output);
                     if (output.isLinked()) //тут надо вставлять текст блоки
                     {
                         connected.Add(i);
+                        (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0),output);
                         output.index = i;
                         for (int k = 0; k < _object.matrix.GetLength(1); k++)
                         {
@@ -113,7 +124,6 @@ namespace PAPIRUS_WPF
                 for (int m = 0; m < free.Count; m++)
                 {
                     aa[n, m] = A[n, m];
-                    Console.WriteLine(aa[n, m]);
                 }
             }
             int q = 0, w = 0;
@@ -122,7 +132,6 @@ namespace PAPIRUS_WPF
                 for (int m = free.Count; m <= connected.Last(); m++)
                 {
                     ab[n, q] = A[n, m];
-                    Console.WriteLine(ab[n, q]);
                     q++;
                 }
             }
@@ -132,7 +141,6 @@ namespace PAPIRUS_WPF
                 for (int m = 0; m < free.Count; m++)
                 {
                     ba[q, m] = A[n, m];
-                    Console.WriteLine(ba[q, m]);
                 }
                 q++;
             }
@@ -143,7 +151,6 @@ namespace PAPIRUS_WPF
                 for (int m = free.Count; m <= connected.Last(); m++)
                 {
                     bb[q, w] = A[n, m];
-                    Console.WriteLine(bb[q, w]);
                     w++;
                 }
                 q++;
@@ -156,8 +163,19 @@ namespace PAPIRUS_WPF
             {
                 for (int m = 0; m < EMatrix.GetLength(1); m++)
                 {
-
+                    Object _ = elements.Find(x => x.GetOutputs().Any(y => y.index == q && y._state_.index == w));
+                    if (_ == null)
+                    {
+                        EMatrix[n, m] = 0;
+                    }
+                    else
+                    {
+                        EMatrix[n, m] = 1;
+                    }
+                    w++;
+                    Console.WriteLine(EMatrix[n, m]);
                 }
+                q++;
             }
         }
 
