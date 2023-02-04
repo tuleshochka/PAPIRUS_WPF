@@ -51,12 +51,14 @@ namespace PAPIRUS_WPF
                     {
                         
                         Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
+                        p.Y = p.Y - output.Height / 2;
                         Console.WriteLine(p.X +"+"+ p.Y);
                         TextBlock text = new TextBlock();
-                        text.Text = i.ToString();
+                        text.Text = i + 1.ToString();
                         (window as MainWindow).CircuitCanvas.Children.Add(text);
                         Canvas.SetLeft(text, Math.Abs(p.X));
                         Canvas.SetTop(text, Math.Abs(p.Y));
+                        text.Margin = new Thickness(-20, 0, 0, 0);
                         free.Add(i);
                         output.index = i;
                         for (int k = 0; k < _object.matrix.GetLength(1); k++)

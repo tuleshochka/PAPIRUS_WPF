@@ -35,8 +35,8 @@ namespace PAPIRUS_WPF.Elements
                     tb.Visibility = Visibility.Hidden;
                 }
             }
-            LeftInput.outPos = "Left";
-            LeftInput.outPos = "Bottom";
+            LeftInput.outPos = 0;
+            LeftInput.outPos = 3;
             listOfOutput.Add(LeftInput);
             listOfOutput.Add(LeftInput2);
             listOfOutput.Add(LeftInput3);
