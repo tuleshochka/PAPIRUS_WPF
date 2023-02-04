@@ -29,13 +29,13 @@ namespace PAPIRUS_WPF
         public void CalculateTotal(List<Object> elements) // расчет общей S-матрицы
         {
             List<Complex[,]> allMatrix = elements.Select(x => x.matrix).ToList();
-            Complex[,] totalMatrix = allMatrix.Aggregate((x, y) => Sum(x,y));
+           // Complex[,] totalMatrix = allMatrix.Aggregate((x, y) => Sum(x,y));
         }
 
-        private Complex[,] Sum(Complex[,] x, Complex[,] y)
-        {
-            
-        }
+        //private Complex[,] Sum(Complex[,] x, Complex[,] y)
+       // {
+       //     
+       // }
 
         Dictionary<string, string> operators = new Dictionary<string, string>()
         {

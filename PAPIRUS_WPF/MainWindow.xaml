@@ -200,12 +200,12 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
 
-            <Elements:two_pole CanMove="false"/>
-            <Elements:four_pole CanMove="false"/>
-            <Elements:six_pole CanMove="false"/>
-            <Elements:eight_pole CanMove="false"/>
-            <Elements:multi_pole CanMove="false"/>
-            <Elements:generator CanMove="false"/>
+            <Elements:two_pole CanMove="false" DefaultNumberVisible="False"/>
+            <Elements:four_pole CanMove="false" DefaultNumberVisible="False"/>
+            <Elements:six_pole CanMove="false" DefaultNumberVisible="False"/>
+            <Elements:eight_pole CanMove="false" DefaultNumberVisible="False"/>
+            <Elements:multi_pole CanMove="false" DefaultNumberVisible="False"/>
+            <Elements:generator CanMove="false" DefaultNumberVisible="False"/>
         </ListView>
     </Grid>
 </Window>

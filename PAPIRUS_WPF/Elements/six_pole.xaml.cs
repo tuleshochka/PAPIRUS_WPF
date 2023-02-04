@@ -31,7 +31,7 @@ namespace PAPIRUS_WPF.Elements
 
         private void SixPole_Loaded(object sender, RoutedEventArgs e)
         {
-            if (CanMove == false)
+            if (DefaultNumberVisible == false)
             {
                 foreach (TextBlock tb in utils.GetControls<TextBlock>(SixPole))
                 {
