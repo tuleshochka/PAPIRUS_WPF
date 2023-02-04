@@ -20,14 +20,26 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class multi_pole : Object
     {
-
+        public override int group { get => base.group; set => base.group = value; }
+        public override List<Output> listOfOutput { get; set; } = new List<Output>();
         public multi_pole()
         {
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
             InitializeComponent();
-            
-
+            listOfOutput.Add(LeftInput);
+            listOfOutput.Add(LeftInput2);
+            listOfOutput.Add(LeftInput3);
+            listOfOutput.Add(Buttom3);
+            listOfOutput.Add(Buttom);
+            listOfOutput.Add(Buttom2);
+            listOfOutput.Add(RightInput3);
+            listOfOutput.Add(RightInput2);
+            listOfOutput.Add(RightInput);
+            listOfOutput.Add(Top2);
+            listOfOutput.Add(Top);
+            listOfOutput.Add(Top3);
+            group = 12;
         }
 
         private void EightPol_Loaded(object sender, RoutedEventArgs e)

@@ -1,5 +1,6 @@
 ﻿using PAPIRUS_WPF.Dialog;
 using PAPIRUS_WPF.Elements;
+using PAPIRUS_WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,26 +72,25 @@ namespace PAPIRUS_WPF
         private Point maxMove;
 
         //------Для копирования и вставки-------//
-        private List<Object> copyData= new List<Object>();
+        private List<Object> copyData = new List<Object>();
         private List<Point> copyDataPos = new List<Point>();
 
         //-------подключение к генератору----------//
         private bool generatorConnect = false;
-        private List<Object> elements;
 
         public MainWindow()
         {
             InitializeComponent();
             _powerList = new List<PowerObject>();
-            elements = new List<Object>();
+            Data.elements = new List<Object>();
             ClickTimer = new Timer(300);
             ClickTimer.Elapsed += new ElapsedEventHandler(EvaluateClicks);
-            
+
 
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-            
+
 
         }
         public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
@@ -135,7 +135,6 @@ namespace PAPIRUS_WPF
             if (element is Object)
             {
                 Object obj = element as Object;
-                Console.WriteLine(obj.generatorConnected);
                 obj.BorderBrush = Brushes.Magenta;
                 p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), obj);
                 obj.anchorPoint.X = p2.X - obj.Width / 2;
@@ -204,7 +203,7 @@ namespace PAPIRUS_WPF
         {
             foreach (Object obj in startObject.connectedElements)
             {
-                if(obj.generatorConnected == false)
+                if (obj.generatorConnected == false)
                 {
                     obj.generatorConnected = true;
                     if (obj.connectedElements.Count() > 1)
@@ -221,7 +220,7 @@ namespace PAPIRUS_WPF
             {
                 if (obj.generatorConnected == true)
                 {
-                    if(!(IsGeneratorConnected(obj, startObject)) || startObject is generator)
+                    if (!(IsGeneratorConnected(obj, startObject)) || startObject is generator)
                     {
                         obj.generatorConnected = false;
                         if (obj.connectedElements.Count() > 1)
@@ -242,10 +241,10 @@ namespace PAPIRUS_WPF
             }
             else
             {
-                var connected = _object.connectedElements.Where(o => o!=startObject);
+                var connected = _object.connectedElements.Where(o => o != startObject);
                 foreach (Object obj in connected)
                 {
-                    if(IsGeneratorConnected(obj,_object))
+                    if (IsGeneratorConnected(obj, _object))
                     {
                         return true;
                     }
@@ -263,18 +262,72 @@ namespace PAPIRUS_WPF
             _attachedInputLines = element.GetInputLine();
             foreach (var wire in _attachedInputLines)
             {
-                CircuitCanvas.Children.Remove(wire);
+                RemoveWire(wire);
             }
             _attachedOutputLines = element.GetOutputLine();
             foreach (var wire in _attachedOutputLines)
             {
-                CircuitCanvas.Children.Remove(wire);
+                RemoveWire(wire);
             }
             foreach (Object obj in element.connectedElements)
             {
                 obj.connectedElements.Remove(element);
             }
             CircuitCanvas.Children.Remove(element);
+            Data.elements.Remove(element);
+        }
+
+        private void RemoveWire(Line wire)
+        {
+            Point startpoint = new Point(wire.X1, wire.Y1);
+            Point endpoint = new Point(wire.X2, wire.Y2);
+
+            //Move the link endpoint to the current location of the mouse
+            if ((wire.X2 - wire.X1) > 0 && (wire.Y2 - wire.Y1) > 0)
+            {
+                startpoint = new Point(wire.X1 - 1, wire.Y1 - 1);
+                endpoint = new Point(wire.X2 + 1, wire.Y2 + 1);
+            }
+            if ((wire.X2 - wire.X1) < 0 && (wire.Y2 - wire.Y1) < 0)
+            {
+                startpoint = new Point(wire.X1 + 1, wire.Y1 + 1);
+                endpoint = new Point(wire.X2 - 1, wire.Y2 - 1);
+            }
+            if ((wire.X2 - wire.X1) < 0 && (wire.Y2 - wire.Y1) > 0)
+            {
+                startpoint = new Point(wire.X1 + 1, wire.Y1 - 1);
+                endpoint = new Point(wire.X2 - 1, wire.Y2 + 1);
+            }
+            if ((wire.X2 - wire.X1) > 0 && (wire.Y2 - wire.Y1) < 0)
+            {
+                startpoint = new Point(wire.X1 - 1, wire.Y1 + 1);
+                endpoint = new Point(wire.X2 + 1, wire.Y2 - 1);
+            }
+
+            HitTestResult startResult = VisualTreeHelper.HitTest(CircuitCanvas, startpoint);
+            HitTestResult endResult = VisualTreeHelper.HitTest(CircuitCanvas, endpoint);
+            //If the underlying element is a border element
+            if (startResult.VisualHit is Border)
+            {
+                Border border = (Border)startResult.VisualHit;
+                var IO = border.Parent;
+                if (IO is Output)
+                {
+                    Output IOOutput = IO as Output;
+                    IOOutput.DeleteLink();
+                }
+            }
+            if (endResult.VisualHit is Border)
+            {
+                Border border = (Border)endResult.VisualHit;
+                var IO = border.Parent;
+                if (IO is Output)
+                {
+                    Output IOOutput = IO as Output;
+                    IOOutput.DeleteLink();
+                }
+            }
+            CircuitCanvas.Children.Remove(wire);
         }
 
         private void CircuitCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -291,10 +344,6 @@ namespace PAPIRUS_WPF
             {
                 Source = e.Source as FrameworkElement;
                 startObject = e.Source as Object;
-                if(startObject != null)
-                {
-                    Console.WriteLine("IsGeneratorConnected: " + IsGeneratorConnected(startObject, startObject));
-                }
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
                 //If the mouse has hit a border
@@ -307,7 +356,7 @@ namespace PAPIRUS_WPF
                     //If the parent class is an Output
                     if (IO is Output)
                     {
-                        if(startObject is generator  || startObject.generatorConnected == true)
+                        if (startObject is generator || startObject.generatorConnected == true)
                         {
                             generatorConnect = true;
                         }
@@ -331,6 +380,11 @@ namespace PAPIRUS_WPF
 
                         //Assign the temporary output to the current output
                         _tempOutput = (Output)IO;
+                        if (_tempOutput.isLinked())
+                        {
+                            CircuitCanvas.Children.Remove(_tempLink);
+                            return;
+                        }
 
                         e.Handled = true;
                     }
@@ -355,7 +409,7 @@ namespace PAPIRUS_WPF
                             SingleElementSelect(Source);
                         }
                         elementName = startObject.name;
-                        if(startObject is generator)
+                        if (startObject is generator)
                         {
                             GeneratorDialog gd = new GeneratorDialog(elementName);
                             gd.ShowDialog();
@@ -379,10 +433,11 @@ namespace PAPIRUS_WPF
                                 case generator _:
                                     ;
                                     break;
-                                    default: fileName = "multipole.json";
+                                default:
+                                    fileName = "multipole.json";
                                     break;
                             }
-                            PoleDialog gd = new PoleDialog(elementName, fileName,startObject);
+                            PoleDialog gd = new PoleDialog(elementName, fileName, startObject);
                             gd.ShowDialog();
                         }
                     }
@@ -435,7 +490,7 @@ namespace PAPIRUS_WPF
                 ClearSelection();
                 Point currentPoint = e.GetPosition(CircuitCanvas);
                 //Move the link endpoint to the current location of the mouse
-                if((currentPoint.X - startPoint.X) > 0 && (currentPoint.Y - startPoint.Y) > 0)
+                if ((currentPoint.X - startPoint.X) > 0 && (currentPoint.Y - startPoint.Y) > 0)
                 {
                     _tempLink.X2 = (e.GetPosition(CircuitCanvas).X) - 1;
                     _tempLink.Y2 = (e.GetPosition(CircuitCanvas).Y) - 1;
@@ -571,10 +626,10 @@ namespace PAPIRUS_WPF
                         {
                             obj.connectedElements.Add(startObject);
                             startObject.connectedElements.Add(obj);
-                            if(generatorConnect == true || obj is generator || obj.generatorConnected == true)
+                            if (generatorConnect == true || obj is generator || obj.generatorConnected == true)
                             {
                                 obj.generatorConnected = true;
-                                startObject.generatorConnected= true;
+                                startObject.generatorConnected = true;
                                 SetGeneratorConnection(startObject);
                                 SetGeneratorConnection(obj);
                             }
@@ -589,7 +644,18 @@ namespace PAPIRUS_WPF
                             _tempLink.Y2 = inputPoint.Y;
 
                             //Links the output to the input
-                            IOInput.LinkInputs(_tempOutput);
+                            try
+                            {
+                                IOInput.LinkInputs(_tempOutput);
+                            }
+                            catch (Exception exception)
+                            {
+                                CircuitCanvas.Children.Remove(_tempLink);
+                                _tempLink = null;
+                                _linkingStarted = false;
+                                return;
+                            }
+                            _tempOutput.LinkInputs(IOInput);
 
                             //Adds to the global list
                             _powerList.Add((PowerObject)_tempOutput);
@@ -605,7 +671,7 @@ namespace PAPIRUS_WPF
                             linked = true;
                             generatorConnect = false;
                         }
-                       
+
                     }
                 }
 
@@ -639,7 +705,7 @@ namespace PAPIRUS_WPF
                 rect.Width = markerGlyph.Width;
                 rect.Height = markerGlyph.Height;
                 Mouse.Capture(null);
-                
+
                 foreach (FrameworkElement object_ in CircuitCanvas.Children)
                 {
                     if (object_ is Object)
@@ -697,21 +763,21 @@ namespace PAPIRUS_WPF
 
             if (instance == null)
                 return;
-            
+
             if (instance is multi_pole)
             {
                 multi_pole_select multi_Pole_Select = new multi_pole_select();
                 multi_Pole_Select.ShowDialog();
                 instance = Data.multiPole;
                 if (instance != null)
-                { 
-                 SetElementName(instance);
-                CircuitCanvas.Children.Add(instance);
-                Point p = e.GetPosition(CircuitCanvas);
-                Canvas.SetLeft(instance, p.X - instance.Width / 2);
-                Canvas.SetTop(instance, p.Y - instance.Height / 2);
+                {
+                    SetElementName(instance);
+                    CircuitCanvas.Children.Add(instance);
+                    Point p = e.GetPosition(CircuitCanvas);
+                    Canvas.SetLeft(instance, p.X - instance.Width / 2);
+                    Canvas.SetTop(instance, p.Y - instance.Height / 2);
                 }
-               
+
             }
             else
             {
@@ -721,7 +787,10 @@ namespace PAPIRUS_WPF
                 Canvas.SetLeft(instance, p.X - instance.Width / 2);
                 Canvas.SetTop(instance, p.Y - instance.Height / 2);
             }
-            elements.Add(instance);
+            if(!(instance is generator))
+            {
+                Data.elements.Add(instance);
+            }
         }
 
         private void CircuitCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -763,16 +832,16 @@ namespace PAPIRUS_WPF
 
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
-           
-            if (e.Key == Key.Delete)
+
+            if (e.Key == Key.Delete)  //TODO удаление output из output
             {
                 foreach (var element in Data.selection)
                 {
                     RemoveElement(element);
                 }
-                foreach(var wire in Data.selectedWires)
+                foreach (var wire in Data.selectedWires)
                 {
-                    CircuitCanvas.Children.Remove(wire);
+                    RemoveWire(wire);
                 }
             }
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.C)
@@ -782,7 +851,7 @@ namespace PAPIRUS_WPF
                 {
                     data.startPoint = CircuitCanvas.TranslatePoint(new Point(0, 0), data);
                     copyData.Add(data);
-                   
+
                 }
             }
 
@@ -810,9 +879,9 @@ namespace PAPIRUS_WPF
                 }
             }
 
-            if(e.Key == Key.Escape)
+            if (e.Key == Key.Escape)
             {
-                if(_linkingStarted)
+                if (_linkingStarted)
                 {
                     CircuitCanvas.Children.Remove(_tempLink);
                     _tempLink = null;
@@ -824,7 +893,7 @@ namespace PAPIRUS_WPF
 
         private void Form_MouseDown(object sender, MouseButtonEventArgs e)
         {
-    
+
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
@@ -837,13 +906,6 @@ namespace PAPIRUS_WPF
         {
             Calculations calc = new Calculations();
             calc.ShowDialog();
-
-
-
-
-
-
-
 
         }
     }

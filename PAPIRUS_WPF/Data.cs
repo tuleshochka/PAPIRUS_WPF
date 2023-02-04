@@ -16,6 +16,7 @@ namespace PAPIRUS_WPF
     public static class Data
     {
         //---------для MainForm-------------//
+        public static List<Object> elements;
         public static List<Object> selection = new List<Object>();
         public static List<Line> selectedWires = new List<Line>();
         public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();

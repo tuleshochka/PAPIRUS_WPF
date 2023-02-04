@@ -20,18 +20,19 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class four_pole : Object
     {
-
-
+        public override int group { get => base.group; set => base.group = value; }
+        public override List<Output> listOfOutput { get; set; } = new List<Output>();
 
         public four_pole()
         {
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
-            
             InitializeComponent();
+            listOfOutput.Add(LeftInput);
+            listOfOutput.Add(RightInput);
             LeftInput.StateChanged += FourPoleStateChanged;
             RightInput.StateChanged += FourPoleStateChanged;
-            
+            group = 2;
         }
 
         private void FourPoleStateChanged()

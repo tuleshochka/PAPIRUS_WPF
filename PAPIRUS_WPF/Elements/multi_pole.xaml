@@ -33,8 +33,8 @@
         <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,34.5,-13" Text="5" FontSize="12" Foreground="Blue"/>
         <TextBlock HorizontalAlignment="Right" Margin="0,27,-10,28" Text="8" FontSize="12" Foreground="Blue"/>
         <TextBlock HorizontalAlignment="Right" Margin="0,12,-10,42" Text="9" FontSize="12" Foreground="Blue"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,-18,48,73" Text="11" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Right" Margin="0,-18,48,73" Text="12" FontSize="12" Foreground="Blue"/>
         <TextBlock HorizontalAlignment="Right" Margin="0,-18,16,73" Text="10" FontSize="12" Foreground="Blue"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,-18,0,73" Text="12" FontSize="12" Foreground="Blue"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,-18,0,73" Text="11" FontSize="12" Foreground="Blue"/>
     </Grid>
 </Papirus:Object>

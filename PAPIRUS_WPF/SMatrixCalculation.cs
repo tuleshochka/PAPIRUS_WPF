@@ -17,6 +17,8 @@ using System.Numerics;
 using System.Xml.Linq;
 using System.Windows.Documents;
 using AngouriMath.Extensions;
+using PAPIRUS_WPF.Elements;
+using static AngouriMath.Entity;
 
 namespace PAPIRUS_WPF
 {
@@ -26,18 +28,195 @@ namespace PAPIRUS_WPF
         //размерность общей матрицы зависит от количества свободных входов, 2 - 2x2, 5 - 5х5
         // матрица соединений составляется из соединенных плеч
         // матрица делится на блоки aa (свободные плечи) и bb (соединенные плечи)
+
         public void CalculateTotal(List<Object> elements) // расчет общей S-матрицы
         {
             List<Complex[,]> allMatrix = elements.Select(x => x.matrix).ToList();
-           // Complex[,] totalMatrix = allMatrix.Aggregate((x, y) => Sum(x,y));
+            //Object totalMatrix = elements.Aggregate((x, y) => Sum(x, y));
+
+            List<int> free = new List<int>();
+            List<int> connected = new List<int>();
+            int i = 0;
+            foreach (Object _object in elements)
+            {
+                _object.FillME();
+                int number = _object.group;
+                int j = 0;
+                foreach (Output output in _object.GetOutputs())
+                {
+                    j = _object.GetOutputs().FindIndex(x => x == output);
+                    if (!(output.isLinked())) //тут надо вставлять текст блоки
+                    {
+                        free.Add(i);
+                        output.index = i;
+                        for (int k = 0; k < _object.matrix.GetLength(1); k++)
+                        {
+                            MatrixElement mx = _object.matrixElements.First(x => x.unique == k + number * j);
+                            mx.rowIndex = i;
+                            mx = _object.matrixElements.First(x => x.unique == number * k + j);
+                            mx.columnIndex = i;
+                        }
+
+                        i++;
+                    }
+                    j++;
+                }
+            }
+            foreach (Object _object in elements)
+            {
+                int number = _object.group;
+                int j = 0;
+                foreach (Output output in _object.GetOutputs())
+                {
+                    j = _object.GetOutputs().FindIndex(x => x == output);
+                    if (output.isLinked()) //тут надо вставлять текст блоки
+                    {
+                        connected.Add(i);
+                        output.index = i;
+                        for (int k = 0; k < _object.matrix.GetLength(1); k++)
+                        {
+                            MatrixElement mx = _object.matrixElements.Find(x => x.unique == k + number * j);
+                            mx.rowIndex = i;
+                            mx = _object.matrixElements.Find(x => x.unique == number * k + j);
+                            mx.columnIndex = i;
+                        }
+
+                        i++;
+                    }
+                    j++;
+                }
+            }
+
+            Complex[,] A = new Complex[i, i];
+            Complex[,] aa = new Complex[free.Count, free.Count];
+            Complex[,] ab = new Complex[free.Count, connected.Last()];
+            Complex[,] ba = new Complex[connected.Last(), free.Count];
+            Complex[,] bb = new Complex[connected.Last(), connected.Last()];
+            for (int n = 0; n < i; n++)
+            {
+                for (int m = 0; m < i; m++)
+                {
+                    Object right = elements.Find(x => x.matrixElements.Any(y => y.rowIndex == n && y.columnIndex == m) == true);
+                    if (right == null)
+                    {
+                        A[n, m] = 0;
+                    }
+                    else
+                    {
+                        MatrixElement mx = right.matrixElements.Find(x => x.rowIndex == n && x.columnIndex == m);
+                        A[n, m] = mx.value;
+                    }
+                }
+            }
+            for (int n = 0; n < free.Count; n++)
+            {
+                for (int m = 0; m < free.Count; m++)
+                {
+                    aa[n, m] = A[n, m];
+                    Console.WriteLine(aa[n, m]);
+                }
+            }
+            int q = 0, w = 0;
+            for (int n = 0; n < free.Count; n++)
+            {
+                for (int m = free.Count; m <= connected.Last(); m++)
+                {
+                    ab[n, q] = A[n, m];
+                    Console.WriteLine(ab[n, q]);
+                    q++;
+                }
+            }
+            q = 0;
+            for (int n = free.Count; n <= connected.Last(); n++)
+            {
+                for (int m = 0; m < free.Count; m++)
+                {
+                    ba[q, m] = A[n, m];
+                    Console.WriteLine(ba[q, m]);
+                }
+                q++;
+            }
+            q = 0;
+            for (int n = free.Count; n <= connected.Last(); n++)
+            {
+                w = 0;
+                for (int m = free.Count; m <= connected.Last(); m++)
+                {
+                    bb[q, w] = A[n, m];
+                    Console.WriteLine(bb[q, w]);
+                    w++;
+                }
+                q++;
+            }
+
+            int[,] EMatrix = new int[connected.Last(), connected.Last()];
+            q = connected.First();
+            w = connected.First();
+            for (int n = 0; n < EMatrix.GetLength(0); n++)
+            {
+                for (int m = 0; m < EMatrix.GetLength(1); m++)
+                {
+
+                }
+            }
         }
 
-        //private Complex[,] Sum(Complex[,] x, Complex[,] y)
-       // {
-       //     
-       // }
+            //private Object Sum(Object x, Object y)
+            //{
+            //    Dictionary<int,Output> free = new Dictionary<int, Output>();
+            //    Dictionary<int, Output> connected = new Dictionary<int, Output>();
+            //    Dictionary<string, Complex> xMatrixElements = new Dictionary<string, Complex>();
+            //    Dictionary<string, Complex> yMatrixElements = new Dictionary<string, Complex>();
+            //    List<Output> xOutputs = x.GetOutputs();
+            //    List<Output> yOutputs = y.GetOutputs();
+            //    Complex[,] xMatrix = x.matrix;
+            //    Complex[,] yMatrix = y.matrix;
+            //    int i = 0;
+            //    foreach (Output output in xOutputs)
+            //    {
+            //        if(!(output.isLinked()))
+            //        {
+            //            free.Add(i, output);
+            //        }
+            //        i++;
+            //    }
+            //    int j = i;
+            //    foreach (Output output in yOutputs)
+            //    {
+            //        if (!(output.isLinked()))
+            //        {
+            //            free.Add(j, output);
+            //        }
+            //        j++;
+            //    }
+            //    foreach (Output output in xOutputs)
+            //    {
+            //        if (output.isLinked())
+            //        {
+            //            connected.Add(i, output);
+            //        }
+            //    }
+            //    foreach (Output output in yOutputs)
+            //    {
+            //        if (output.isLinked())
+            //        {
+            //            connected.Add(i, output);
+            //        }
+            //    }
+            //    for(int n =0; n < xMatrix.GetLength(0); n++)
+            //    {
+            //        for (int m = 0; m < xMatrix.GetLength(1); m++)
+            //        {
+            //            if(free.ContainsKey(i))
+            //            {
+            //                xMatrixElements.Add(i)
+            //            }
+            //        }
+            //    }
+            //    return y;
+            //}
 
-        Dictionary<string, string> operators = new Dictionary<string, string>()
+            Dictionary<string, string> operators = new Dictionary<string, string>()
         {
             {"+-","-"},
             {"--","+"},
@@ -167,7 +346,7 @@ namespace PAPIRUS_WPF
                                 {
                                     matrix = MatrixCellEvalNumerical(matrix, expr, i, j);
                                 }
-                                catch(Exception e)
+                                catch (Exception e)
                                 {
                                     throw new Exception(e.Message);
                                 }
@@ -208,7 +387,7 @@ namespace PAPIRUS_WPF
         }
 
 
-        private Element IntermediateValuesEvalNumerical(Element element, Entity expr,int i)
+        private Element IntermediateValuesEvalNumerical(Element element, Entity expr, int i)
         {
             Complex complex = (Complex)expr.EvalNumerical();
             if (complex.Real is double.NaN || complex.Imaginary is double.NaN)
@@ -249,11 +428,11 @@ namespace PAPIRUS_WPF
             }
             if (complex.Imaginary == 0)
             {
-                matrix[i,j] = ((double)expr.EvalNumerical());
+                matrix[i, j] = ((double)expr.EvalNumerical());
             }
             else
             {
-                matrix[i,j] = complex;
+                matrix[i, j] = complex;
             }
             return matrix;
         }
@@ -285,5 +464,5 @@ namespace PAPIRUS_WPF
     }
 
 }
-    
+
 

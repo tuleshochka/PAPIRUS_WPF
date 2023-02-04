@@ -184,12 +184,14 @@
     <Compile Include="Models\DataGridNumericColumn.cs" />
     <Compile Include="Models\Element.cs" />
     <Compile Include="Models\Limits.cs" />
+    <Compile Include="Models\MatrixElement.cs" />
     <Compile Include="Models\Object.cs" />
     <Compile Include="Models\PowerObject.cs" />
     <Compile Include="Models\Specific.cs" />
     <Compile Include="Models\Symbol.cs" />
     <Compile Include="Models\GridPoint.cs" />
     <Compile Include="Models\SymbolShape.cs" />
+    <Compile Include="Models\Wire.cs" />
     <Compile Include="SMatrixCalculation.cs" />
     <Page Include="Dialog\Calculations.xaml">
       <SubType>Designer</SubType>

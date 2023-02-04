@@ -29,6 +29,7 @@ namespace PAPIRUS_WPF.Elements
         public delegate void StateChangeHandler();
         public delegate void StateChangedHandler();
         public Output _state_;
+        public int index;
 
         // The state of the output
         public bool _state;
@@ -55,51 +56,70 @@ namespace PAPIRUS_WPF.Elements
         /// <summary>
         /// Creates a new output class
         /// </summary>
-         public Output() : this(false)
+        public Output() : this(false)
         {
         }
-    public Output(bool state)
+        //public Output(bool state)
+        //    {
+        //        _state = false;
+        //        _state_ = null;
+        //        _delayedState = state;
+        //        InitializeComponent();
+        //    }
+
+        public Output(bool state)
         {
             _state = false;
             _state_ = null;
-            _delayedState = state;
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Updates any connected inputs. Called once per tick.
-        /// </summary>
-        public void CallChange()
-        {
-            if (StateChange != null)
-            {
-                StateChange();
-            }
-        }
+        ///// <summary>
+        ///// Updates any connected inputs. Called once per tick.
+        ///// </summary>
+        //public void CallChange()
+        //{
+        //    if (StateChange != null)
+        //    {
+        //        StateChange();
+        //    }
+        //}
         public void LinkInputs(Output output)
         {
+            if (output == this) return;
             //Makes sure that it only listens to one output event at a time
             if (_state_ != null)
-                _state_.StateChange -= _state_StateChange;
-
+                throw new Exception("Нельзя подключить больше одного элемента");
             //Sets the state to the output
             _state_ = output;
         }
 
-        /// <summary>
-        /// Called when the state of the input is changed
-        /// </summary>
-        public void _state_StateChange()
+        public void DeleteLink()
         {
-            //Set the delayed state AFTER a tick
-            _delayedState = _state_.State;
-
-            //Make sure there is a subscriber to the event
-            if (StateChanged != null)
-            {
-                //Passes the value of the output to the circuit
-                StateChanged();
-            }
+            _state_ = null;
         }
+
+        public bool isLinked()
+        {
+            if (_state_ != null)
+                return true;
+            return false;
+        }
+
+        ///// <summary>
+        ///// Called when the state of the input is changed
+        ///// </summary>
+        //public void _state_StateChange()
+        //{
+        //    //Set the delayed state AFTER a tick
+        //    _delayedState = _state_.State;
+
+        //    //Make sure there is a subscriber to the event
+        //    if (StateChanged != null)
+        //    {
+        //        //Passes the value of the output to the circuit
+        //        StateChanged();
+        //    }
+        //}
     }
 }
