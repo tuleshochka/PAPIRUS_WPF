@@ -28,6 +28,19 @@ namespace PAPIRUS_WPF.Elements
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
             InitializeComponent();
+
+            LeftInput.outPos = 0;
+            LeftInput2.outPos = 0;
+            LeftInput3.outPos = 0;
+            Buttom3.outPos = 3;
+            Buttom.outPos = 3;
+            Buttom2.outPos = 3;
+            RightInput3.outPos = 1;
+            RightInput2.outPos = 1;
+            RightInput.outPos = 1;
+            Top2.outPos = 2;
+            Top3.outPos = 2;
+
             listOfOutput.Add(LeftInput);
             listOfOutput.Add(LeftInput2);
             listOfOutput.Add(LeftInput3);

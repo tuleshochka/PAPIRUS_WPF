@@ -833,7 +833,7 @@ namespace PAPIRUS_WPF
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
 
-            if (e.Key == Key.Delete)  //TODO удаление output из output
+            if (e.Key == Key.Delete) 
             {
                 foreach (var element in Data.selection)
                 {

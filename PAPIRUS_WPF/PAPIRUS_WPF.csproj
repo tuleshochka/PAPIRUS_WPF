@@ -180,6 +180,7 @@
       <DependentUpon>PoleDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IRotatable.cs" />
+    <Compile Include="MatrixOperations.cs" />
     <Compile Include="Models\DataGridElements.cs" />
     <Compile Include="Models\DataGridNumericColumn.cs" />
     <Compile Include="Models\Element.cs" />

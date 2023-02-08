@@ -27,6 +27,12 @@ namespace PAPIRUS_WPF.Elements
             InitializeComponent();
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
+            BorderBrush = Brushes.Transparent;
+            BorderThickness = new Thickness(1);
+            InitializeComponent();
+            LeftInput.outPos = 0;
+            RightInput.outPos = 1;
+            Top.outPos = 2;
             listOfOutput.Add(LeftInput);
             listOfOutput.Add(RightInput);
             listOfOutput.Add(Top);

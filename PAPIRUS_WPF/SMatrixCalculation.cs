@@ -41,7 +41,15 @@ namespace PAPIRUS_WPF
             int i = 0;
             foreach (Object _object in elements)
             {
-                _object.FillME();
+                try
+                {
+                    _object.FillME();
+                }
+                catch(Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    return;
+                }
                 int number = _object.group;
                 int j = 0;
                 foreach (Output output in _object.GetOutputs())
@@ -52,13 +60,13 @@ namespace PAPIRUS_WPF
                         
                         Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
                         p.Y = p.Y - output.Height / 2;
-                        Console.WriteLine(p.X +"+"+ p.Y);
                         TextBlock text = new TextBlock();
                         text.Text = i + 1.ToString();
                         (window as MainWindow).CircuitCanvas.Children.Add(text);
                         Canvas.SetLeft(text, Math.Abs(p.X));
                         Canvas.SetTop(text, Math.Abs(p.Y));
                         text.Margin = new Thickness(-20, 0, 0, 0);
+                        
                         free.Add(i);
                         output.index = i;
                         for (int k = 0; k < _object.matrix.GetLength(1); k++)
@@ -102,9 +110,9 @@ namespace PAPIRUS_WPF
 
             Complex[,] A = new Complex[i, i];
             Complex[,] aa = new Complex[free.Count, free.Count];
-            Complex[,] ab = new Complex[free.Count, connected.Last()];
-            Complex[,] ba = new Complex[connected.Last(), free.Count];
-            Complex[,] bb = new Complex[connected.Last(), connected.Last()];
+            Complex[,] ab = new Complex[free.Count,connected.Count];
+            Complex[,] ba = new Complex[connected.Count, free.Count];
+            Complex[,] bb = new Complex[connected.Count, connected.Count];
             for (int n = 0; n < i; n++)
             {
                 for (int m = 0; m < i; m++)
@@ -129,40 +137,44 @@ namespace PAPIRUS_WPF
                 }
             }
             int q = 0, w = 0;
-            for (int n = 0; n < free.Count; n++)
+            if(connected.Count >0)
             {
-                for (int m = free.Count; m <= connected.Last(); m++)
+                for (int n = 0; n < free.Count; n++)
                 {
-                    ab[n, q] = A[n, m];
+                    for (int m = free.Count; m <= connected.Last(); m++)
+                    {
+                        ab[n, q] = A[n, m];
+                        q++;
+                    }
+                    q = 0;
+                }
+                for (int n = free.Count; n <= connected.Last(); n++)
+                {
+                    for (int m = 0; m < free.Count; m++)
+                    {
+                        ba[q, m] = A[n, m];
+                    }
+                    q++;
+                }
+                q = 0;
+                for (int n = free.Count; n <= connected.Last(); n++)
+                {
+                    w = 0;
+                    for (int m = free.Count; m <= connected.Last(); m++)
+                    {
+                        bb[q, w] = A[n, m];
+                        w++;
+                    }
                     q++;
                 }
             }
-            q = 0;
-            for (int n = free.Count; n <= connected.Last(); n++)
-            {
-                for (int m = 0; m < free.Count; m++)
-                {
-                    ba[q, m] = A[n, m];
-                }
-                q++;
-            }
-            q = 0;
-            for (int n = free.Count; n <= connected.Last(); n++)
-            {
-                w = 0;
-                for (int m = free.Count; m <= connected.Last(); m++)
-                {
-                    bb[q, w] = A[n, m];
-                    w++;
-                }
-                q++;
-            }
 
-            int[,] EMatrix = new int[connected.Last(), connected.Last()];
+            int[,] EMatrix = new int[connected.Count, connected.Count];
             q = connected.First();
             w = connected.First();
             for (int n = 0; n < EMatrix.GetLength(0); n++)
             {
+                w = connected.First();
                 for (int m = 0; m < EMatrix.GetLength(1); m++)
                 {
                     Object _ = elements.Find(x => x.GetOutputs().Any(y => y.index == q && y._state_.index == w));
@@ -175,66 +187,10 @@ namespace PAPIRUS_WPF
                         EMatrix[n, m] = 1;
                     }
                     w++;
-                    Console.WriteLine(EMatrix[n, m]);
                 }
                 q++;
             }
         }
-
-            //private Object Sum(Object x, Object y)
-            //{
-            //    Dictionary<int,Output> free = new Dictionary<int, Output>();
-            //    Dictionary<int, Output> connected = new Dictionary<int, Output>();
-            //    Dictionary<string, Complex> xMatrixElements = new Dictionary<string, Complex>();
-            //    Dictionary<string, Complex> yMatrixElements = new Dictionary<string, Complex>();
-            //    List<Output> xOutputs = x.GetOutputs();
-            //    List<Output> yOutputs = y.GetOutputs();
-            //    Complex[,] xMatrix = x.matrix;
-            //    Complex[,] yMatrix = y.matrix;
-            //    int i = 0;
-            //    foreach (Output output in xOutputs)
-            //    {
-            //        if(!(output.isLinked()))
-            //        {
-            //            free.Add(i, output);
-            //        }
-            //        i++;
-            //    }
-            //    int j = i;
-            //    foreach (Output output in yOutputs)
-            //    {
-            //        if (!(output.isLinked()))
-            //        {
-            //            free.Add(j, output);
-            //        }
-            //        j++;
-            //    }
-            //    foreach (Output output in xOutputs)
-            //    {
-            //        if (output.isLinked())
-            //        {
-            //            connected.Add(i, output);
-            //        }
-            //    }
-            //    foreach (Output output in yOutputs)
-            //    {
-            //        if (output.isLinked())
-            //        {
-            //            connected.Add(i, output);
-            //        }
-            //    }
-            //    for(int n =0; n < xMatrix.GetLength(0); n++)
-            //    {
-            //        for (int m = 0; m < xMatrix.GetLength(1); m++)
-            //        {
-            //            if(free.ContainsKey(i))
-            //            {
-            //                xMatrixElements.Add(i)
-            //            }
-            //        }
-            //    }
-            //    return y;
-            //}
 
             Dictionary<string, string> operators = new Dictionary<string, string>()
         {
@@ -481,6 +437,8 @@ namespace PAPIRUS_WPF
             }
             return temp;
         }
+
+        
     }
 
 }

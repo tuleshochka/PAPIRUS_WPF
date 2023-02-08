@@ -85,12 +85,19 @@ namespace PAPIRUS_WPF
         public void FillME()
         {
             int k = 0;
-            for (int i =0; i < matrix.GetLength(0); i++)
+            if (matrix is null)
             {
-                for (int j = 0; j < matrix.GetLength(1); j++)
+                throw new Exception("Введите параметры для элемента");
+            }
+            else
+            {
+                for (int i = 0; i < matrix.GetLength(0); i++)
                 {
-                    matrixElements.Add(new MatrixElement {rowIndex = i,columnIndex =j, value = matrix[i, j], unique =  k});
-                    k++;
+                    for (int j = 0; j < matrix.GetLength(1); j++)
+                    {
+                        matrixElements.Add(new MatrixElement { rowIndex = i, columnIndex = j, value = matrix[i, j], unique = k });
+                        k++;
+                    }
                 }
             }
         }

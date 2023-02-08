@@ -28,6 +28,8 @@ namespace PAPIRUS_WPF.Elements
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
             InitializeComponent();
+            LeftInput.outPos = 0;
+            RightInput.outPos = 1;
             listOfOutput.Add(LeftInput);
             listOfOutput.Add(RightInput);
             LeftInput.StateChanged += FourPoleStateChanged;
