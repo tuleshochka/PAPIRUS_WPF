@@ -20,6 +20,7 @@ using AngouriMath.Extensions;
 using PAPIRUS_WPF.Elements;
 using static AngouriMath.Entity;
 using System.Windows.Controls;
+using Matrix = PAPIRUS_WPF.Models.Matrix;
 
 namespace PAPIRUS_WPF
 {
@@ -33,9 +34,6 @@ namespace PAPIRUS_WPF
         public void CalculateTotal(List<Object> elements) // расчет общей S-матрицы
         {
             var window = System.Windows.Application.Current.MainWindow;
-            List<Complex[,]> allMatrix = elements.Select(x => x.matrix).ToList();
-            //Object totalMatrix = elements.Aggregate((x, y) => Sum(x, y));
-
             List<int> free = new List<int>();
             List<int> connected = new List<int>();
             int i = 0;
@@ -109,10 +107,11 @@ namespace PAPIRUS_WPF
             }
 
             Complex[,] A = new Complex[i, i];
-            Complex[,] aa = new Complex[free.Count, free.Count];
-            Complex[,] ab = new Complex[free.Count,connected.Count];
-            Complex[,] ba = new Complex[connected.Count, free.Count];
-            Complex[,] bb = new Complex[connected.Count, connected.Count];
+            Matrix AA = new Matrix(free.Count, free.Count);
+            Matrix AB = new Matrix(free.Count, connected.Count);
+            Matrix BA = new Matrix(connected.Count, free.Count);
+            Matrix BB = new Matrix(connected.Count, connected.Count);
+            Console.WriteLine("matrix A: ");
             for (int n = 0; n < i; n++)
             {
                 for (int m = 0; m < i; m++)
@@ -121,74 +120,149 @@ namespace PAPIRUS_WPF
                     if (right == null)
                     {
                         A[n, m] = 0;
+                        Console.Write(A[n, m]);
                     }
                     else
                     {
                         MatrixElement mx = right.matrixElements.Find(x => x.rowIndex == n && x.columnIndex == m);
                         A[n, m] = mx.value;
+                        Console.Write(A[n, m]);
                     }
                 }
+                Console.WriteLine();
             }
+            Console.WriteLine("AA matrix:");
             for (int n = 0; n < free.Count; n++)
             {
                 for (int m = 0; m < free.Count; m++)
                 {
-                    aa[n, m] = A[n, m];
+                    AA[n, m] = A[n, m];
+                    Console.Write(AA[n, m]);
                 }
+                Console.WriteLine();
             }
             int q = 0, w = 0;
-            if(connected.Count >0)
+            Console.WriteLine("AB matrix:");
+            if (connected.Count >0)
             {
                 for (int n = 0; n < free.Count; n++)
                 {
                     for (int m = free.Count; m <= connected.Last(); m++)
                     {
-                        ab[n, q] = A[n, m];
+                        AB[n, q] = A[n, m];
+                        Console.Write(AB[n, q]);
                         q++;
                     }
+                    Console.WriteLine();
                     q = 0;
                 }
+                Console.WriteLine("BA matrix:");
                 for (int n = free.Count; n <= connected.Last(); n++)
                 {
                     for (int m = 0; m < free.Count; m++)
                     {
-                        ba[q, m] = A[n, m];
+                        BA[q, m] = A[n, m];
+                        Console.Write(BA[q, m]);
                     }
+                    Console.WriteLine();
                     q++;
                 }
                 q = 0;
+                Console.WriteLine("BB matrix:");
                 for (int n = free.Count; n <= connected.Last(); n++)
                 {
                     w = 0;
                     for (int m = free.Count; m <= connected.Last(); m++)
                     {
-                        bb[q, w] = A[n, m];
+                        BB[q, w] = A[n, m];
+                        Console.Write(BB[q, w]);
                         w++;
                     }
+                    Console.WriteLine();
                     q++;
                 }
             }
 
-            int[,] EMatrix = new int[connected.Count, connected.Count];
+            Matrix EMatrix = new Matrix(connected.Count, connected.Count);
             q = connected.First();
             w = connected.First();
-            for (int n = 0; n < EMatrix.GetLength(0); n++)
+            Console.WriteLine("E matrix:");
+            for (int n = 0; n < connected.Count; n++)
             {
                 w = connected.First();
-                for (int m = 0; m < EMatrix.GetLength(1); m++)
+                for (int m = 0; m < connected.Count; m++)
                 {
                     Object _ = elements.Find(x => x.GetOutputs().Any(y => y.index == q && y._state_.index == w));
                     if (_ == null)
                     {
                         EMatrix[n, m] = 0;
+                        Console.Write(EMatrix[n, m]);
                     }
                     else
                     {
                         EMatrix[n, m] = 1;
+                        Console.Write(EMatrix[n, m]);
                     }
                     w++;
                 }
+                Console.WriteLine();
                 q++;
+            }
+            Matrix totalMatrix = new Matrix(free.Count, free.Count);
+            //totalMatrix = AA + AB * ((EMatrix-BB).CreateInvertibleMatrix()) * BA;
+            Matrix _0 = EMatrix - BB;
+            Console.WriteLine("0");
+            for (int x = 0; x < _0.M; x++)
+            {
+                for (int y = 0; y < _0.N; y++)
+                {
+                    Console.Write(_0[x,y]);
+                }
+                Console.WriteLine();
+            }
+            Matrix _1 = _0.CreateInvertibleMatrix();
+            Console.WriteLine("1");
+            for (int x = 0; x < _1.M; x++)
+            {
+
+                for (int y = 0; y < _1.N; y++)
+                {
+                    Console.Write(_1[x, y]);
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("2");
+            Matrix _2 = AB * ((EMatrix - BB).CreateInvertibleMatrix());
+            for (int x = 0; x < _2.M; x++)
+            {
+
+                for (int y = 0; y < _2.N; y++)
+                {
+                    Console.Write(_2[x, y]);
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("3");
+            Matrix _3 = AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
+            for (int x = 0; x < _3.M; x++)
+            {
+
+                for (int y = 0; y < _3.N; y++)
+                {
+                    Console.Write(_3[x, y]);
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("4");
+            totalMatrix = AA + AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
+            for (int x = 0; x < free.Count; x++)
+            {
+
+                for (int y = 0; y < free.Count; y++)
+                {
+                    Console.Write(totalMatrix[x, y]);
+                }
+                Console.WriteLine();
             }
         }
 
