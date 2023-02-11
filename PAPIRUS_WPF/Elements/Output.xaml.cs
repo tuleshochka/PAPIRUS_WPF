@@ -32,7 +32,7 @@ namespace PAPIRUS_WPF.Elements
         public int index;
         public int outPos;  // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom
 
-        // The state of the output
+      // The state of the output
         public bool _state;
         /// <summary>
         /// The delayed state of the input. Doesn't get updated internally until one tick has passed.

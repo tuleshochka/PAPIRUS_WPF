@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 
 namespace PAPIRUS_WPF
@@ -80,17 +81,18 @@ namespace PAPIRUS_WPF
 
         public MainWindow()
         {
+
             InitializeComponent();
             _powerList = new List<PowerObject>();
             Data.elements = new List<Object>();
             ClickTimer = new Timer(300);
             ClickTimer.Elapsed += new ElapsedEventHandler(EvaluateClicks);
-
-
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-
+            TextBlock text = new TextBlock();
+            text.Text = "1212";
+            CircuitCanvas.Children.Add(text);
 
         }
         public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
@@ -699,6 +701,7 @@ namespace PAPIRUS_WPF
             if (selectionMoving)
             {
                 selectionMoving = false;
+                
                 Rect rect = new Rect();
                 rect.X = Canvas.GetLeft(markerGlyph);
                 rect.Y = Canvas.GetTop(markerGlyph);
@@ -732,7 +735,13 @@ namespace PAPIRUS_WPF
                         }
                     }
                 }
+              
                 CircuitCanvas.Children.Remove(markerGlyph);
+                HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, Mouse.GetPosition(CircuitCanvas));
+                if (result != null && Data.FindParent<Object>(result.VisualHit) != null)
+                {
+                    SingleElementSelect(Data.FindParent<Object>(result.VisualHit));
+                }
             }
 
         }

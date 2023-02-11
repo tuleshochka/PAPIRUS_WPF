@@ -37,6 +37,7 @@ namespace PAPIRUS_WPF
         }
 
 
+
         public virtual List<Output> listOfOutput { get; set; }
 
         public List<Output> GetOutputs()
