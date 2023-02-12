@@ -350,143 +350,144 @@ namespace PAPIRUS_WPF
                 foreach (var box in Data.outputNumber)
                 {
                     if (box is TextBox)
-                    { 
+                    {
                         CircuitCanvas.Children.Remove((TextBox)box);
                     }
-                    
-                //}
-               
-                Source = e.Source as FrameworkElement;
-                startObject = e.Source as Object;
-                //Do a hit test under the mouse position
-                HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
-                //If the mouse has hit a border
-                if (result.VisualHit is Border)
-                {
-                    //Get the parent class of the border
-                    Border border = (Border)result.VisualHit;
-                    var IO = border.Parent;
 
-                    //If the parent class is an Output
-                    if (IO is Output)
-                    {
-                        if (startObject is generator || startObject.generatorConnected == true)
-                        {
-                            generatorConnect = true;
-                        }
-                        //Cast to output
-                        Output IOOutput = (Output)IO;
-                        startPoint = e.GetPosition(CircuitCanvas);
-                        //Get the center of the output relative to the canvas
-                        Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
-
-                        //Creates a new line
-                        _linkingStarted = true;
-                        _tempLink = new Line();
-                        _tempLink.X1 = position.X;
-                        _tempLink.Y1 = position.Y;
-                        _tempLink.X2 = position.X;
-                        _tempLink.Y2 = position.Y;
-                        _tempLink.Stroke = Brushes.Black;
-                        _tempLink.StrokeThickness = 1;
-
-                        CircuitCanvas.Children.Add(_tempLink);
-
-                        //Assign the temporary output to the current output
-                        _tempOutput = (Output)IO;
-                        if (_tempOutput.isLinked())
-                        {
-                            CircuitCanvas.Children.Remove(_tempLink);
-                            return;
-                        }
-
-                        e.Handled = true;
-                    }
                 }
-                else if (!(result.VisualHit is Border))
-                {
-                    MousePosition = e.GetPosition(CircuitCanvas);
-                    Keys = Keyboard.Modifiers;
-                    ClickTimer.Stop();
-                    ClickCounter++;
-                    if (e.Source as FrameworkElement is Canvas)
-                    {
-                        ClearSelection();
-                        StartAreaSelection(MousePosition);
-                    }
 
-                    else if (startObject != null && ClickCounter == 2)
+                    Source = e.Source as FrameworkElement;
+                    startObject = e.Source as Object;
+                    //Do a hit test under the mouse position
+                    HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
+                    //If the mouse has hit a border
+                    if (result.VisualHit is Border)
                     {
-                        if (Data.selection.Count > 1)
+                        //Get the parent class of the border
+                        Border border = (Border)result.VisualHit;
+                        var IO = border.Parent;
+
+                        //If the parent class is an Output
+                        if (IO is Output)
+                        {
+                            if (startObject is generator || startObject.generatorConnected == true)
+                            {
+                                generatorConnect = true;
+                            }
+                            //Cast to output
+                            Output IOOutput = (Output)IO;
+                            startPoint = e.GetPosition(CircuitCanvas);
+                            //Get the center of the output relative to the canvas
+                            Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
+
+                            //Creates a new line
+                            _linkingStarted = true;
+                            _tempLink = new Line();
+                            _tempLink.X1 = position.X;
+                            _tempLink.Y1 = position.Y;
+                            _tempLink.X2 = position.X;
+                            _tempLink.Y2 = position.Y;
+                            _tempLink.Stroke = Brushes.Black;
+                            _tempLink.StrokeThickness = 1;
+
+                            CircuitCanvas.Children.Add(_tempLink);
+
+                            //Assign the temporary output to the current output
+                            _tempOutput = (Output)IO;
+                            if (_tempOutput.isLinked())
+                            {
+                                CircuitCanvas.Children.Remove(_tempLink);
+                                return;
+                            }
+
+                            e.Handled = true;
+                        }
+                    }
+                    else if (!(result.VisualHit is Border))
+                    {
+                        MousePosition = e.GetPosition(CircuitCanvas);
+                        Keys = Keyboard.Modifiers;
+                        ClickTimer.Stop();
+                        ClickCounter++;
+                        if (e.Source as FrameworkElement is Canvas)
                         {
                             ClearSelection();
-                            SingleElementSelect(Source);
+                            StartAreaSelection(MousePosition);
                         }
-                        elementName = startObject.name;
-                        if (startObject is generator)
+
+                        else if (startObject != null && ClickCounter == 2)
                         {
-                            GeneratorDialog gd = new GeneratorDialog(elementName);
-                            gd.ShowDialog();
-                        }
-                        else
-                        {
-                            switch (startObject)
+                            if (Data.selection.Count > 1)
                             {
-                                case two_pole _:
-                                    fileName = "2pole.json";
-                                    break;
-                                case four_pole _:
-                                    fileName = "4pole.json";
-                                    break;
-                                case six_pole _:
-                                    fileName = "6pole.json";
-                                    break;
-                                case eight_pole _:
-                                    fileName = "8pole.json";
-                                    break;
-                                case generator _:
-                                    ;
-                                    break;
-                                default:
-                                    fileName = "multipole.json";
-                                    break;
+                                ClearSelection();
+                                SingleElementSelect(Source);
                             }
-                            PoleDialog gd = new PoleDialog(elementName, fileName, startObject);
-                            gd.ShowDialog();
-                        }
-                    }
-                    //в другом случае (один тык)
-                    else if (ClickCounter == 1)
-                    {
-                        if (!(Source is Canvas))
-                        {
-                            if (Keys == ModifierKeys.Control)
+                            elementName = startObject.name;
+                            if (startObject is generator)
                             {
-                                if (Data.selection.Contains(Source) == false)
-                                {
-                                    SingleElementSelect(Source);
-                                }
+                                GeneratorDialog gd = new GeneratorDialog(elementName);
+                                gd.ShowDialog();
                             }
                             else
                             {
-                                if (Data.selection.Contains(Source) == false && Data.selectedWires.Contains(Source) == false)
+                                switch (startObject)
                                 {
-                                    ClearSelection();
-                                    SingleElementSelect(Source);
-                                    inDrag = true;
+                                    case two_pole _:
+                                        fileName = "2pole.json";
+                                        break;
+                                    case four_pole _:
+                                        fileName = "4pole.json";
+                                        break;
+                                    case six_pole _:
+                                        fileName = "6pole.json";
+                                        break;
+                                    case eight_pole _:
+                                        fileName = "8pole.json";
+                                        break;
+                                    case generator _:
+                                        ;
+                                        break;
+                                    default:
+                                        fileName = "multipole.json";
+                                        break;
+                                }
+                                PoleDialog gd = new PoleDialog(elementName, fileName, startObject);
+                                gd.ShowDialog();
+                            }
+                        }
+                        //в другом случае (один тык)
+                        else if (ClickCounter == 1)
+                        {
+                            if (!(Source is Canvas))
+                            {
+                                if (Keys == ModifierKeys.Control)
+                                {
+                                    if (Data.selection.Contains(Source) == false)
+                                    {
+                                        SingleElementSelect(Source);
+                                    }
                                 }
                                 else
                                 {
-                                    inDrag = true;
-                                    startPoint = MousePosition;
+                                    if (Data.selection.Contains(Source) == false && Data.selectedWires.Contains(Source) == false)
+                                    {
+                                        ClearSelection();
+                                        SingleElementSelect(Source);
+                                        inDrag = true;
+                                    }
+                                    else
+                                    {
+                                        inDrag = true;
+                                        startPoint = MousePosition;
+                                    }
                                 }
                             }
                         }
+                        ClickTimer.Start();
                     }
-                    ClickTimer.Start();
                 }
             }
-        }
+        
 
         private void EvaluateClicks(object source, ElapsedEventArgs e)
         {
@@ -810,6 +811,7 @@ namespace PAPIRUS_WPF
             }
             if(!(instance is generator))
             {
+                
                 Data.elements.Add(instance);
                
             }

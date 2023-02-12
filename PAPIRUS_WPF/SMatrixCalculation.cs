@@ -10,8 +10,6 @@ using System.Windows;
 using MessageBox = System.Windows.MessageBox;
 using WPF_SHF_Element_lib;
 using Element = PAPIRUS_WPF.Models.Element;
-using WPF_SHF_Element_lib;
-using AngouriMath;
 using System.Runtime.CompilerServices;
 using System.Numerics;
 using System.Xml.Linq;
@@ -68,7 +66,7 @@ namespace PAPIRUS_WPF
                 foreach (Output output in _object.GetOutputs())
                 {
                     j = _object.GetOutputs().FindIndex(x => x == output);
-                    if (!(output.isLinked())) //тут надо вставлять текст блоки  
+                    if (!(output.isLinked()))  
                     {
                         
                         Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);

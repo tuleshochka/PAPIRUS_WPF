@@ -83,16 +83,19 @@ namespace PAPIRUS_WPF.Dialog
         {
             LimitsSaveData();
             SpesificSaveData();
-            if(RadioButtonDopusk.IsChecked == true)
+            if (RadioButtonDopusk.IsChecked == true)
             {
-                Data.specificFrequency = specifics[0].frequency - ((specifics[0].frequency*specifics[0].tolerance)/100);
+                Data.specificFrequency = specifics[0].frequency - ((specifics[0].frequency * specifics[0].tolerance) / 100);
+                Data.upperLimit = specifics[0].frequency+ (specifics[0].frequency * specifics[0].tolerance) / 100;
+                Data.lowerLimit= specifics[0].frequency- (specifics[0].frequency * specifics[0].tolerance) / 100;
             }
             else
             {
                 Data.specificFrequency = limits[0].lowerLimit;
+                Data.lowerLimit = limits[0].lowerLimit;
+                Data.upperLimit = limits[0].upperLimit;
             }
         }
-
         private void LimitsSaveData()
         {
             int i = 0;

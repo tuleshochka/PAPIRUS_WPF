@@ -25,12 +25,7 @@ namespace PAPIRUS_WPF.Dialog
         {
             InitializeComponent();
            
-            for (int i = 0; i < 10; i++)
-            {
-
-                Data.frec.Add(new ObservablePoint(i, -i));
-
-            }
+            
 
             SeriesCollection = new SeriesCollection
             {

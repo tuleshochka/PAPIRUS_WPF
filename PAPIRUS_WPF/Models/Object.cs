@@ -29,7 +29,7 @@ namespace PAPIRUS_WPF
         /// Allows the circuit objects to be able to be frozen.
         /// </summary>
 
-        private Visibility visibility = Visibility.Hidden;
+        private Visibility visibility = Visibility.Visible;
 
         public bool CanMove
         {   

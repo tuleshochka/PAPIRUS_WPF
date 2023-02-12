@@ -15,6 +15,9 @@ using static AngouriMath.Entity;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Window = System.Windows.Window;
 using Matrix = PAPIRUS_WPF.Models.Matrix;
+using System.Drawing.Drawing2D;
+using LiveCharts.Defaults;
+using PAPIRUS_WPF.Elements;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -32,8 +35,13 @@ namespace PAPIRUS_WPF.Dialog
            
             foreach (Object el in (window as MainWindow).CircuitCanvas.Children.OfType<Object>())
             {
-                Object _ = (Object)el.Resources["DataSource"];
-                _.DefaultNumberVisible = Visibility.Hidden;
+                if (el is generator)
+                { }
+                else
+                {
+                    Object _ = (Object)el.Resources["DataSource"];
+                    _.DefaultNumberVisible = Visibility.Hidden;
+                }
             }
 
         }
@@ -69,6 +77,47 @@ namespace PAPIRUS_WPF.Dialog
             }
             else
             {
+                SMatrixCalculation calculation = new SMatrixCalculation();
+                Matrix matrix = null;
+                try
+                {
+                    matrix = calculation.CalculateTotal(Data.elements);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                    this.Close();
+                }
+                
+                int dotsNum;
+                int.TryParse(DotsNumber.Text, out dotsNum);
+                if (dotsNum < 2)
+                {
+
+                }
+                else
+                { 
+                    double x;
+                    double y;
+                    //------------------------АЧХ------------------------------//
+                    for (int i = 0; i < dotsNum; i++)
+                    {
+
+                        x = i;
+                        
+                        //Data.frec.Add(new ObservablePoint(x, y));
+
+
+                    }
+                    //------------------------ФЧХ------------------------------//
+                    for (int i = 0; i < dotsNum; i++)
+                    {
+                        x = i;
+
+                        //Data.phase.Add(new ObservablePoint(x, y));
+
+                    }
+                }
                 Graphic calc = new Graphic();
                 calc.Show();
                 
