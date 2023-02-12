@@ -180,6 +180,7 @@ namespace PAPIRUS_WPF.Dialog
             else
             {
                 PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el, generatorConnected);
+                window1.Owner = this;
                 window1.ShowDialog();
             }
         }

@@ -22,6 +22,8 @@ using MessageBox = System.Windows.MessageBox;
 using System.Text.RegularExpressions;
 using PAPIRUS_WPF.Models;
 using Element = PAPIRUS_WPF.Models.Element;
+using static AngouriMath.Entity;
+using Matrix = PAPIRUS_WPF.Models.Matrix;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -64,35 +66,50 @@ namespace PAPIRUS_WPF.Dialog
             dataGridView.RowCount = poleNum + 1;
             dataGridView.ColumnCount = poleNum;
             dataGridView.BackgroundColor = System.Drawing.Color.White;
-            dataGridView.RowHeadersVisible = false;
-            dataGridView.ColumnHeadersVisible = false;
-
-        }
-
-
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
+            for (int i = 0; i < dataGridView.RowCount; i++)
+            {
+                dataGridView.Rows[i].HeaderCell.Value = (i + 1).ToString();
+                for (int j = 0; j < dataGridView.ColumnCount; j++)
+                {
+                    dataGridView.Columns[j].HeaderText = (j + 1).ToString();
+                }
+            }
             for (int i = 0; i < poleNum; i++)
             {
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
             int number = ele.group;
+
+            if (this.Owner is PoleDialog)
+            {
+                singleSMatrix(ele, generatorCon, datagridelements1, number);
+            }
+            else if (this.Owner is Calculations)
+            {
+
+            }
+            //вычисление
+
+            this.WindowState = WindowState.Normal;
+        }
+
+        private void singleSMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements, int number)
+        {
             SMatrixCalculation calculation = new SMatrixCalculation();
-            Complex[,] matrix = new Complex[number, number];
+            Matrix matrix = new Matrix(number, number);
             try
             {
-                matrix = calculation.Calculate(ele, generatorCon, datagridelements1);
+                matrix = calculation.CalculateTotal(Data.elements);
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message);
                 this.Close();
             }
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            for (int i = 0; i < matrix.M; i++)
             {
-                for (int j = 0; j < matrix.GetLength(1); j++)
+                for (int j = 0; j < matrix.N; j++)
                 {
                     if (matrix[i, j].Imaginary == 0)
                     {
@@ -143,8 +160,12 @@ namespace PAPIRUS_WPF.Dialog
                         dataGridView.Rows[i].Cells[j].Value = real + "" + sigh + imaginary + "i";
                     }
                 }
+
             }
-            this.WindowState = WindowState.Normal;
+        }
+
+        private void totalSMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements, int number)
+        {
 
         }
     }

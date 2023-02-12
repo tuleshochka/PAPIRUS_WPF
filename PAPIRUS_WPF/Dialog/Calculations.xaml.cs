@@ -51,8 +51,7 @@ namespace PAPIRUS_WPF.Dialog
                     }
                     catch (Exception b)
                     { MessageBox.Show(b.Message); }
-                    
-                    
+                   
                 }
             }
             else
