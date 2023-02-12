@@ -75,6 +75,7 @@ namespace PAPIRUS_WPF
                         Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
                         p.Y = p.Y - output.Height / 2;
                         TextBox text = new TextBox();
+                        
                         text.BorderThickness = new Thickness(0);
                         text.IsReadOnly = true;
                         text.Cursor = Cursors.Arrow;
@@ -85,6 +86,7 @@ namespace PAPIRUS_WPF
                         Canvas.SetLeft(text, Math.Abs(p.X));
                         Canvas.SetTop(text, Math.Abs(p.Y));
                         text.Margin = new Thickness(-20, 0, 0, 0);
+                        Data.outputNumber.Add(text);
                         
                         free.Add(i);
                         output.index = i;
