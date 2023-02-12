@@ -20,6 +20,7 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class four_pole : Object
     {
+       
         public override int group { get => base.group; set => base.group = value; }
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
 
@@ -37,13 +38,7 @@ namespace PAPIRUS_WPF.Elements
             group = 2;
 
 
-            if (DefaultNumberVisible == Visibility.Hidden)
-            {
-                foreach (TextBlock tb in utils.GetControls<TextBlock>(TwoPol))
-                {
-                    tb.Visibility = Visibility.Hidden;
-                }
-            }
+            
 
 
 
@@ -86,7 +81,13 @@ namespace PAPIRUS_WPF.Elements
 
         private void TwoPol_Loaded(object sender, RoutedEventArgs e)
         {
-           
+            if (DefaultNumberVisible == Visibility.Hidden)
+            {
+                foreach (TextBlock tb in utils.GetControls<TextBlock>(TwoPol))
+                {
+                    tb.Visibility = Visibility.Hidden;
+                }
+            }
         }
     }
 }

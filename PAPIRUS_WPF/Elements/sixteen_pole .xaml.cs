@@ -20,6 +20,7 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class sixteen_pole : Object
     {
+        public static new readonly DependencyProperty DefaultNumberVisibleProperty = DependencyProperty.Register("DefaultNumberVisible", typeof(Visibility), typeof(TextBlock), new FrameworkPropertyMetadata(Visibility.Visible, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
         public override int group { get => base.group; set => base.group = value; }
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
 

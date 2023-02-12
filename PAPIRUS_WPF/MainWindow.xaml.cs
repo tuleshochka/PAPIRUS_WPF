@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using TextBox = System.Windows.Controls.TextBox;
 using Window = System.Windows.Window;
 
 namespace PAPIRUS_WPF
@@ -345,6 +346,17 @@ namespace PAPIRUS_WPF
             //тык левой кнопкой
             if (e.ChangedButton == MouseButton.Left)
             {
+                UIElementCollection listbox;
+                listbox = CircuitCanvas.Children;
+                foreach (var box in listbox)
+                {
+                    if (box is TextBox)
+                    { 
+                        CircuitCanvas.Children.Remove((TextBox)box);
+                    }
+                    
+                }
+               
                 Source = e.Source as FrameworkElement;
                 startObject = e.Source as Object;
                 //Do a hit test under the mouse position

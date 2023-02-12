@@ -20,6 +20,7 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class six_pole : Object
     {
+        
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
         public override int group { get => base.group; set => base.group = value; }
         public six_pole()

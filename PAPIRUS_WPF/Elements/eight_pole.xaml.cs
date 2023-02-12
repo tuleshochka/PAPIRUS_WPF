@@ -20,6 +20,7 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class eight_pole : Object
     {
+        
         public override int group { get => base.group; set => base.group = value; }
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
 
@@ -39,6 +40,12 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(RightInput);
             group = 4;
 
+          
+
+        }
+
+        private void EightPol_Loaded(object sender, RoutedEventArgs e)
+        {
             if (DefaultNumberVisible == Visibility.Hidden)
             {
                 foreach (TextBlock tb in utils.GetControls<TextBlock>(EightPol))
@@ -46,12 +53,6 @@ namespace PAPIRUS_WPF.Elements
                     tb.Visibility = Visibility.Hidden;
                 }
             }
-
-        }
-
-        private void EightPol_Loaded(object sender, RoutedEventArgs e)
-        {
-            
         }
     }
 }

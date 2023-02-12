@@ -22,6 +22,7 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class two_pole : Object
     {
+       
         public override int group { get => base.group; set => base.group = value; }
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
 

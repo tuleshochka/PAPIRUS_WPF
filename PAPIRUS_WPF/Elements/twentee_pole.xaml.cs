@@ -20,14 +20,13 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class twentee_pole : Object
     {
+        
         public override int group { get => base.group; set => base.group = value; }
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
 
         public twentee_pole()
         {
-            BorderBrush = Brushes.Transparent;
-            BorderThickness = new Thickness(1);
-            InitializeComponent();
+           
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
             InitializeComponent();

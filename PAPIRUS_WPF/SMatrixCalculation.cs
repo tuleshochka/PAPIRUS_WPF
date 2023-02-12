@@ -21,6 +21,14 @@ using PAPIRUS_WPF.Elements;
 using static AngouriMath.Entity;
 using System.Windows.Controls;
 using Matrix = PAPIRUS_WPF.Models.Matrix;
+using TextBox = System.Windows.Controls.TextBox;
+using System.Windows.Input;
+using Cursors = System.Windows.Input.Cursors;
+using System.Windows.Media;
+using System.Drawing;
+using Point = System.Windows.Point;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace PAPIRUS_WPF
 {
@@ -61,12 +69,17 @@ namespace PAPIRUS_WPF
                 foreach (Output output in _object.GetOutputs())
                 {
                     j = _object.GetOutputs().FindIndex(x => x == output);
-                    if (!(output.isLinked())) //тут надо вставлять текст блоки
+                    if (!(output.isLinked())) //тут надо вставлять текст блоки  
                     {
                         
                         Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
                         p.Y = p.Y - output.Height / 2;
-                        TextBlock text = new TextBlock();
+                        TextBox text = new TextBox();
+                        text.BorderThickness = new Thickness(0);
+                        text.IsReadOnly = true;
+                        text.Cursor = Cursors.Arrow;
+                        text.Focusable = false;
+                        text.Background = Brushes.Transparent;
                         text.Text = i + 1.ToString();
                         (window as MainWindow).CircuitCanvas.Children.Add(text);
                         Canvas.SetLeft(text, Math.Abs(p.X));

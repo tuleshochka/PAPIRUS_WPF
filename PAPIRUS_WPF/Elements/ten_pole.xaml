@@ -7,8 +7,10 @@
              xmlns:Papirus="clr-namespace:PAPIRUS_WPF" 
              mc:Ignorable="d" 
            Height="70" Width="76">
-
-    <Grid x:Name="EightPol" Loaded="EightPol_Loaded">
+    <Papirus:Object.Resources>
+        <Papirus:Object DefaultNumberVisible="Visible" x:Key="DataSource"/>
+    </Papirus:Object.Resources>
+    <Grid DataContext="{StaticResource DataSource}" x:Name="EightPol" Loaded="EightPol_Loaded">
 
         <local:Output x:Name="LeftInput" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,-30,0,0"/>
         <local:Output x:Name="LeftInput3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,30,0,0"/>
@@ -17,10 +19,10 @@
         <local:Output x:Name="Top" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-54,0,0"/>
         <Rectangle x:Name="LEDRect" Stroke="Black" RadiusX="5" RadiusY="5" Fill="White" Margin="11"/>
         <Ellipse Width="4" Height="4" Fill="Green" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,-30,0,0"></Ellipse>
-        <TextBlock HorizontalAlignment="Left" Margin="-11,12,0,42" Text="1" FontSize="12" Foreground="Blue"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,42,-10,12" Text="3" FontSize="12" Foreground="Blue"/>
-        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="-11,0,0,12" Text="2" FontSize="12" Foreground="Blue"/>
-        <TextBlock HorizontalAlignment="Right" Margin="0,12,-10,42" Text="4" FontSize="12" Foreground="Blue"/>
-        <TextBlock HorizontalAlignment="Center" Margin="0,-18,0,73" Text="5" FontSize="12" Foreground="Blue"/>
+        <TextBlock Visibility="{Binding DefaultNumberVisible}" HorizontalAlignment="Left" Margin="-11,12,0,42" Text="1" FontSize="12" Foreground="Blue"/>
+        <TextBlock Visibility="{Binding DefaultNumberVisible}" HorizontalAlignment="Right" Margin="0,42,-10,12" Text="3" FontSize="12" Foreground="Blue"/>
+        <TextBlock Visibility="{Binding DefaultNumberVisible}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="-11,0,0,12" Text="2" FontSize="12" Foreground="Blue"/>
+        <TextBlock Visibility="{Binding DefaultNumberVisible}" HorizontalAlignment="Right" Margin="0,12,-10,42" Text="4" FontSize="12" Foreground="Blue"/>
+        <TextBlock Visibility="{Binding DefaultNumberVisible}" HorizontalAlignment="Center" Margin="0,-18,0,73" Text="5" FontSize="12" Foreground="Blue"/>
     </Grid>
 </Papirus:Object>
