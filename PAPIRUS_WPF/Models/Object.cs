@@ -21,7 +21,7 @@ namespace PAPIRUS_WPF
     public class Object : UserControl, INotifyPropertyChanged
     {
         public static readonly DependencyProperty CanMoveProperty = DependencyProperty.Register("CanMove", typeof(bool), typeof(Object), new PropertyMetadata(true));
-        public static readonly DependencyProperty DefaultNumberVisibleProperty = DependencyProperty.Register("DefaultNumberVisible", typeof(Visibility), typeof(Object), new PropertyMetadata(Visibility.Visible));
+        public static readonly DependencyProperty DefaultNumberVisibleProperty = DependencyProperty.Register("DefaultNumberVisible", typeof(Visibility), typeof(TextBlock), new FrameworkPropertyMetadata(Visibility.Visible, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
         /// <summary>
         /// Allows the circuit objects to be able to be frozen.
         /// </summary>
