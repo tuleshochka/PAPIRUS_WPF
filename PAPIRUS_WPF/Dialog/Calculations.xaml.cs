@@ -60,7 +60,7 @@ namespace PAPIRUS_WPF.Dialog
                 Graphic calc = new Graphic();
                 calc.Show();
                 
-                (window as MainWindow).CircuitCanvas.Children.Add(new TextBlock { Text = "hello"});
+              
             }
         }
 
