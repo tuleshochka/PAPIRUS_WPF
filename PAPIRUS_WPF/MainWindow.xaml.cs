@@ -346,9 +346,9 @@ namespace PAPIRUS_WPF
             //тык левой кнопкой
             if (e.ChangedButton == MouseButton.Left)
             {
-                UIElementCollection listbox;
+                FrameworkElement listbox;
                 listbox = CircuitCanvas.Children;
-                foreach (var box in listbox)
+                foreach (FrameworkElement box in listbox)
                 {
                     if (box is TextBox)
                     { 
