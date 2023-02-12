@@ -18,6 +18,7 @@ using Matrix = PAPIRUS_WPF.Models.Matrix;
 using System.Drawing.Drawing2D;
 using LiveCharts.Defaults;
 using PAPIRUS_WPF.Elements;
+using System.Numerics;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -102,10 +103,22 @@ namespace PAPIRUS_WPF.Dialog
                     //------------------------АЧХ------------------------------//
                     for (int i = 0; i < dotsNum; i++)
                     {
+                        int a;
+                        int.TryParse(MatrixElement1.Text, out a);
+                        int b;
+                        int.TryParse(MatrixElement2.Text, out b);
 
                         x = i;
-                        
-                        //Data.frec.Add(new ObservablePoint(x, y));
+                        Complex tempY = matrix[a, b];
+                        y = Math.Sqrt(Math.Pow(tempY.Real, 2) + Math.Pow(tempY.Imaginary, 2));
+
+                        List<Object> tempO= Data.elements;
+                        Object _ = tempO.Find(o => o.GetOutputs().Any(p => p.index == a-1));
+
+                       // string matrixFormula = _.insideElement.matrix
+
+
+                        Data.frec.Add(new ObservablePoint(x, y));
 
 
                     }
@@ -113,7 +126,7 @@ namespace PAPIRUS_WPF.Dialog
                     for (int i = 0; i < dotsNum; i++)
                     {
                         x = i;
-
+                       
                         //Data.phase.Add(new ObservablePoint(x, y));
 
                     }
