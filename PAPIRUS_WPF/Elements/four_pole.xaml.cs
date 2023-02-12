@@ -37,7 +37,7 @@ namespace PAPIRUS_WPF.Elements
             group = 2;
 
 
-            if (DefaultNumberVisible == false)
+            if (DefaultNumberVisible == Visibility.Hidden)
             {
                 foreach (TextBlock tb in utils.GetControls<TextBlock>(TwoPol))
                 {

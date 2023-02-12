@@ -30,7 +30,7 @@ namespace PAPIRUS_WPF.Dialog
            
             foreach (Object el in (window as MainWindow).CircuitCanvas.Children.OfType<Object>())
             {
-                el.DefaultNumberVisible = false;
+                el.DefaultNumberVisible = Visibility.Hidden;
                 el.UpdateLayout();
                 Console.WriteLine(el.ToString());   
             }
@@ -69,7 +69,7 @@ namespace PAPIRUS_WPF.Dialog
         {
             foreach (var el in Data.elements)
             {
-                el.DefaultNumberVisible = true;
+                el.DefaultNumberVisible = Visibility.Visible;
             }
         }
     }

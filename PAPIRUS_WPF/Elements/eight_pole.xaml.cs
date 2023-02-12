@@ -39,7 +39,7 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(RightInput);
             group = 4;
 
-            if (DefaultNumberVisible == false)
+            if (DefaultNumberVisible == Visibility.Hidden)
             {
                 foreach (TextBlock tb in utils.GetControls<TextBlock>(EightPol))
                 {
