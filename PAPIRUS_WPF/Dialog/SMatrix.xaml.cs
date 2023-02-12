@@ -71,6 +71,7 @@ namespace PAPIRUS_WPF.Dialog
             }
             dataGridView.AllowUserToAddRows = false;
 
+            //-----------------ОТОБРАЖЕНИЕ МАТРИЦЫ-----------------//
             for (int i = 0; i < matrix.M; i++)
             {
                 for (int j = 0; j < matrix.N; j++)
