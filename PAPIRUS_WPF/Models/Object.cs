@@ -16,6 +16,7 @@ using PAPIRUS_WPF.Dialog;
 using System.Numerics;
 using PAPIRUS_WPF.Elements;
 using System.Runtime.CompilerServices;
+using Matrix = PAPIRUS_WPF.Models.Matrix;
 
 namespace PAPIRUS_WPF
 {
@@ -28,7 +29,7 @@ namespace PAPIRUS_WPF
         /// Allows the circuit objects to be able to be frozen.
         /// </summary>
 
-        private Visibility visibility;
+        private Visibility visibility = Visibility.Hidden;
 
         public bool CanMove
         {   
@@ -66,7 +67,7 @@ namespace PAPIRUS_WPF
 
         public virtual int group { get; set; }
 
-        public Complex[,] matrix;
+        public Matrix matrix;
         public List<MatrixElement> matrixElements;
 
         public string name { get; set; }
@@ -110,9 +111,9 @@ namespace PAPIRUS_WPF
             }
             else
             {
-                for (int i = 0; i < matrix.GetLength(0); i++)
+                for (int i = 0; i < matrix.M; i++)
                 {
-                    for (int j = 0; j < matrix.GetLength(1); j++)
+                    for (int j = 0; j < matrix.N; j++)
                     {
                         matrixElements.Add(new MatrixElement { rowIndex = i, columnIndex = j, value = matrix[i, j], unique = k });
                         k++;

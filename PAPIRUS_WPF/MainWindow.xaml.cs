@@ -354,7 +354,7 @@ namespace PAPIRUS_WPF
                         CircuitCanvas.Children.Remove((TextBox)box);
                     }
                     
-                }
+                //}
                
                 Source = e.Source as FrameworkElement;
                 startObject = e.Source as Object;

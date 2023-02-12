@@ -39,7 +39,7 @@ namespace PAPIRUS_WPF
         // матрица соединений составляется из соединенных плеч
         // матрица делится на блоки aa (свободные плечи) и bb (соединенные плечи)
 
-        public void CalculateTotal(List<Object> elements) // расчет общей S-матрицы
+        public Matrix CalculateTotal(List<Object> elements) // расчет общей S-матрицы
         {
             var window = System.Windows.Application.Current.MainWindow;
             List<int> free = new List<int>();
@@ -61,8 +61,7 @@ namespace PAPIRUS_WPF
                 }
                 catch(Exception e)
                 {
-                    MessageBox.Show(e.Message);
-                    return;
+                    throw new Exception(e.Message);
                 }
                 int number = _object.group;
                 int j = 0;
@@ -90,7 +89,7 @@ namespace PAPIRUS_WPF
                         
                         free.Add(i);
                         output.index = i;
-                        for (int k = 0; k < _object.matrix.GetLength(1); k++)
+                        for (int k = 0; k < _object.matrix.N; k++)
                         {
                             MatrixElement mx = _object.matrixElements.First(x => x.unique == k + number * j);
                             mx.rowIndex = i;
@@ -115,7 +114,7 @@ namespace PAPIRUS_WPF
                         connected.Add(i);
                         (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0),output);
                         output.index = i;
-                        for (int k = 0; k < _object.matrix.GetLength(1); k++)
+                        for (int k = 0; k < _object.matrix.N; k++)
                         {
                             MatrixElement mx = _object.matrixElements.Find(x => x.unique == k + number * j);
                             mx.rowIndex = i;
@@ -232,51 +231,6 @@ namespace PAPIRUS_WPF
                 q++;
             }
             Matrix totalMatrix = new Matrix(free.Count, free.Count);
-            //totalMatrix = AA + AB * ((EMatrix-BB).CreateInvertibleMatrix()) * BA;
-            Matrix _0 = EMatrix - BB;
-            Console.WriteLine("0");
-            for (int x = 0; x < _0.M; x++)
-            {
-                for (int y = 0; y < _0.N; y++)
-                {
-                    Console.Write(_0[x,y]);
-                }
-                Console.WriteLine();
-            }
-            Matrix _1 = _0.CreateInvertibleMatrix();
-            Console.WriteLine("1");
-            for (int x = 0; x < _1.M; x++)
-            {
-
-                for (int y = 0; y < _1.N; y++)
-                {
-                    Console.Write(_1[x, y]);
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine("2");
-            Matrix _2 = AB * ((EMatrix - BB).CreateInvertibleMatrix());
-            for (int x = 0; x < _2.M; x++)
-            {
-
-                for (int y = 0; y < _2.N; y++)
-                {
-                    Console.Write(_2[x, y]);
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine("3");
-            Matrix _3 = AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
-            for (int x = 0; x < _3.M; x++)
-            {
-
-                for (int y = 0; y < _3.N; y++)
-                {
-                    Console.Write(_3[x, y]);
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine("4");
             totalMatrix = AA + AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
             for (int x = 0; x < free.Count; x++)
             {
@@ -287,6 +241,7 @@ namespace PAPIRUS_WPF
                 }
                 Console.WriteLine();
             }
+            return totalMatrix;
         }
 
             Dictionary<string, string> operators = new Dictionary<string, string>()
@@ -295,23 +250,30 @@ namespace PAPIRUS_WPF
             {"--","+"},
         };
 
-        public Complex[,] Calculate(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        public Matrix Calculate(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
         {
             Element tempElement = element;
             int number = element.group;
-            Complex[,] matrix = new Complex[number, number];
+            Matrix matrix = new Matrix(number, number);
             if (tempElement.other_par.Count() != 0)
             {
                 try
                 {
                     CalculateIntermediateValues_params(tempElement, isGeneretorConnected, dataGridElements);
                     CalculateIntermediateValues_cycle(tempElement);
-                    matrix = CalculateMatrix(tempElement, isGeneretorConnected, dataGridElements);
                 }
                 catch (Exception e)
                 {
                     throw new Exception(e.Message);
                 }
+            }
+            try
+            {
+                matrix = CalculateMatrix(tempElement, isGeneretorConnected, dataGridElements);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
             return matrix;
         }
@@ -389,10 +351,10 @@ namespace PAPIRUS_WPF
             }
         }
 
-        private Complex[,] CalculateMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        private Matrix CalculateMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
         {
             int number = element.group;
-            Complex[,] matrix = new Complex[number, number];
+            Matrix matrix = new Matrix(number, number);
             int a = 0;
             for (int i = 0; i < number; i++)
             {
@@ -407,8 +369,10 @@ namespace PAPIRUS_WPF
                     {
                         throw new Exception(e.Message);
                     }
+                     
                     if ((element.parameters.Count()) != 0)
                     {
+                        
                         for (int k = 0; k < element.parameters.Count(); k++)
                         {
                             temp = OptimizeFinalString(temp.Replace(element.parameters[k].paramColumn, (dataGridElements.Find(x => x.columnParam == element.parameters[k].paramColumn + " (" + element.parameters[k].unitColumn + ")").columnValue).ToString()));
@@ -492,7 +456,7 @@ namespace PAPIRUS_WPF
             return element;
         }
 
-        private Complex[,] MatrixCellEvalNumerical(Complex[,] matrix, Entity expr, int i, int j)  //для правильного отображения расчетов
+        private Matrix MatrixCellEvalNumerical(Matrix matrix, Entity expr, int i, int j)  //для правильного отображения расчетов
         {
             Complex complex = (Complex)expr.EvalNumerical();
             if (complex.Real is double.NaN || complex.Imaginary is double.NaN)

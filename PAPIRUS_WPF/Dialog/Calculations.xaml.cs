@@ -11,8 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static AngouriMath.Entity;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Window = System.Windows.Window;
+using Matrix = PAPIRUS_WPF.Models.Matrix;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -38,21 +40,31 @@ namespace PAPIRUS_WPF.Dialog
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-          
-           
+            
+
             if (RadioButtonViaMatrix.IsChecked == true)
             {
                 if (RadioButtonSMatrix.IsChecked == true)
                 {
                     try
                     {
-                        SMatrixCalculation calc = new SMatrixCalculation();
-                        calc.CalculateTotal(Data.elements);
+                        SMatrixCalculation calculation = new SMatrixCalculation();
+                        Matrix matrix = null;
+                        try
+                        {
+                            matrix = calculation.CalculateTotal(Data.elements);
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show(exception.Message);
+                            this.Close();
+                        }
+                        SMatrix dialog = new SMatrix(matrix);
+                        dialog.ShowDialog();
                     }
                     catch (Exception b)
                     { MessageBox.Show(b.Message); }
-                    
-                    
+                   
                 }
             }
             else
