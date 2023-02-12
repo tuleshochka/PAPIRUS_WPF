@@ -37,34 +37,25 @@ namespace PAPIRUS_WPF.Dialog
         System.Windows.Forms.Integration.WindowsFormsHost host =
         new System.Windows.Forms.Integration.WindowsFormsHost();
         DataGridView dataGridView = new DataGridView();
-        //для DataGridView
-        private Entity expr;
-        Element ele;
-        List<DataGridElements> datagridelements1;
-        int poleNum;
-        private bool generatorCon;
+
         Dictionary<string, string> operators = new Dictionary<string, string>()
         {
             {"+-","-"},
             {"--","+"},
         };
 
-        public SMatrix(int polenum, List<DataGridElements> datagridelements, Element el, bool generatorConnected)
+        public SMatrix(Matrix matrix)
         {
             InitializeComponent();
             this.WindowState = WindowState.Minimized;
-            generatorCon = generatorConnected;
             host.Child = dataGridView;
             Grid.SetColumn(host, 1);
             Grid.SetRow(host, 1);
-            poleNum = polenum;
-            ele = el;
-            datagridelements1 = datagridelements;
             // Add the interop host control to the Grid
             // control's collection of child controls.
             this.grid.Children.Add(host);
-            dataGridView.RowCount = poleNum + 1;
-            dataGridView.ColumnCount = poleNum;
+            dataGridView.RowCount = matrix.M+1;
+            dataGridView.ColumnCount = matrix.N;
             dataGridView.BackgroundColor = System.Drawing.Color.White;
             for (int i = 0; i < dataGridView.RowCount; i++)
             {
@@ -74,39 +65,12 @@ namespace PAPIRUS_WPF.Dialog
                     dataGridView.Columns[j].HeaderText = (j + 1).ToString();
                 }
             }
-            for (int i = 0; i < poleNum; i++)
+            for (int i = 0; i < matrix.N; i++)
             {
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
-            int number = ele.group;
 
-            if (this.Owner is PoleDialog)
-            {
-                singleSMatrix(ele, generatorCon, datagridelements1, number);
-            }
-            else if (this.Owner is Calculations)
-            {
-
-            }
-            //вычисление
-
-            this.WindowState = WindowState.Normal;
-        }
-
-        private void singleSMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements, int number)
-        {
-            SMatrixCalculation calculation = new SMatrixCalculation();
-            Matrix matrix = new Matrix(number, number);
-            try
-            {
-                matrix = calculation.CalculateTotal(Data.elements);
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-                this.Close();
-            }
             for (int i = 0; i < matrix.M; i++)
             {
                 for (int j = 0; j < matrix.N; j++)
@@ -162,11 +126,8 @@ namespace PAPIRUS_WPF.Dialog
                 }
 
             }
-        }
 
-        private void totalSMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements, int number)
-        {
-
+            this.WindowState = WindowState.Normal;
         }
     }
 }

@@ -17,6 +17,8 @@ using Element = PAPIRUS_WPF.Models.Element;
 using System.Xml.Linq;
 using System.Reflection;
 using System.Numerics;
+using static AngouriMath.Entity;
+using Matrix = PAPIRUS_WPF.Models.Matrix;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -179,9 +181,19 @@ namespace PAPIRUS_WPF.Dialog
             if (!SaveData()) { MessageBox.Show("Введены не все параметры"); }
             else
             {
-                PAPIRUS_WPF.Dialog.SMatrix window1 = new PAPIRUS_WPF.Dialog.SMatrix(poleNum, datagridelements, el, generatorConnected);
-                window1.Owner = this;
-                window1.ShowDialog();
+                SMatrixCalculation calculation = new SMatrixCalculation();
+                Matrix matrix = new Matrix(poleNum, poleNum);
+                try
+                {
+                    matrix = calculation.Calculate(el,generatorConnected,datagridelements);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                    this.Close();
+                }
+                SMatrix dialog = new SMatrix(matrix);
+                dialog.ShowDialog();
             }
         }
 
@@ -198,7 +210,7 @@ namespace PAPIRUS_WPF.Dialog
                 }
                 int number = el.group;
                 SMatrixCalculation calculation = new SMatrixCalculation();
-                Complex[,] matrix = new Complex[number, number];
+                Matrix matrix = new Matrix(number, number);
                 try
                 {
                     matrix = calculation.Calculate(el, _object.generatorConnected, datagridelements);

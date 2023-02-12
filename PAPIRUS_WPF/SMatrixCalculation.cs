@@ -89,7 +89,7 @@ namespace PAPIRUS_WPF
                         
                         free.Add(i);
                         output.index = i;
-                        for (int k = 0; k < _object.matrix.GetLength(1); k++)
+                        for (int k = 0; k < _object.matrix.N; k++)
                         {
                             MatrixElement mx = _object.matrixElements.First(x => x.unique == k + number * j);
                             mx.rowIndex = i;
@@ -114,7 +114,7 @@ namespace PAPIRUS_WPF
                         connected.Add(i);
                         (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0),output);
                         output.index = i;
-                        for (int k = 0; k < _object.matrix.GetLength(1); k++)
+                        for (int k = 0; k < _object.matrix.N; k++)
                         {
                             MatrixElement mx = _object.matrixElements.Find(x => x.unique == k + number * j);
                             mx.rowIndex = i;
@@ -250,11 +250,11 @@ namespace PAPIRUS_WPF
             {"--","+"},
         };
 
-        public Complex[,] Calculate(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        public Matrix Calculate(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
         {
             Element tempElement = element;
             int number = element.group;
-            Complex[,] matrix = new Complex[number, number];
+            Matrix matrix = new Matrix(number, number);
             if (tempElement.other_par.Count() != 0)
             {
                 try
@@ -351,10 +351,10 @@ namespace PAPIRUS_WPF
             }
         }
 
-        private Complex[,] CalculateMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        private Matrix CalculateMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
         {
             int number = element.group;
-            Complex[,] matrix = new Complex[number, number];
+            Matrix matrix = new Matrix(number, number);
             int a = 0;
             for (int i = 0; i < number; i++)
             {
@@ -456,7 +456,7 @@ namespace PAPIRUS_WPF
             return element;
         }
 
-        private Complex[,] MatrixCellEvalNumerical(Complex[,] matrix, Entity expr, int i, int j)  //для правильного отображения расчетов
+        private Matrix MatrixCellEvalNumerical(Matrix matrix, Entity expr, int i, int j)  //для правильного отображения расчетов
         {
             Complex complex = (Complex)expr.EvalNumerical();
             if (complex.Real is double.NaN || complex.Imaginary is double.NaN)
