@@ -415,79 +415,79 @@ namespace PAPIRUS_WPF
                             StartAreaSelection(MousePosition);
                         }
 
-                        else if (startObject != null && ClickCounter == 2)
+                    else if (startObject != null && ClickCounter == 2)
+                    {
+                        if (Data.selection.Count > 1)
                         {
-                            if (Data.selection.Count > 1)
+                            ClearSelection();
+                            SingleElementSelect(Source);
+                        }
+                        elementName = startObject.name;
+                        if (startObject is generator)
+                        {
+                            GeneratorDialog gd = new GeneratorDialog(elementName);
+                            gd.ShowDialog();
+                        }
+                        else
+                        {
+                            switch (startObject)
                             {
-                                ClearSelection();
-                                SingleElementSelect(Source);
+                                case two_pole _:
+                                    fileName = "2pole.json";
+                                    break;
+                                case four_pole _:
+                                    fileName = "4pole.json";
+                                    break;
+                                case six_pole _:
+                                    fileName = "6pole.json";
+                                    break;
+                                case eight_pole _:
+                                    fileName = "8pole.json";
+                                    break;
+                                case generator _:
+                                    ;
+                                    break;
+                                default:
+                                    fileName = "multipole.json";
+                                    break;
                             }
-                            elementName = startObject.name;
-                            if (startObject is generator)
+                            PoleDialog gd = new PoleDialog(elementName, fileName, startObject);
+                            gd.ShowDialog();
+                        }
+                    }
+                    //в другом случае (один тык)
+                    else if (ClickCounter == 1)
+                    {
+                        if (!(Source is Canvas))
+                        {
+                            if (Keys == ModifierKeys.Control)
                             {
-                                GeneratorDialog gd = new GeneratorDialog(elementName);
-                                gd.ShowDialog();
+                                if (Data.selection.Contains(Source) == false)
+                                {
+                                    SingleElementSelect(Source);
+                                }
                             }
                             else
                             {
-                                switch (startObject)
+                                if (Data.selection.Contains(Source) == false && Data.selectedWires.Contains(Source) == false)
                                 {
-                                    case two_pole _:
-                                        fileName = "2pole.json";
-                                        break;
-                                    case four_pole _:
-                                        fileName = "4pole.json";
-                                        break;
-                                    case six_pole _:
-                                        fileName = "6pole.json";
-                                        break;
-                                    case eight_pole _:
-                                        fileName = "8pole.json";
-                                        break;
-                                    case generator _:
-                                        ;
-                                        break;
-                                    default:
-                                        fileName = "multipole.json";
-                                        break;
-                                }
-                                PoleDialog gd = new PoleDialog(elementName, fileName, startObject);
-                                gd.ShowDialog();
-                            }
-                        }
-                        //в другом случае (один тык)
-                        else if (ClickCounter == 1)
-                        {
-                            if (!(Source is Canvas))
-                            {
-                                if (Keys == ModifierKeys.Control)
-                                {
-                                    if (Data.selection.Contains(Source) == false)
-                                    {
-                                        SingleElementSelect(Source);
-                                    }
+                                    ClearSelection();
+                                    SingleElementSelect(Source);
+                                    inDrag = true;
                                 }
                                 else
                                 {
-                                    if (Data.selection.Contains(Source) == false && Data.selectedWires.Contains(Source) == false)
-                                    {
-                                        ClearSelection();
-                                        SingleElementSelect(Source);
-                                        inDrag = true;
-                                    }
-                                    else
-                                    {
-                                        inDrag = true;
-                                        startPoint = MousePosition;
-                                    }
+                                    inDrag = true;
+                                    startPoint = MousePosition;
                                 }
                             }
                         }
-                        ClickTimer.Start();
                     }
+                    ClickTimer.Start();
                 }
             }
-        
+        }
+
 
         private void EvaluateClicks(object source, ElapsedEventArgs e)
         {
@@ -659,18 +659,21 @@ namespace PAPIRUS_WPF
                             _tempLink.Y2 = inputPoint.Y;
 
                             //Links the output to the input
-                            try
+                            if (!(startObject is generator))
                             {
-                                IOInput.LinkInputs(_tempOutput);
+                                try
+                                {
+                                    IOInput.LinkInputs(_tempOutput);
+                                }
+                                catch (Exception)
+                                {
+                                    CircuitCanvas.Children.Remove(_tempLink);
+                                    _tempLink = null;
+                                    _linkingStarted = false;
+                                    return;
+                                }
+                                _tempOutput.LinkInputs(IOInput);
                             }
-                            catch (Exception)
-                            {
-                                CircuitCanvas.Children.Remove(_tempLink);
-                                _tempLink = null;
-                                _linkingStarted = false;
-                                return;
-                            }
-                            _tempOutput.LinkInputs(IOInput);
 
                             //Adds to the global list
                             _powerList.Add((PowerObject)_tempOutput);
@@ -714,7 +717,7 @@ namespace PAPIRUS_WPF
             if (selectionMoving)
             {
                 selectionMoving = false;
-                
+
                 Rect rect = new Rect();
                 rect.X = Canvas.GetLeft(markerGlyph);
                 rect.Y = Canvas.GetTop(markerGlyph);
@@ -748,7 +751,7 @@ namespace PAPIRUS_WPF
                         }
                     }
                 }
-              
+
                 CircuitCanvas.Children.Remove(markerGlyph);
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, Mouse.GetPosition(CircuitCanvas));
                 if (result != null && Data.FindParent<Object>(result.VisualHit) != null)
@@ -809,11 +812,11 @@ namespace PAPIRUS_WPF
                 Canvas.SetLeft(instance, p.X - instance.Width / 2);
                 Canvas.SetTop(instance, p.Y - instance.Height / 2);
             }
-            if(!(instance is generator))
+            if (!(instance is generator))
             {
                 
                 Data.elements.Add(instance);
-               
+
             }
         }
 
@@ -857,7 +860,7 @@ namespace PAPIRUS_WPF
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
 
-            if (e.Key == Key.Delete) 
+            if (e.Key == Key.Delete)
             {
                 foreach (var element in Data.selection)
                 {
@@ -934,3 +937,4 @@ namespace PAPIRUS_WPF
         }
     }
 }
+
