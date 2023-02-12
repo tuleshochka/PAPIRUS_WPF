@@ -37,6 +37,14 @@ namespace PAPIRUS_WPF
             List<int> free = new List<int>();
             List<int> connected = new List<int>();
             int i = 0;
+
+            if (elements.Count == 0) 
+            {
+             
+                throw new Exception("Нет элементов на схеме");
+            }
+
+           
             foreach (Object _object in elements)
             {
                 try

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,6 +32,13 @@ namespace PAPIRUS_WPF.Elements
         public Output _state_;
         public int index;
         public int outPos;  // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom
+        public string parent
+        {
+            get
+            {
+                return Data.FindParent<Object>(this.Parent).GetType().Name.ToString();
+            }
+        }
 
       // The state of the output
         public bool _state;
@@ -70,6 +78,7 @@ namespace PAPIRUS_WPF.Elements
 
         public Output(bool state)
         {
+            
             _state = false;
             _state_ = null;
             InitializeComponent();
@@ -93,6 +102,7 @@ namespace PAPIRUS_WPF.Elements
                 throw new Exception("Нельзя подключить больше одного элемента");
             //Sets the state to the output
             _state_ = output;
+            MessageBox.Show(parent);
         }
 
         public void DeleteLink()

@@ -35,6 +35,18 @@ namespace PAPIRUS_WPF.Elements
             LeftInput.StateChanged += FourPoleStateChanged;
             RightInput.StateChanged += FourPoleStateChanged;
             group = 2;
+
+
+            if (DefaultNumberVisible == false)
+            {
+                foreach (TextBlock tb in utils.GetControls<TextBlock>(TwoPol))
+                {
+                    tb.Visibility = Visibility.Hidden;
+                }
+            }
+
+
+
         }
 
         private void FourPoleStateChanged()
@@ -59,6 +71,8 @@ namespace PAPIRUS_WPF.Elements
                 }
             }
 
+         
+
             //Color the LED based on the internal state
             if (StateSet)
             {
@@ -72,13 +86,7 @@ namespace PAPIRUS_WPF.Elements
 
         private void TwoPol_Loaded(object sender, RoutedEventArgs e)
         {
-            if (DefaultNumberVisible == false)
-            {
-                foreach (TextBlock tb in utils.GetControls<TextBlock>(TwoPol))
-                {
-                    tb.Visibility = Visibility.Hidden;
-                }
-            }
+           
         }
     }
 }

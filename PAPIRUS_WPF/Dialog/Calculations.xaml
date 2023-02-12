@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog"
         mc:Ignorable="d"
-        Title="Calculations" Height="353" Width="720" ResizeMode="CanMinimize">
+        Title="Calculations" Height="353" Width="720" ResizeMode="CanMinimize" Closing="Window_Closing">
     <DockPanel>
         <Border >
             <Grid>

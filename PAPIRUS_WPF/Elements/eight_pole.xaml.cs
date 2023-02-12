@@ -38,10 +38,7 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(RightInput2);
             listOfOutput.Add(RightInput);
             group = 4;
-        }
 
-        private void EightPol_Loaded(object sender, RoutedEventArgs e)
-        {
             if (DefaultNumberVisible == false)
             {
                 foreach (TextBlock tb in utils.GetControls<TextBlock>(EightPol))
@@ -49,6 +46,12 @@ namespace PAPIRUS_WPF.Elements
                     tb.Visibility = Visibility.Hidden;
                 }
             }
+
+        }
+
+        private void EightPol_Loaded(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

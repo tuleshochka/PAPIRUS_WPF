@@ -13,7 +13,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Xml.Linq;
-
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Window = System.Windows.Window;
 
 namespace PAPIRUS_WPF
 {
@@ -650,7 +651,7 @@ namespace PAPIRUS_WPF
                             {
                                 IOInput.LinkInputs(_tempOutput);
                             }
-                            catch (Exception exception)
+                            catch (Exception)
                             {
                                 CircuitCanvas.Children.Remove(_tempLink);
                                 _tempLink = null;
@@ -799,6 +800,7 @@ namespace PAPIRUS_WPF
             if(!(instance is generator))
             {
                 Data.elements.Add(instance);
+               
             }
         }
 
