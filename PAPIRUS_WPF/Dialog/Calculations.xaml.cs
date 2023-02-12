@@ -30,8 +30,8 @@ namespace PAPIRUS_WPF.Dialog
            
             foreach (Object el in (window as MainWindow).CircuitCanvas.Children.OfType<Object>())
             {
-                el.DefaultNumberVisible = Visibility.Hidden;
-              
+                Object _ = (Object)el.Resources["DataSource"];
+                _.DefaultNumberVisible = Visibility.Hidden;
             }
 
         }
@@ -66,9 +66,10 @@ namespace PAPIRUS_WPF.Dialog
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            foreach (var el in Data.elements)
+            foreach (Object el in (window as MainWindow).CircuitCanvas.Children.OfType<Object>())
             {
-                el.DefaultNumberVisible = Visibility.Visible;
+                Object _ = (Object)el.Resources["DataSource"];
+                _.DefaultNumberVisible = Visibility.Visible;
             }
         }
     }

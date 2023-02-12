@@ -86,15 +86,6 @@ namespace PAPIRUS_WPF.Elements
 
                 }
 
-
-
-
-
-
-
-
-
-
             }
 
         }

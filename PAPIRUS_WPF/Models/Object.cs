@@ -15,27 +15,46 @@ using Element = PAPIRUS_WPF.Models.Element;
 using PAPIRUS_WPF.Dialog;
 using System.Numerics;
 using PAPIRUS_WPF.Elements;
+using System.Runtime.CompilerServices;
 
 namespace PAPIRUS_WPF
 {
     public class Object : UserControl, INotifyPropertyChanged
     {
+
         public static readonly DependencyProperty CanMoveProperty = DependencyProperty.Register("CanMove", typeof(bool), typeof(Object), new PropertyMetadata(true));
-        public static readonly DependencyProperty DefaultNumberVisibleProperty = DependencyProperty.Register("DefaultNumberVisible", typeof(Visibility), typeof(TextBlock), new FrameworkPropertyMetadata(Visibility.Visible, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+        //public static readonly DependencyProperty DefaultNumberVisibleProperty = DependencyProperty.Register("DefaultNumberVisible", typeof(Visibility), typeof(TextBlock), new FrameworkPropertyMetadata(Visibility.Visible, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, new PropertyChangedCallback(OnVisibilityChanged)));
         /// <summary>
         /// Allows the circuit objects to be able to be frozen.
         /// </summary>
+
+        private Visibility visibility;
+
         public bool CanMove
         {   
             get { return (bool)GetValue(CanMoveProperty); }
             set { SetValue(CanMoveProperty, value); }
         }
+        //public Visibility DefaultNumberVisible
+        //{
+        //    get { return (Visibility)GetValue(DefaultNumberVisibleProperty); }
+        //    set { SetValue(DefaultNumberVisibleProperty, value); }
+        //}
+
         public Visibility DefaultNumberVisible
         {
-            get { return (Visibility)GetValue(DefaultNumberVisibleProperty); }
-            set { SetValue(DefaultNumberVisibleProperty, value); }
-        }
+            get { return visibility; }
+            set { visibility = value;
+                OnPropertyChanged("DefaultNumberVisible");
 
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
 
 
         public virtual List<Output> listOfOutput { get; set; }
@@ -61,7 +80,6 @@ namespace PAPIRUS_WPF
         //--------подключен ли к генератору----------//
         public bool generatorConnected = false;
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         //---------сохраненный элемент-----------//
         public Element insideElement;
