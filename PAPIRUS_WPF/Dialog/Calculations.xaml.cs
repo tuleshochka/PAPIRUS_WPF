@@ -31,7 +31,7 @@ namespace PAPIRUS_WPF.Dialog
             foreach (Object el in (window as MainWindow).CircuitCanvas.Children.OfType<Object>())
             {
                 el.DefaultNumberVisible = Visibility.Hidden;
-                Console.WriteLine(el.ToString());   
+              
             }
 
         }
