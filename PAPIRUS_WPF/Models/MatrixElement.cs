@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AngouriMath;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -11,7 +12,7 @@ namespace PAPIRUS_WPF.Models
     {
         public int rowIndex;
         public int columnIndex;
-        public Complex value;
+        public Entity value;
         public int unique;
     }
 }
