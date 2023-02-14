@@ -181,19 +181,30 @@ namespace PAPIRUS_WPF.Dialog
             if (!SaveData()) { MessageBox.Show("Введены не все параметры"); }
             else
             {
-                SMatrixCalculation calculation = new SMatrixCalculation();
-                Matrix matrix = new Matrix(poleNum, poleNum);
-                try
+                if (el.other_par.Any(x => x.formulaColumn.Contains("w") || x.formulaColumn.Contains("ω") || x.formulaColumn.Contains("f"))
+                    || el.matrix.Any(x => x.element.Contains("w") || x.element.Contains("ω") || x.element.Contains("f")))
                 {
-                    matrix = calculation.Calculate(el,generatorConnected,datagridelements);
+                    if(!(_object.generatorConnected))
+                    MessageBox.Show("Элемент не подключен к генератору");
                 }
-                catch (Exception exception)
+                else
                 {
-                    MessageBox.Show(exception.Message);
-                    this.Close();
+
+                    SMatrixCalculation calculation = new SMatrixCalculation();
+                    Matrix matrix = new Matrix(poleNum, poleNum);
+                    try
+                    {
+                        matrix = calculation.Calculate(el, datagridelements);
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message);
+                        this.Close();
+                    }
+
+                    SMatrix dialog = new SMatrix(matrix);
+                    dialog.ShowDialog();
                 }
-                SMatrix dialog = new SMatrix(matrix);
-                dialog.ShowDialog();
             }
         }
 
@@ -213,7 +224,7 @@ namespace PAPIRUS_WPF.Dialog
                 Matrix matrix = new Matrix(number, number);
                 try
                 {
-                    matrix = calculation.Calculate(el, _object.generatorConnected, datagridelements);
+                    matrix = calculation.Calculate(el, datagridelements);
                     _object.matrix = matrix;
                 }
                 catch (Exception exception)

@@ -124,7 +124,7 @@ namespace PAPIRUS_WPF
                 }
             }
 
-            Complex[,] A = new Complex[i, i];
+            Entity[,] A = new Entity[i, i];
             Matrix AA = new Matrix(free.Count, free.Count);
             Matrix AB = new Matrix(free.Count, connected.Count);
             Matrix BA = new Matrix(connected.Count, free.Count);
@@ -244,18 +244,25 @@ namespace PAPIRUS_WPF
         {
             {"+-","-"},
             {"--","+"},
+            {"+ -","-"},
+            {"- -","+"},
         };
 
-        public Matrix Calculate(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        public Matrix Calculate(Element element, List<DataGridElements> dataGridElements)
         {
-            Element tempElement = element;
+            foreach(DataGridElements e in dataGridElements)
+            {
+                Console.WriteLine(e.columnValue);
+            }
+
+            Element tempElement = (Element)element.Clone();
             int number = element.group;
             Matrix matrix = new Matrix(number, number);
             if (tempElement.other_par.Count() != 0)
             {
                 try
                 {
-                    tempElement = CalculateIntermediateValues_params(tempElement, isGeneretorConnected, dataGridElements);
+                    tempElement = CalculateIntermediateValues_params(tempElement, dataGridElements);
                     tempElement = CalculateIntermediateValues_cycle(tempElement);
                 }
                 catch (Exception e)
@@ -265,7 +272,7 @@ namespace PAPIRUS_WPF
             }
             try
             {
-                matrix = CalculateMatrix(tempElement, isGeneretorConnected, dataGridElements);
+                matrix = CalculateMatrix(tempElement, dataGridElements);
             }
             catch (Exception e)
             {
@@ -274,14 +281,14 @@ namespace PAPIRUS_WPF
             return matrix;
         }
 
-        private Element CalculateIntermediateValues_params(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        private Element CalculateIntermediateValues_params(Element element, List<DataGridElements> dataGridElements)
         {
             for (int i = 0; i < element.other_par.Count(); i++)
             {
                 string temp = null;
                 try
                 {
-                    temp = OptimizeBeginString(element.other_par[i].formulaColumn, isGeneretorConnected);
+                    temp = OptimizeBeginString(element.other_par[i].formulaColumn);
                 }
                 catch (Exception e)
                 {
@@ -294,7 +301,6 @@ namespace PAPIRUS_WPF
                     {
                         temp = OptimizeFinalString(temp.Replace(element.parameters[j].paramColumn, (dataGridElements.Find(x => x.columnParam == element.parameters[j].paramColumn + " (" + element.parameters[j].unitColumn + ")").columnValue)));
                         Entity expr = temp;
-                        Console.WriteLine(expr);
                         if(temp.Contains("f"))
                         {
                             if(!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
@@ -334,11 +340,11 @@ namespace PAPIRUS_WPF
         {
             for (int i = 0; i < element.other_par.Count(); i++)
             {
-                if (!(((Entity)element.other_par[i].formulaColumn).EvaluableNumerical))
+                if (element.parameters.Any(y => element.other_par[i].formulaColumn.Contains(y.paramColumn)) || (element.other_par.Any(y => element.other_par[i].formulaColumn.Contains(y.headerColumn))))
                 {
                     foreach (var value in element.other_par.Where(el => el != element.other_par[i]))
                     {
-                        string temp = element.other_par[i].formulaColumn.Replace(value.headerColumn, value.formulaColumn);
+                        string temp = OptimizeFinalString(element.other_par[i].formulaColumn.Replace(value.headerColumn, value.formulaColumn));
                         Entity expr = temp;
                         if (temp.Contains("f"))
                         {
@@ -372,18 +378,15 @@ namespace PAPIRUS_WPF
                     }
                 }
             }
-            if(element.other_par.Exists(x => x.formulaColumn.Contains("f")) && element.other_par.Exists(x => element.parameters.Any(y => x.formulaColumn.Contains(y.paramColumn))))
-            {
-                CalculateIntermediateValues_cycle(element);
-            }
-            else if (element.other_par.Exists(x => !(((Entity)x.formulaColumn).EvaluableNumerical)))
+
+            if (element.other_par.Exists(x => element.parameters.Any(y => x.formulaColumn.Contains(y.paramColumn))))
             {
                 CalculateIntermediateValues_cycle(element);
             }
             return element;
         }
 
-        private Matrix CalculateMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        private Matrix CalculateMatrix(Element element, List<DataGridElements> dataGridElements)
         {
             int number = element.group;
             Matrix matrix = new Matrix(number, number);
@@ -395,7 +398,7 @@ namespace PAPIRUS_WPF
                     string temp = null;
                     try
                     {
-                        temp = OptimizeBeginString(element.matrix[a].element, isGeneretorConnected);
+                        temp = OptimizeBeginString(element.matrix[a].element);
                     }
                     catch (Exception e)
                     {
@@ -410,7 +413,6 @@ namespace PAPIRUS_WPF
                             temp = OptimizeFinalString(temp.Replace(element.parameters[k].paramColumn, (dataGridElements.Find(x => x.columnParam == element.parameters[k].paramColumn + " (" + element.parameters[k].unitColumn + ")").columnValue).ToString()));
                             
                             Entity expr = temp;
-                            Console.WriteLine(expr);
                             if (temp.Contains("f"))
                             {
                                 if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
@@ -557,7 +559,7 @@ namespace PAPIRUS_WPF
             return matrix;
         }
 
-        private string OptimizeBeginString(string originalString, bool isGeneretorConnected)
+        private string OptimizeBeginString(string originalString)
         {
 
             string temp = originalString.Replace(" ", "");
