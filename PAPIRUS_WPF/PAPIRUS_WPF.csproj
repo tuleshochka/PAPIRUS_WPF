@@ -197,6 +197,7 @@
       <DependentUpon>PoleDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IRotatable.cs" />
+    <Compile Include="Models\CloneableList.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\DataGridElements.cs" />
     <Compile Include="Models\DataGridNumericColumn.cs" />

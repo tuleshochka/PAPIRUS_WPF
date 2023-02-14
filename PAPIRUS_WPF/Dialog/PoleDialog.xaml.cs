@@ -181,6 +181,7 @@ namespace PAPIRUS_WPF.Dialog
             if (!SaveData()) { MessageBox.Show("Введены не все параметры"); }
             else
             {
+                Console.WriteLine("yes");
                 if (el.other_par.Any(x => x.formulaColumn.Contains("w") || x.formulaColumn.Contains("ω") || x.formulaColumn.Contains("f"))
                     || el.matrix.Any(x => x.element.Contains("w") || x.element.Contains("ω") || x.element.Contains("f")))
                 {
@@ -189,19 +190,21 @@ namespace PAPIRUS_WPF.Dialog
                 }
                 else
                 {
-
+                    
                     SMatrixCalculation calculation = new SMatrixCalculation();
                     Matrix matrix = new Matrix(poleNum, poleNum);
+                    Console.WriteLine("yes");
                     try
                     {
                         matrix = calculation.Calculate(el, datagridelements);
+                        Console.WriteLine(matrix[0, 0].ToString());
                     }
                     catch (Exception exception)
                     {
                         MessageBox.Show(exception.Message);
                         this.Close();
                     }
-
+                    Console.WriteLine("yes");
                     SMatrix dialog = new SMatrix(matrix);
                     dialog.ShowDialog();
                 }

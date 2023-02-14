@@ -70,12 +70,13 @@ namespace PAPIRUS_WPF.Dialog
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
-
+            Console.WriteLine(matrix.M);
             //-----------------ОТОБРАЖЕНИЕ МАТРИЦЫ-----------------//
             for (int i = 0; i < matrix.M; i++)
             {
                 for (int j = 0; j < matrix.N; j++)
                 {
+                    Console.WriteLine(matrix[i, j]);
                     Entity temp = matrix[i, j].Substitute("f", Data.specificFrequency);
                     Complex complex = (Complex)temp.EvalNumerical();
                     if (complex.Imaginary == 0)

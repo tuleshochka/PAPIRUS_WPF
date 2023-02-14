@@ -155,9 +155,8 @@ namespace PAPIRUS_WPF
                 for (int m = 0; m < free.Count; m++)
                 {
                     AA[n, m] = A[n, m];
-                    Console.Write(AA[n, m]);
+                    Console.WriteLine(AA[n, m]);
                 }
-                Console.WriteLine();
             }
             int q = 0, w = 0;
             Console.WriteLine("AB matrix:");
@@ -226,17 +225,36 @@ namespace PAPIRUS_WPF
                 Console.WriteLine();
                 q++;
             }
+
+            Console.WriteLine("a:");
+
+            Matrix a = (EMatrix - BB);
+            a.ProcessFunctionOverData((i, j) => Console.WriteLine(a[i, j]));
+
+            Console.WriteLine("b:");
+
+            Matrix b = (EMatrix - BB).CreateInvertibleMatrix();
+            b.ProcessFunctionOverData((i, j) => Console.WriteLine(b[i, j]));
+
+            Console.WriteLine("c:");
+            Matrix c = AB * ((EMatrix - BB).CreateInvertibleMatrix());
+            c.ProcessFunctionOverData((i, j) => Console.WriteLine(c[i, j]));
+
+            Console.WriteLine("d:");
+            Matrix d = AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
+            d.ProcessFunctionOverData((i, j) => Console.WriteLine(d[i, j]));
+            Console.WriteLine("total:");
             Matrix totalMatrix = new Matrix(free.Count, free.Count);
             totalMatrix = AA + AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
-            for (int x = 0; x < free.Count; x++)
-            {
+            //for (int x = 0; x < free.Count; x++)
+            //{
 
-                for (int y = 0; y < free.Count; y++)
-                {
-                    Console.Write(totalMatrix[x, y]);
-                }
-                Console.WriteLine();
-            }
+            //    for (int y = 0; y < free.Count; y++)
+            //    {
+            //        Console.Write(totalMatrix[x, y]);
+            //    }
+            //    Console.WriteLine();
+            //}
             return totalMatrix;
         }
 
@@ -526,10 +544,9 @@ namespace PAPIRUS_WPF
             }
             else
             {
-                Entity entity = expr.Simplify();
+                Entity entity = expr.Evaled;
                 element.other_par[i].formulaColumn = entity.ToString();
             }
-            Console.WriteLine("element i = " + element.other_par[i].formulaColumn);
             return element;
         }
 
@@ -553,9 +570,10 @@ namespace PAPIRUS_WPF
             }
             else
             {
-                Entity entity = expr.Simplify();
+                Entity entity = expr.Evaled;
                 matrix[i, j] = entity;
             }
+            Console.WriteLine("element i = " + matrix[i, j].ToString());
             return matrix;
         }
 

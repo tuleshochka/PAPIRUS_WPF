@@ -143,8 +143,11 @@ namespace PAPIRUS_WPF.Dialog
         {
             foreach (Object el in (window as MainWindow).CircuitCanvas.Children.OfType<Object>())
             {
-                Object _ = (Object)el.Resources["DataSource"];
-                _.DefaultNumberVisible = Visibility.Visible;
+                if(!(el is generator))
+                {
+                    Object _ = (Object)el.Resources["DataSource"];
+                    _.DefaultNumberVisible = Visibility.Visible;
+                }
             }
         }
     }

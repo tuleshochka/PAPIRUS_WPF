@@ -659,7 +659,7 @@ namespace PAPIRUS_WPF
                             _tempLink.Y2 = inputPoint.Y;
 
                             //Links the output to the input
-                            if (!(startObject is generator))
+                            if (!(startObject is generator) && !(obj is generator))
                             {
                                 try
                                 {
