@@ -115,7 +115,7 @@ namespace PAPIRUS_WPF.Dialog
                         List<Object> tempO= Data.elements;
                         Object _ = tempO.Find(o => o.GetOutputs().Any(p => p.index == a-1));
 
-                       // string matrixFormula = _.insideElement.matrix
+                        //string matrixFormula = _.insideElement.matrix
 
 
                         Data.frec.Add(new ObservablePoint(x, y));
