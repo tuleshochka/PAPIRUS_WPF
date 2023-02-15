@@ -102,7 +102,6 @@ namespace PAPIRUS_WPF.Elements
                 throw new Exception("Нельзя подключить больше одного элемента");
             //Sets the state to the output
             _state_ = output;
-            MessageBox.Show(parent);
         }
 
         public void DeleteLink()

@@ -19,6 +19,7 @@ using System.Drawing.Drawing2D;
 using LiveCharts.Defaults;
 using PAPIRUS_WPF.Elements;
 using System.Numerics;
+using AngouriMath;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -109,8 +110,8 @@ namespace PAPIRUS_WPF.Dialog
                         int.TryParse(MatrixElement2.Text, out b);
 
                         x = i;
-                        Complex tempY = matrix[a, b];
-                        y = Math.Sqrt(Math.Pow(tempY.Real, 2) + Math.Pow(tempY.Imaginary, 2));
+                        Entity tempY = matrix[a, b];
+                        //y = Math.Sqrt(Math.Pow(tempY.Real, 2) + Math.Pow(tempY.Imaginary, 2));
 
                         List<Object> tempO= Data.elements;
                         Object _ = tempO.Find(o => o.GetOutputs().Any(p => p.index == a-1));
@@ -118,7 +119,7 @@ namespace PAPIRUS_WPF.Dialog
                         //string matrixFormula = _.insideElement.matrix
 
 
-                        Data.frec.Add(new ObservablePoint(x, y));
+                        //Data.frec.Add(new ObservablePoint(x, y));
 
 
                     }
@@ -142,8 +143,11 @@ namespace PAPIRUS_WPF.Dialog
         {
             foreach (Object el in (window as MainWindow).CircuitCanvas.Children.OfType<Object>())
             {
-                Object _ = (Object)el.Resources["DataSource"];
-                _.DefaultNumberVisible = Visibility.Visible;
+                if(!(el is generator))
+                {
+                    Object _ = (Object)el.Resources["DataSource"];
+                    _.DefaultNumberVisible = Visibility.Visible;
+                }
             }
         }
     }

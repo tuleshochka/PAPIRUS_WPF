@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AngouriMath, Version=0.1.3.0, Culture=neutral, PublicKeyToken=bccdab90849ccf86, processorArchitecture=MSIL">
@@ -195,6 +197,7 @@
       <DependentUpon>PoleDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IRotatable.cs" />
+    <Compile Include="Models\CloneableList.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\DataGridElements.cs" />
     <Compile Include="Models\DataGridNumericColumn.cs" />

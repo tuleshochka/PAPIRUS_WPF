@@ -95,6 +95,7 @@ namespace PAPIRUS_WPF.Dialog
                 Data.lowerLimit = limits[0].lowerLimit;
                 Data.upperLimit = limits[0].upperLimit;
             }
+            this.Close();
         }
         private void LimitsSaveData()
         {

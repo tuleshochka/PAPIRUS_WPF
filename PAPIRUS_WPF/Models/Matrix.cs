@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AngouriMath;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -9,7 +10,7 @@ namespace PAPIRUS_WPF.Models
 {
     public class Matrix
     {
-        public Complex[,] data;
+        public Entity[,] data;
 
         private int m;
         public int M { get => this.m; }
@@ -19,13 +20,13 @@ namespace PAPIRUS_WPF.Models
 
         public bool IsSquare { get => this.M == this.N; }
 
-        private Complex precalculatedDeterminant = new Complex(double.NaN,double.NaN);
+        private Entity precalculatedDeterminant = null;
 
         public Matrix(int m, int n)
         {
             this.m = m;
             this.n = n;
-            this.data = new Complex[m, n];
+            this.data = new Entity[m, n];
         }
 
         public void ProcessFunctionOverData(Action<int, int> func)
@@ -56,7 +57,7 @@ namespace PAPIRUS_WPF.Models
             return result;
         }
 
-        public Complex this[int x, int y]
+        public Entity this[int x, int y]
         {
             get
             {
@@ -65,7 +66,7 @@ namespace PAPIRUS_WPF.Models
             set
             {
                 this.data[x, y] = value;
-                this.precalculatedDeterminant = new Complex(double.NaN, double.NaN);
+                this.precalculatedDeterminant = null;
             }
         }
 
@@ -93,9 +94,9 @@ namespace PAPIRUS_WPF.Models
             return result;
         }
 
-        public Complex CalculateDeterminant()
+        public Entity CalculateDeterminant()
         {
-            if (!double.IsNaN(this.precalculatedDeterminant.Real) && !double.IsNaN(this.precalculatedDeterminant.Imaginary))
+            if (precalculatedDeterminant != null)
             {
                 return this.precalculatedDeterminant;
             }
@@ -110,14 +111,30 @@ namespace PAPIRUS_WPF.Models
             }
             if (this.N == 2)
             {
-                return this[0, 0] * this[1, 1] - this[0, 1] * this[1, 0];
+                Entity entity = this[0, 0] * this[1, 1] - this[0, 1] * this[1, 0];
+                if(entity.EvaluableNumerical)
+                {
+                    return (Complex)entity.EvalNumerical();
+                }
+                else
+                {
+                    return entity.Evaled;
+                }
             }
-            Complex result = 0;
+            Entity result = 0;
             for (var j = 0; j < this.N; j++)
             {
                 result += (j % 2 == 1 ? 1 : -1) * this[0, j] *
                     this.CreateMatrixWithoutColumn(j).
                     CreateMatrixWithoutRow(0).CalculateDeterminant();
+            }
+            if (result.EvaluableNumerical)
+            {
+                result =  (Complex)result.EvalNumerical();
+            }
+            else
+            {
+                result = result.Evaled;
             }
             this.precalculatedDeterminant = result;
             return result;
@@ -128,20 +145,33 @@ namespace PAPIRUS_WPF.Models
             if (this.M != this.N)
                 return null;
             var determinant = CalculateDeterminant();
-            if (Math.Abs(determinant.Real) < Constants.DoubleComparisonDelta && Math.Abs(determinant.Imaginary) < Constants.DoubleComparisonDelta)
-                return null;
+            //if (Math.Abs(determinant.Real) < Constants.DoubleComparisonDelta && Math.Abs(determinant.Imaginary) < Constants.DoubleComparisonDelta)
+            //    return null;
 
             var result = new Matrix(M, M);
             ProcessFunctionOverData((i, j) =>
             {
                 result[i, j] = ((i + j) % 2 == 1 ? -1 : 1) * CalculateMinor(i, j) / determinant;
             });
-
+            for (int i = 0; i < result.M; i++)
+            {
+                for (int j = 0; j < result.N; j++)
+                {
+                    if (result[i, j].EvaluableNumerical)
+                    {
+                        result[i, j] = (Complex)result[i, j].EvalNumerical();
+                    }
+                    else
+                    {
+                        result[i, j] = result[i, j].Evaled;
+                    }
+                }
+            }
             result = result.CreateTransposeMatrix();
             return result;
         }
 
-        private Complex CalculateMinor(int i, int j)
+        private Entity CalculateMinor(int i, int j)
         {
             return CreateMatrixWithoutColumn(j).CreateMatrixWithoutRow(i).CalculateDeterminant();
         }
@@ -152,6 +182,20 @@ namespace PAPIRUS_WPF.Models
             var result = new Matrix(matrix.M, matrix.N);
             result.ProcessFunctionOverData((i, j) =>
                 result[i, j] = matrix[i, j] * value);
+            for (int i = 0; i < result.M; i++)
+            {
+                for (int j = 0; j < result.N; j++)
+                {
+                    if (result[i, j].EvaluableNumerical)
+                    {
+                        result[i, j] = (Complex)result[i, j].EvalNumerical();
+                    }
+                    else
+                    {
+                        result[i, j] = result[i, j].Evaled;
+                    }
+                }
+            }
             return result;
         }
 
@@ -165,9 +209,24 @@ namespace PAPIRUS_WPF.Models
             result.ProcessFunctionOverData((i, j) => {
                 for (var k = 0; k < matrix.N; k++)
                 {
-                    result[i, j] += matrix[i, k] * matrix2[k, j];
+                    result[i, j] = (matrix[i, k] * matrix2[k, j]);
+                    Console.WriteLine(result[i, j]);
                 }
             });
+            for (int i = 0; i < result.M; i++)
+            {
+                for (int j = 0; j < result.N; j++)
+                {
+                    if (result[i, j].EvaluableNumerical)
+                    {
+                        result[i, j] = (Complex)result[i, j].EvalNumerical();
+                    }
+                    else
+                    {
+                        result[i, j] = result[i, j].Evaled;
+                    }
+                }
+            }
             return result;
         }
 
@@ -177,14 +236,48 @@ namespace PAPIRUS_WPF.Models
             {
                 throw new ArgumentException("matrixes dimensions should be equal");
             }
-            var result = new Matrix(matrix.M, matrix.N);
+            Matrix result = new Matrix(matrix.M, matrix.N);
             result.ProcessFunctionOverData((i, j) => result[i, j] = matrix[i, j] + matrix2[i, j]);
+            for(int i = 0; i < result.M; i++)
+            {
+                for (int j = 0; j < result.N; j++)
+                {
+                    if (result[i,j].EvaluableNumerical)
+                    {
+                        result[i, j] = (Complex)result[i, j].EvalNumerical();
+                    }
+                    else
+                    {
+                        result[i, j] = result[i, j].Evaled;
+                    }
+                }
+            }
             return result;
         }
 
         public static Matrix operator -(Matrix matrix, Matrix matrix2)
         {
-            return matrix + (matrix2 * -1);
+            if (matrix.M != matrix2.M || matrix.N != matrix2.N)
+            {
+                throw new ArgumentException("matrixes dimensions should be equal");
+            }
+            Matrix result = new Matrix(matrix.M, matrix.N);
+            result.ProcessFunctionOverData((i, j) => result[i, j] = matrix[i, j] - matrix2[i, j]);
+            for (int i = 0; i < result.M; i++)
+            {
+                for (int j = 0; j < result.N; j++)
+                {
+                    if (result[i, j].EvaluableNumerical)
+                    {
+                        result[i, j] = (Complex)result[i, j].EvalNumerical();
+                    }
+                    else
+                    {
+                        result[i, j] = result[i, j].Evaled;
+                    }
+                }
+            }
+            return result;
         }
     }
 }

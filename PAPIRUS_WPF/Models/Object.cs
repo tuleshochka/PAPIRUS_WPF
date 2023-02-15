@@ -115,8 +115,16 @@ namespace PAPIRUS_WPF
                 {
                     for (int j = 0; j < matrix.N; j++)
                     {
-                        matrixElements.Add(new MatrixElement { rowIndex = i, columnIndex = j, value = matrix[i, j], unique = k });
-                        k++;
+                        if (matrix[i,j].EvaluableNumerical)
+                        {
+                            matrixElements.Add(new MatrixElement { rowIndex = i, columnIndex = j, value = (Complex)matrix[i, j].EvalNumerical(), unique = k });
+                            k++;
+                        }
+                        else
+                        {
+                            matrixElements.Add(new MatrixElement { rowIndex = i, columnIndex = j, value = matrix[i, j].Simplify(), unique = k });
+                            k++;
+                        }
                     }
                 }
             }

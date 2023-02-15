@@ -70,15 +70,18 @@ namespace PAPIRUS_WPF.Dialog
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
-
+            Console.WriteLine(matrix.M);
             //-----------------ОТОБРАЖЕНИЕ МАТРИЦЫ-----------------//
             for (int i = 0; i < matrix.M; i++)
             {
                 for (int j = 0; j < matrix.N; j++)
                 {
-                    if (matrix[i, j].Imaginary == 0)
+                    Console.WriteLine(matrix[i, j]);
+                    Entity temp = matrix[i, j].Substitute("f", Data.specificFrequency);
+                    Complex complex = (Complex)temp.EvalNumerical();
+                    if (complex.Imaginary == 0)
                     {
-                        Entity expr = matrix[i, j].Real;
+                        Entity expr = complex.Real;
                         if ((Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) <= 0.01 && Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 0 && (double)expr.EvalNumerical() != 0) || Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 1000)
                         {
                             dataGridView.Rows[i].Cells[j].Value = String.Format("{0:0.###E+0}", ((double)expr.EvalNumerical()).ToString());
@@ -91,7 +94,7 @@ namespace PAPIRUS_WPF.Dialog
                     else
                     {
                         string sigh = "+";
-                        switch (Math.Sign(matrix[i, j].Imaginary))
+                        switch (Math.Sign(complex.Imaginary))
                         {
                             case -1:
                                 sigh = "";
@@ -105,22 +108,22 @@ namespace PAPIRUS_WPF.Dialog
                         }
                         string real = null, imaginary = null;
 
-                        if ((Math.Abs(Math.Round(matrix[i, j].Real, 3)) <= 0.01 && Math.Abs(Math.Round(matrix[i, j].Real, 3)) >= 0 && matrix[i, j].Real != 0) || Math.Abs(Math.Round(matrix[i, j].Real, 3)) >= 1000)
+                        if ((Math.Abs(Math.Round(complex.Real, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Real, 3)) >= 0 && complex.Real != 0) || Math.Abs(Math.Round(complex.Real, 3)) >= 1000)
                         {
 
-                            real = String.Format("{0:0.###E+0}", matrix[i, j].Real);
+                            real = String.Format("{0:0.###E+0}", complex.Real);
                         }
                         else
                         {
-                            real = (Math.Round(matrix[i, j].Real, 3)).ToString();
+                            real = (Math.Round(complex.Real, 3)).ToString();
                         }
-                        if ((Math.Abs(Math.Round(matrix[i, j].Imaginary, 3)) <= 0.01 && Math.Abs(Math.Round(matrix[i, j].Imaginary, 3)) >= 0 && matrix[i, j].Imaginary != 0) || Math.Abs(Math.Round(matrix[i, j].Imaginary, 3)) >= 1000)
+                        if ((Math.Abs(Math.Round(complex.Imaginary, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Imaginary, 3)) >= 0 && complex.Imaginary != 0) || Math.Abs(Math.Round(complex.Imaginary, 3)) >= 1000)
                         {
-                            imaginary = String.Format("{0:0.###E+0}", matrix[i, j].Imaginary);
+                            imaginary = String.Format("{0:0.###E+0}", complex.Imaginary);
                         }
                         else
                         {
-                            imaginary = (Math.Round(matrix[i, j].Imaginary, 3)).ToString();
+                            imaginary = (Math.Round(complex.Imaginary, 3)).ToString();
                         }
                         dataGridView.Rows[i].Cells[j].Value = real + "" + sigh + imaginary + "i";
                     }

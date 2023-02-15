@@ -46,11 +46,9 @@ namespace PAPIRUS_WPF
 
             if (elements.Count == 0) 
             {
-             
                 throw new Exception("Нет элементов на схеме");
             }
 
-           
             foreach (Object _object in elements)
             {
                 try
@@ -126,7 +124,7 @@ namespace PAPIRUS_WPF
                 }
             }
 
-            Complex[,] A = new Complex[i, i];
+            Entity[,] A = new Entity[i, i];
             Matrix AA = new Matrix(free.Count, free.Count);
             Matrix AB = new Matrix(free.Count, connected.Count);
             Matrix BA = new Matrix(connected.Count, free.Count);
@@ -157,9 +155,8 @@ namespace PAPIRUS_WPF
                 for (int m = 0; m < free.Count; m++)
                 {
                     AA[n, m] = A[n, m];
-                    Console.Write(AA[n, m]);
+                    Console.WriteLine(AA[n, m]);
                 }
-                Console.WriteLine();
             }
             int q = 0, w = 0;
             Console.WriteLine("AB matrix:");
@@ -228,17 +225,36 @@ namespace PAPIRUS_WPF
                 Console.WriteLine();
                 q++;
             }
+
+            Console.WriteLine("a:");
+
+            Matrix a = (EMatrix - BB);
+            a.ProcessFunctionOverData((i, j) => Console.WriteLine(a[i, j]));
+
+            Console.WriteLine("b:");
+
+            Matrix b = (EMatrix - BB).CreateInvertibleMatrix();
+            b.ProcessFunctionOverData((i, j) => Console.WriteLine(b[i, j]));
+
+            Console.WriteLine("c:");
+            Matrix c = AB * ((EMatrix - BB).CreateInvertibleMatrix());
+            c.ProcessFunctionOverData((i, j) => Console.WriteLine(c[i, j]));
+
+            Console.WriteLine("d:");
+            Matrix d = AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
+            d.ProcessFunctionOverData((i, j) => Console.WriteLine(d[i, j]));
+            Console.WriteLine("total:");
             Matrix totalMatrix = new Matrix(free.Count, free.Count);
             totalMatrix = AA + AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
-            for (int x = 0; x < free.Count; x++)
-            {
+            //for (int x = 0; x < free.Count; x++)
+            //{
 
-                for (int y = 0; y < free.Count; y++)
-                {
-                    Console.Write(totalMatrix[x, y]);
-                }
-                Console.WriteLine();
-            }
+            //    for (int y = 0; y < free.Count; y++)
+            //    {
+            //        Console.Write(totalMatrix[x, y]);
+            //    }
+            //    Console.WriteLine();
+            //}
             return totalMatrix;
         }
 
@@ -246,19 +262,26 @@ namespace PAPIRUS_WPF
         {
             {"+-","-"},
             {"--","+"},
+            {"+ -","-"},
+            {"- -","+"},
         };
 
-        public Matrix Calculate(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        public Matrix Calculate(Element element, List<DataGridElements> dataGridElements)
         {
-            Element tempElement = element;
+            foreach(DataGridElements e in dataGridElements)
+            {
+                Console.WriteLine(e.columnValue);
+            }
+
+            Element tempElement = (Element)element.Clone();
             int number = element.group;
             Matrix matrix = new Matrix(number, number);
             if (tempElement.other_par.Count() != 0)
             {
                 try
                 {
-                    CalculateIntermediateValues_params(tempElement, isGeneretorConnected, dataGridElements);
-                    CalculateIntermediateValues_cycle(tempElement);
+                    tempElement = CalculateIntermediateValues_params(tempElement, dataGridElements);
+                    tempElement = CalculateIntermediateValues_cycle(tempElement);
                 }
                 catch (Exception e)
                 {
@@ -267,7 +290,7 @@ namespace PAPIRUS_WPF
             }
             try
             {
-                matrix = CalculateMatrix(tempElement, isGeneretorConnected, dataGridElements);
+                matrix = CalculateMatrix(tempElement, dataGridElements);
             }
             catch (Exception e)
             {
@@ -276,14 +299,14 @@ namespace PAPIRUS_WPF
             return matrix;
         }
 
-        private void CalculateIntermediateValues_params(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        private Element CalculateIntermediateValues_params(Element element, List<DataGridElements> dataGridElements)
         {
             for (int i = 0; i < element.other_par.Count(); i++)
             {
                 string temp = null;
                 try
                 {
-                    temp = OptimizeBeginString(element.other_par[i].formulaColumn, isGeneretorConnected);
+                    temp = OptimizeBeginString(element.other_par[i].formulaColumn);
                 }
                 catch (Exception e)
                 {
@@ -296,7 +319,21 @@ namespace PAPIRUS_WPF
                     {
                         temp = OptimizeFinalString(temp.Replace(element.parameters[j].paramColumn, (dataGridElements.Find(x => x.columnParam == element.parameters[j].paramColumn + " (" + element.parameters[j].unitColumn + ")").columnValue)));
                         Entity expr = temp;
-                        if (expr.EvaluableNumerical)
+                        if(temp.Contains("f"))
+                        {
+                            if(!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
+                            {
+                                try
+                                {
+                                    element = IntermediateValuesEvalNumerical(element, expr, i);
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new Exception(e.Message);
+                                }
+                            }
+                        }
+                        else if(expr.EvaluableNumerical)
                         {
                             try
                             {
@@ -314,18 +351,34 @@ namespace PAPIRUS_WPF
                     }
                 }
             }
+            return element;
         }
 
-        private void CalculateIntermediateValues_cycle(Element element)
+        private Element CalculateIntermediateValues_cycle(Element element)
         {
             for (int i = 0; i < element.other_par.Count(); i++)
             {
-                if (!(((Entity)element.other_par[i].formulaColumn).EvaluableNumerical))
+                if (element.parameters.Any(y => element.other_par[i].formulaColumn.Contains(y.paramColumn)) || (element.other_par.Any(y => element.other_par[i].formulaColumn.Contains(y.headerColumn))))
                 {
                     foreach (var value in element.other_par.Where(el => el != element.other_par[i]))
                     {
-                        Entity expr = element.other_par[i].formulaColumn.Replace(value.headerColumn, value.formulaColumn);
-                        if (expr.EvaluableNumerical)
+                        string temp = OptimizeFinalString(element.other_par[i].formulaColumn.Replace(value.headerColumn, value.formulaColumn));
+                        Entity expr = temp;
+                        if (temp.Contains("f"))
+                        {
+                            if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
+                            {
+                                try
+                                {
+                                    element = IntermediateValuesEvalNumerical(element, expr, i);
+                                }
+                                catch (Exception e)
+                                {
+                                    throw new Exception(e.Message);
+                                }
+                            }
+                        }
+                        else if (expr.EvaluableNumerical)
                         {
                             try
                             {
@@ -343,13 +396,15 @@ namespace PAPIRUS_WPF
                     }
                 }
             }
-            if (element.other_par.Exists(x => !(((Entity)x.formulaColumn).EvaluableNumerical)))
+
+            if (element.other_par.Exists(x => element.parameters.Any(y => x.formulaColumn.Contains(y.paramColumn))))
             {
                 CalculateIntermediateValues_cycle(element);
             }
+            return element;
         }
 
-        private Matrix CalculateMatrix(Element element, bool isGeneretorConnected, List<DataGridElements> dataGridElements)
+        private Matrix CalculateMatrix(Element element, List<DataGridElements> dataGridElements)
         {
             int number = element.group;
             Matrix matrix = new Matrix(number, number);
@@ -361,7 +416,7 @@ namespace PAPIRUS_WPF
                     string temp = null;
                     try
                     {
-                        temp = OptimizeBeginString(element.matrix[a].element, isGeneretorConnected);
+                        temp = OptimizeBeginString(element.matrix[a].element);
                     }
                     catch (Exception e)
                     {
@@ -374,8 +429,24 @@ namespace PAPIRUS_WPF
                         for (int k = 0; k < element.parameters.Count(); k++)
                         {
                             temp = OptimizeFinalString(temp.Replace(element.parameters[k].paramColumn, (dataGridElements.Find(x => x.columnParam == element.parameters[k].paramColumn + " (" + element.parameters[k].unitColumn + ")").columnValue).ToString()));
+                            
                             Entity expr = temp;
-                            if (expr.EvaluableNumerical)
+                            if (temp.Contains("f"))
+                            {
+                                if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
+                                {
+                                    try
+                                    {
+                                        matrix = MatrixCellEvalNumerical(matrix, expr, i, j);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        throw new Exception(e.Message);
+                                    }
+                                }
+                            }
+
+                            else if (expr.EvaluableNumerical)
                             {
                                 try
                                 {
@@ -398,7 +469,22 @@ namespace PAPIRUS_WPF
                         {
                             temp = OptimizeFinalString(temp.Replace(element.other_par[k].headerColumn, element.other_par[k].formulaColumn));
                             Entity expr = temp;
-                            if (expr.EvaluableNumerical)
+                            if (temp.Contains("f"))
+                            {
+                                if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
+                                {
+                                    try
+                                    {
+                                        matrix = MatrixCellEvalNumerical(matrix, expr, i, j);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        throw new Exception(e.Message);
+                                    }
+                                }
+                            }
+
+                            else if (expr.EvaluableNumerical)
                             {
                                 try
                                 {
@@ -422,69 +508,95 @@ namespace PAPIRUS_WPF
         }
 
 
+
+
         private Element IntermediateValuesEvalNumerical(Element element, Entity expr, int i)
         {
-            Complex complex = (Complex)expr.EvalNumerical();
-            if (complex.Real is double.NaN || complex.Imaginary is double.NaN)
+            if(expr.EvaluableNumerical)
             {
-                throw new Exception("Произошла ошибка в вычислениях, проверьте введённые данные");
-            }
+                Complex complex = (Complex)expr.EvalNumerical();
+                if (complex.Real is double.NaN || complex.Imaginary is double.NaN)
+                {
+                    throw new Exception("Произошла ошибка в вычислениях, проверьте введённые данные");
+                }
 
-            if (complex.Imaginary == 0)
-            {
-                element.other_par[i].formulaColumn = ((double)expr.EvalNumerical()).ToString().Replace(",", ".");
+                if (complex.Imaginary == 0)
+                {
+                    element.other_par[i].formulaColumn = ((double)expr.EvalNumerical()).ToString().Replace(",", ".");
+                }
+                else
+                {
+                    string sigh = "+";
+                    switch (Math.Sign(complex.Imaginary))
+                    {
+                        case -1:
+                            sigh = "";
+                            break;
+                        case 1:
+                            sigh = "+";
+                            break;
+                        case 0:
+                            sigh = "+";
+                            break;
+                    }
+                    element.other_par[i].formulaColumn = (complex.Real + "" + sigh + complex.Imaginary + "i").Replace(",", ".");
+                }
             }
             else
             {
-                string sigh = "+";
-                switch (Math.Sign(complex.Imaginary))
-                {
-                    case -1:
-                        sigh = "";
-                        break;
-                    case 1:
-                        sigh = "+";
-                        break;
-                    case 0:
-                        sigh = "+";
-                        break;
-                }
-                element.other_par[i].formulaColumn = (complex.Real + "" + sigh + complex.Imaginary + "i").Replace(",", ".");
+                Entity entity = expr.Evaled;
+                element.other_par[i].formulaColumn = entity.ToString();
             }
             return element;
         }
 
         private Matrix MatrixCellEvalNumerical(Matrix matrix, Entity expr, int i, int j)  //для правильного отображения расчетов
         {
-            Complex complex = (Complex)expr.EvalNumerical();
-            if (complex.Real is double.NaN || complex.Imaginary is double.NaN)
+            if (expr.EvaluableNumerical)
             {
-                throw new Exception("Произошла ошибка в вычислениях, проверьте введённые данные");
-            }
-            if (complex.Imaginary == 0)
-            {
-                matrix[i, j] = ((double)expr.EvalNumerical());
+                Complex complex = (Complex)expr.EvalNumerical();
+                if (complex.Real is double.NaN || complex.Imaginary is double.NaN)
+                {
+                    throw new Exception("Произошла ошибка в вычислениях, проверьте введённые данные");
+                }
+                if (complex.Imaginary == 0)
+                {
+                    matrix[i, j] = ((double)expr.EvalNumerical());
+                }
+                else
+                {
+                    matrix[i, j] = complex;
+                }
             }
             else
             {
-                matrix[i, j] = complex;
+                Entity entity = expr.Evaled;
+                matrix[i, j] = entity;
             }
+            Console.WriteLine("element i = " + matrix[i, j].ToString());
             return matrix;
         }
 
-        private string OptimizeBeginString(string originalString, bool isGeneretorConnected)
+        private string OptimizeBeginString(string originalString)
         {
+
             string temp = originalString.Replace(" ", "");
-            if (isGeneretorConnected)
-            {
-                temp = temp.Replace("w", "2*pi*f");
-                temp = temp.Replace("f", (Data.specificFrequency.ToString()).Replace(",", "."));
-            }
-            else if (!isGeneretorConnected && (temp.Contains("w") || temp.Contains("f")))
-            {
-                throw new Exception("Элемент не подключен к генератору");
-            }
+            temp = temp.Replace("w", "2*pi*f");
+            temp = temp.Replace("ω", "2*pi*f");
             return temp;
+
+            //string temp = originalString.Replace(" ", "");
+            //if (isGeneretorConnected)
+            //{
+            //    temp = temp.Replace("w", "2*pi*f");
+            //    temp = temp.Replace("f", (Data.specificFrequency.ToString()).Replace(",", "."));
+            //}
+            //else if (!isGeneretorConnected && (temp.Contains("w") || temp.Contains("f")))
+            //{
+            //    throw new Exception("Элемент не подключен к генератору");
+            //}
+            //return temp;
+
         }
 
         private string OptimizeFinalString(string originalString)
