@@ -10,6 +10,6 @@ namespace PAPIRUS_WPF.Models
     {
         public double lowerLimit { get; set; }
         public double upperLimit { get; set; }
-        public double frequencyStep { get; set; }
+        //public double frequencyStep { get; set; }
     }
 }

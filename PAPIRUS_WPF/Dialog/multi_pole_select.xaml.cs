@@ -56,7 +56,7 @@ namespace PAPIRUS_WPF.Dialog
             }
             else if (btn_24.IsChecked == true)
             {
-                Data.multiPole = new multi_pole();
+                Data.multiPole = new twentyfour_pole();
             }
             this.Close();
         }

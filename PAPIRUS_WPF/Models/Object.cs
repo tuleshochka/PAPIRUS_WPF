@@ -111,6 +111,7 @@ namespace PAPIRUS_WPF
             }
             else
             {
+                matrixElements.Clear();
                 for (int i = 0; i < matrix.M; i++)
                 {
                     for (int j = 0; j < matrix.N; j++)
@@ -122,7 +123,7 @@ namespace PAPIRUS_WPF
                         }
                         else
                         {
-                            matrixElements.Add(new MatrixElement { rowIndex = i, columnIndex = j, value = matrix[i, j].Simplify(), unique = k });
+                            matrixElements.Add(new MatrixElement { rowIndex = i, columnIndex = j, value = matrix[i, j].Evaled, unique = k });
                             k++;
                         }
                     }

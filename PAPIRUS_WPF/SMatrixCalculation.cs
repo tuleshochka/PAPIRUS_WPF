@@ -129,6 +129,7 @@ namespace PAPIRUS_WPF
             Matrix AB = new Matrix(free.Count, connected.Count);
             Matrix BA = new Matrix(connected.Count, free.Count);
             Matrix BB = new Matrix(connected.Count, connected.Count);
+            Matrix totalMatrix = new Matrix(free.Count, free.Count);
             Console.WriteLine("matrix A: ");
             for (int n = 0; n < i; n++)
             {
@@ -198,63 +199,66 @@ namespace PAPIRUS_WPF
                     Console.WriteLine();
                     q++;
                 }
+                Matrix EMatrix = new Matrix(connected.Count, connected.Count);
+                q = connected.First();
+                w = connected.First();
+                Console.WriteLine("E matrix:");
+                for (int n = 0; n < connected.Count; n++)
+                {
+                    w = connected.First();
+                    for (int m = 0; m < connected.Count; m++)
+                    {
+                        Object _ = elements.Find(x => x.GetOutputs().Any(y => y.index == q && y._state_.index == w));
+                        if (_ == null)
+                        {
+                            EMatrix[n, m] = 0;
+                            Console.Write(EMatrix[n, m]);
+                        }
+                        else
+                        {
+                            EMatrix[n, m] = 1;
+                            Console.Write(EMatrix[n, m]);
+                        }
+                        w++;
+                    }
+                    Console.WriteLine();
+                    q++;
+                }
+                Console.WriteLine("a:");
+
+                Matrix a = (EMatrix - BB);
+                a.ProcessFunctionOverData((i, j) => Console.WriteLine(a[i, j]));
+
+                Console.WriteLine("b:");
+
+                Matrix b = (EMatrix - BB).CreateInvertibleMatrix();
+                b.ProcessFunctionOverData((i, j) => Console.WriteLine(b[i, j]));
+
+                Console.WriteLine("c:");
+                Matrix c = AB * ((EMatrix - BB).CreateInvertibleMatrix());
+                c.ProcessFunctionOverData((i, j) => Console.WriteLine(c[i, j]));
+
+                Console.WriteLine("d:");
+                Matrix d = AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
+                d.ProcessFunctionOverData((i, j) => Console.WriteLine(d[i, j]));
+                Console.WriteLine("total:");
+                totalMatrix = new Matrix(free.Count, free.Count);
+                totalMatrix = AA + AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
+            }
+            else
+            {
+                totalMatrix = AA;
             }
 
-            Matrix EMatrix = new Matrix(connected.Count, connected.Count);
-            q = connected.First();
-            w = connected.First();
-            Console.WriteLine("E matrix:");
-            for (int n = 0; n < connected.Count; n++)
+            for (int x = 0; x < free.Count; x++)
             {
-                w = connected.First();
-                for (int m = 0; m < connected.Count; m++)
+
+                for (int y = 0; y < free.Count; y++)
                 {
-                    Object _ = elements.Find(x => x.GetOutputs().Any(y => y.index == q && y._state_.index == w));
-                    if (_ == null)
-                    {
-                        EMatrix[n, m] = 0;
-                        Console.Write(EMatrix[n, m]);
-                    }
-                    else
-                    {
-                        EMatrix[n, m] = 1;
-                        Console.Write(EMatrix[n, m]);
-                    }
-                    w++;
+                    Console.Write(totalMatrix[x, y]);
                 }
                 Console.WriteLine();
-                q++;
             }
-
-            Console.WriteLine("a:");
-
-            Matrix a = (EMatrix - BB);
-            a.ProcessFunctionOverData((i, j) => Console.WriteLine(a[i, j]));
-
-            Console.WriteLine("b:");
-
-            Matrix b = (EMatrix - BB).CreateInvertibleMatrix();
-            b.ProcessFunctionOverData((i, j) => Console.WriteLine(b[i, j]));
-
-            Console.WriteLine("c:");
-            Matrix c = AB * ((EMatrix - BB).CreateInvertibleMatrix());
-            c.ProcessFunctionOverData((i, j) => Console.WriteLine(c[i, j]));
-
-            Console.WriteLine("d:");
-            Matrix d = AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
-            d.ProcessFunctionOverData((i, j) => Console.WriteLine(d[i, j]));
-            Console.WriteLine("total:");
-            Matrix totalMatrix = new Matrix(free.Count, free.Count);
-            totalMatrix = AA + AB * ((EMatrix - BB).CreateInvertibleMatrix()) * BA;
-            //for (int x = 0; x < free.Count; x++)
-            //{
-
-            //    for (int y = 0; y < free.Count; y++)
-            //    {
-            //        Console.Write(totalMatrix[x, y]);
-            //    }
-            //    Console.WriteLine();
-            //}
             return totalMatrix;
         }
 

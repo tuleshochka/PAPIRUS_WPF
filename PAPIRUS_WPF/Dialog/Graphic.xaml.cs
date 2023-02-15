@@ -21,7 +21,7 @@ namespace PAPIRUS_WPF.Dialog
         public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }
         public Func<double, string> YFormatter { get; set; }
-        public Graphic()
+        public Graphic(ChartValues<ObservablePoint> frec, ChartValues<ObservablePoint> phase)
         {
             InitializeComponent();
            
@@ -34,14 +34,14 @@ namespace PAPIRUS_WPF.Dialog
                     Title = "АЧХ",
                     Stroke= Brushes.Red,
                     Fill = Brushes.Transparent,
-                    Values = Data.frec
+                    Values = frec
                   },
                      new LineSeries
                  {
                         Title = "ФЧХ",
                         Stroke= Brushes.Blue,
                     Fill = Brushes.Transparent,
-                    Values = Data.phase
+                    Values = phase
                 }
 
             };

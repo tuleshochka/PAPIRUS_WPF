@@ -18,12 +18,12 @@ namespace PAPIRUS_WPF.Elements
     /// <summary>
     /// Логика взаимодействия для eight_pole.xaml
     /// </summary>
-    public partial class multi_pole : Object
+    public partial class twentyfour_pole : Object
     {
         
         public override int group { get => base.group; set => base.group = value; }
         public override List<Output> listOfOutput { get; set; } = new List<Output>();
-        public multi_pole()
+        public twentyfour_pole()
         {
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);

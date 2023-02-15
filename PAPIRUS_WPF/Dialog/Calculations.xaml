@@ -22,18 +22,18 @@
                 </GroupBox>
                 <GroupBox Header="Представление результата" Margin="13,173,354,72">
                     <StackPanel>
-                        <RadioButton x:Name="RadioButtonViaMatrix" Content="В виде матрицы" HorizontalAlignment="Left" Margin="1,5,0,0" VerticalAlignment="Top" />
+                        <RadioButton x:Name="RadioButtonViaMatrix" Content="В виде матрицы" HorizontalAlignment="Left" Margin="1,5,0,0" VerticalAlignment="Top" Checked="RadioButtonViaMatrix_Checked"  />
                         <RadioButton x:Name="RadioButtonViaGraphic" Content="В виде графика ЧХ одного из элементов" HorizontalAlignment="Left" Margin="1,5,0,0" VerticalAlignment="Top" />
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Данные для вычислений" Margin="369,10,10,72">
+                <GroupBox x:Name="ValueGroup" Header="Данные для вычислений" Margin="369,10,10,72">
                     <WrapPanel>
                         <Label Content="Количество точек" Margin="20,5,0,0"/>
 
-                        <xctk:IntegerUpDown x:Name="DotsNumber" Margin="10,5,0,0" Width="150"/>
+                        <xctk:IntegerUpDown x:Name="DotsNumber" Text="30" Margin="10,5,0,0" Width="150"/>
                         <Label Content="Элемент матрицы" Margin="19,5,0,0"/>
-                        <TextBox x:Name="MatrixElement1" Width="50" Margin="10,5,0,0"/>
-                        <TextBox x:Name="MatrixElement2" Width="50" Margin="10,5,0,0"/>
+                        <TextBox x:Name="MatrixElement1" Text="1" Width="50" Margin="10,5,0,0"/>
+                        <TextBox x:Name="MatrixElement2" Text="1" Width="50" Margin="10,5,0,0"/>
                         <Label Content="Номер выхода" Margin="37,5,0,0"/>
                         <TextBox x:Name="OutputNumber" Width="50" Margin="10,5,0,0"/>
                         

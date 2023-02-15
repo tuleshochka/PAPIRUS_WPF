@@ -34,23 +34,19 @@ namespace PAPIRUS_WPF.Dialog
         public List<DataGridElements> parameters = new List<DataGridElements>();
     }
 
-     public partial class PoleDialog : Window
+    public partial class PoleDialog : Window
     {
-        
+
         private string filePath;  //путь до файла
-        string imgPath; //путь до картинки
         string jsonString;  //считанный из файла json текст
         private List<Element> elementsList = new List<Element>();  //лист элементов считанных из файла
-        List<string> nameElements = new List<string>(); //лист названий всех элементов из файла
         int poleNum;  //сколько полюсов в полюснике
-
+        private bool generatorConnected;
         private List<PoleInsideElementsAndParams> listOfElements;
         private Element el;  //выбранный пользователем элемент из ListBox
         private List<DataGridElements> datagridelements = new List<DataGridElements>(); //для хранения параметров и их значений с dataGridView
-        private List<double> values = new List<double>();
         private Object _object;
 
-        private bool generatorConnected;
         private bool isFirst = true;
 
         public PoleDialog(string elementName, string fileName, Object _element)
@@ -59,32 +55,23 @@ namespace PAPIRUS_WPF.Dialog
             InitializeComponent();
             _object = _element;
             generatorConnected = _element.generatorConnected;
-            listBox.SelectedIndex= 0;
+            listBox.SelectedIndex = 0;
             groupTextBox.Text = elementName;
-            filePath = AppDomain.CurrentDomain.BaseDirectory + fileName;
+            filePath = AppDomain.CurrentDomain.BaseDirectory +"elementsLib/" + fileName;
             if (File.Exists(filePath))
             {
                 jsonString = File.ReadAllText(filePath);
                 elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString);
                 foreach (Element element in elementsList)
                 {
-                    listOfElements.Add( new PoleInsideElementsAndParams { element = element });
+                    listOfElements.Add(new PoleInsideElementsAndParams { element = element });
                 }
-                switch (fileName)
-                {
-                    case "2pole.json":
-                        poleNum = 1;
-                        break;
-                    case "4pole.json":
-                        poleNum = 2;
-                        break;
-                    case "6pole.json":
-                        poleNum = 3;
-                        break;
-                    case "8pole.json":
-                        poleNum = 4;
-                        break;
-                }
+                poleNum = _element.group;
+            }
+            else
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "elementsLib/");
+                File.WriteAllText(filePath, "[]");
             }
 
             listBox.ItemsSource = listOfElements.Select(x => x.element.name);
@@ -107,8 +94,11 @@ namespace PAPIRUS_WPF.Dialog
             }
             else
             {
-                el = elementsList[0];
-                listBox.SelectedIndex = 0;
+                if (elementsList.Count>1)
+                { 
+                    el = elementsList[0];
+                    listBox.SelectedIndex = 0;
+                }
             }
             isFirst = false;
 
@@ -181,19 +171,38 @@ namespace PAPIRUS_WPF.Dialog
             if (!SaveData()) { MessageBox.Show("Введены не все параметры"); }
             else
             {
-                Console.WriteLine("yes");
-                if (el.other_par.Any(x => x.formulaColumn.Contains("w") || x.formulaColumn.Contains("ω") || x.formulaColumn.Contains("f"))
-                    || el.matrix.Any(x => x.element.Contains("w") || x.element.Contains("ω") || x.element.Contains("f")))
+
+                if (!_object.generatorConnected)
                 {
-                    if(!(_object.generatorConnected))
-                    MessageBox.Show("Элемент не подключен к генератору");
+                    if (el.other_par.Any(x => x.formulaColumn.Contains("w") || x.formulaColumn.Contains("ω") || x.formulaColumn.Contains("f"))
+                || el.matrix.Any(x => x.element.Contains("w") || x.element.Contains("ω") || x.element.Contains("f")))
+                    {
+                        MessageBox.Show("Элемент не подключен к генератору");
+                    }
+                    else
+                    {
+                        SMatrixCalculation calculation = new SMatrixCalculation();
+                        Matrix matrix = new Matrix(poleNum, poleNum);
+                        try
+                        {
+                            matrix = calculation.Calculate(el, datagridelements);
+                            Console.WriteLine(matrix[0, 0].ToString());
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show(exception.Message);
+                            this.Close();
+                        }
+                        SMatrix dialog = new SMatrix(matrix);
+                        dialog.ShowDialog();
+                    }
                 }
+
                 else
                 {
-                    
+
                     SMatrixCalculation calculation = new SMatrixCalculation();
                     Matrix matrix = new Matrix(poleNum, poleNum);
-                    Console.WriteLine("yes");
                     try
                     {
                         matrix = calculation.Calculate(el, datagridelements);
@@ -204,7 +213,6 @@ namespace PAPIRUS_WPF.Dialog
                         MessageBox.Show(exception.Message);
                         this.Close();
                     }
-                    Console.WriteLine("yes");
                     SMatrix dialog = new SMatrix(matrix);
                     dialog.ShowDialog();
                 }
@@ -218,7 +226,7 @@ namespace PAPIRUS_WPF.Dialog
             {
                 _object.insideElement = el;
                 _object.insideParams.Clear();
-                foreach(PoleInsideElementsAndParams element in listOfElements)
+                foreach (PoleInsideElementsAndParams element in listOfElements)
                 {
                     _object.insideParams.Add(element);
                 }
@@ -271,7 +279,7 @@ namespace PAPIRUS_WPF.Dialog
             int i = 0;
             int index = listOfElements.FindIndex(x => x.element.name == elem.name);
             listOfElements[index].parameters.Clear();
-           
+
             if (elem.parameters.Count() != 0)
             {
                 foreach (DataGridElements element in datagridelements)

@@ -204,7 +204,7 @@
             <Elements:four_pole CanMove="false" DefaultNumberVisible="Hidden"/>
             <Elements:six_pole CanMove="false" DefaultNumberVisible="Hidden"/>
             <Elements:eight_pole CanMove="false" DefaultNumberVisible="Hidden"/>
-            <Elements:multi_pole CanMove="false" DefaultNumberVisible="Hidden"/>
+            <Elements:twentyfour_pole CanMove="false" DefaultNumberVisible="Hidden"/>
             <Elements:generator CanMove="false" DefaultNumberVisible="Hidden"/>
         </ListView>
     </Grid>

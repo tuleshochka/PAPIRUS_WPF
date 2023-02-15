@@ -92,9 +92,6 @@ namespace PAPIRUS_WPF
             CircuitCanvas.MouseDown += CircuitCanvas_MouseDown;
             CircuitCanvas.MouseMove += CircuitCanvas_MouseMove;
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
-            TextBlock text = new TextBlock();
-            text.Text = "1212";
-            CircuitCanvas.Children.Add(text);
 
         }
         public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
@@ -430,27 +427,7 @@ namespace PAPIRUS_WPF
                         }
                         else
                         {
-                            switch (startObject)
-                            {
-                                case two_pole _:
-                                    fileName = "2pole.json";
-                                    break;
-                                case four_pole _:
-                                    fileName = "4pole.json";
-                                    break;
-                                case six_pole _:
-                                    fileName = "6pole.json";
-                                    break;
-                                case eight_pole _:
-                                    fileName = "8pole.json";
-                                    break;
-                                case generator _:
-                                    ;
-                                    break;
-                                default:
-                                    fileName = "multipole.json";
-                                    break;
-                            }
+                            fileName = startObject.GetType().Name + ".json";
                             PoleDialog gd = new PoleDialog(elementName, fileName, startObject);
                             gd.ShowDialog();
                         }
@@ -789,7 +766,7 @@ namespace PAPIRUS_WPF
             if (instance == null)
                 return;
 
-            if (instance is multi_pole)
+            if (instance is twentyfour_pole)
             {
                 multi_pole_select multi_Pole_Select = new multi_pole_select();
                 multi_Pole_Select.ShowDialog();

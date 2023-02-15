@@ -107,7 +107,7 @@
     </Reference>
     <Reference Include="WPF_SHF_Element_lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
+      <HintPath>D:\projects VScode\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock, Version=4.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Extended.Wpf.Toolkit.4.5.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
@@ -169,8 +169,8 @@
     <Compile Include="Elements\ten_pole.xaml.cs">
       <DependentUpon>ten_pole.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Elements\multi_pole.xaml.cs">
-      <DependentUpon>multi_pole.xaml</DependentUpon>
+    <Compile Include="Elements\twentyfour_pole.xaml.cs">
+      <DependentUpon>twentyfour_pole.xaml</DependentUpon>
     </Compile>
     <Compile Include="Elements\eight_pole.xaml.cs">
       <DependentUpon>eight_pole.xaml</DependentUpon>
@@ -261,7 +261,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Elements\multi_pole.xaml">
+    <Page Include="Elements\twentyfour_pole.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

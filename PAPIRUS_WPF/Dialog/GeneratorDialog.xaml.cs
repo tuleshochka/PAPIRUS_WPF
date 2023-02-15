@@ -44,7 +44,7 @@ namespace PAPIRUS_WPF.Dialog
             }
             else
             {
-                limits.Add(new Limits { lowerLimit = 0, upperLimit = 10, frequencyStep = 1 });
+                limits.Add(new Limits { lowerLimit = 0, upperLimit = 10 });
             }
             if(Data.dataSpecifics.Count() != 0)
             {
@@ -52,7 +52,7 @@ namespace PAPIRUS_WPF.Dialog
             }
             else
             {
-                specifics.Add(new Specific { frequency = 5, tolerance = 50 });
+                specifics.Add(new Specific { frequency = 5, tolerance = 100 });
             }
             dataGridLimits.ItemsSource = limits;
             dataGridSpecific.ItemsSource = specifics;
@@ -121,14 +121,14 @@ namespace PAPIRUS_WPF.Dialog
                             limits[0].upperLimit = double.Parse(x.Text.Replace(" ", ""), culture);
                         }
                     }
-                    if(i == 2)
-                    {
-                        var x = column.GetCellContent(item) as TextBlock;
-                        if (!(string.IsNullOrEmpty(x.Text)))
-                        {
-                            limits[0].frequencyStep = double.Parse(x.Text.Replace(" ", ""), culture);
-                        }
-                    }
+                    //if(i == 2)
+                    //{
+                    //    var x = column.GetCellContent(item) as TextBlock;
+                    //    if (!(string.IsNullOrEmpty(x.Text)))
+                    //    {
+                    //        limits[0].frequencyStep = double.Parse(x.Text.Replace(" ", ""), culture);
+                    //    }
+                    //}
                 }
                 i++;
             }
