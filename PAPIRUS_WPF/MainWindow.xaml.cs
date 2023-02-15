@@ -270,8 +270,9 @@ namespace PAPIRUS_WPF
             {
                 RemoveWire(wire);
             }
-            foreach (Object obj in element.connectedElements)
+            for (int i = 0;i< element.connectedElements.Count();i++)
             {
+                Object obj = element.connectedElements[i];
                 obj.connectedElements.Remove(element);
             }
             CircuitCanvas.Children.Remove(element);
