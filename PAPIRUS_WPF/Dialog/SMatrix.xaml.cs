@@ -24,6 +24,8 @@ using PAPIRUS_WPF.Models;
 using Element = PAPIRUS_WPF.Models.Element;
 using static AngouriMath.Entity;
 using Matrix = PAPIRUS_WPF.Models.Matrix;
+using PAPIRUS_WPF.Elements;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -31,8 +33,9 @@ namespace PAPIRUS_WPF.Dialog
     /// <summary>
     /// Логика взаимодействия для SMatrix.xaml
     /// </summary>
-    public partial class SMatrix : Window
+    public partial class SMatrix : System.Windows.Window
     {
+       
         CultureInfo culture = new CultureInfo("en");
         System.Windows.Forms.Integration.WindowsFormsHost host =
         new System.Windows.Forms.Integration.WindowsFormsHost();
@@ -43,7 +46,7 @@ namespace PAPIRUS_WPF.Dialog
             {"+-","-"},
             {"--","+"},
         };
-
+ 
         public SMatrix(Matrix matrix)
         {
             InitializeComponent();
@@ -132,6 +135,11 @@ namespace PAPIRUS_WPF.Dialog
             }
 
             this.WindowState = WindowState.Normal;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            
         }
     }
 }

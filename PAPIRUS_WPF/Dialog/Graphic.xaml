@@ -6,7 +6,7 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog"
         mc:Ignorable="d"
-        Title="Graphic" Height="460" Width="825">
+        Title="Частотная характеристика" Height="460" Width="825">
     <Grid>
         <lvc:CartesianChart Zoom="X" Series="{Binding SeriesCollection}" LegendLocation="Left" Margin="0,0,55,30" >
             <lvc:CartesianChart.AxisY>

@@ -6,7 +6,7 @@
         xmlns:local1="clr-namespace:PAPIRUS_WPF.Models"
         xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog" 
         mc:Ignorable="d"
-        Title="Параметры Генератора" Height="565" Width="679" ResizeMode="CanMinimize">
+        Title="Параметры генератора" Height="565" Width="679" ResizeMode="CanMinimize">
     <Grid>
         <Button x:Name="OkButton" Content="Применить"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="412,482,0,0" Click="OkButton_Click"/>
         <Button Content="Отмена"  Width="100" Height="25" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="537,482,0,0"/>

@@ -249,29 +249,37 @@ namespace PAPIRUS_WPF.Dialog
 
         private bool SaveData()
         {
-            bool f = false;
-            int i = 0;
-            el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
-            int index = listOfElements.FindIndex(x => x.element.name == el.name);
-            listOfElements[index].parameters.Clear();
-            if (el.parameters.Count() != 0)
+            if (listOfElements.Count == 0)
             {
-                foreach (DataGridElements element in datagridelements)
-                {
-                    var x = dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]) as TextBlock;
-
-                    if (string.IsNullOrEmpty(x.Text))
-                    {
-                        f = false;
-                        break;
-                    }
-                    else f = true;
-                    element.columnValue = x.Text;
-                    i++;
-                    listOfElements[index].parameters.Add(element);
-                }
+                return false;
             }
-            return f;
+            else
+            {
+
+                bool f = false;
+                int i = 0;
+                el = elementsList.Find(x => x.name == listBox.SelectedItem.ToString());
+                int index = listOfElements.FindIndex(x => x.element.name == el.name);
+                listOfElements[index].parameters.Clear();
+                if (el.parameters.Count() != 0)
+                {
+                    foreach (DataGridElements element in datagridelements)
+                    {
+                        var x = dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]) as TextBlock;
+
+                        if (string.IsNullOrEmpty(x.Text))
+                        {
+                            f = false;
+                            break;
+                        }
+                        else f = true;
+                        element.columnValue = x.Text;
+                        i++;
+                        listOfElements[index].parameters.Add(element);
+                    }
+                }
+                return f;
+            }
         }
 
         private void SaveData(Element elem)

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PAPIRUS_WPF.Dialog"
         mc:Ignorable="d"
-        Title="Выберете тип многополюсника" Height="250" Width="250" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+        Title="N-полюсник" Height="250" Width="250" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Grid>
         <RadioButton x:Name="btn_12" Content="12 полюсник" HorizontalAlignment="Left" Margin="80,20,0,0" VerticalAlignment="Top"/>
         <RadioButton x:Name="btn_14" Content="14 полюсник" HorizontalAlignment="Left" Margin="80,40,0,0" VerticalAlignment="Top"/>

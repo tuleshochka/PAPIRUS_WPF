@@ -76,6 +76,7 @@ namespace PAPIRUS_WPF
                         text.Cursor = Cursors.Arrow;
                         text.Focusable = false;
                         text.Background = Brushes.Transparent;
+                        text.Foreground = Brushes.Blue;
                         text.Text = i + 1.ToString();
                         (window as MainWindow).CircuitCanvas.Children.Add(text);
                         Canvas.SetLeft(text, Math.Abs(p.X));

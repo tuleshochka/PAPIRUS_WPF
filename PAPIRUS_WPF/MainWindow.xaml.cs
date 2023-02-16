@@ -270,7 +270,7 @@ namespace PAPIRUS_WPF
             {
                 RemoveWire(wire);
             }
-            for (int i = 0;i< element.connectedElements.Count();i++)
+            for (int i = 0; i < element.connectedElements.Count(); i++)
             {
                 Object obj = element.connectedElements[i];
                 obj.connectedElements.Remove(element);
@@ -345,73 +345,87 @@ namespace PAPIRUS_WPF
             if (e.ChangedButton == MouseButton.Left)
             {
 
-                foreach (var box in Data.outputNumber)
+
+                if (Data.visibleBool == true)
                 {
-                    if (box is TextBox)
+                    foreach (var box in Data.outputNumber)
                     {
-                        CircuitCanvas.Children.Remove((TextBox)box);
-                    }
+                        if (box is TextBox)
+                        {
+                            CircuitCanvas.Children.Remove((TextBox)box);
+                        }
 
+                    }
+                    foreach (Object el in CircuitCanvas.Children.OfType<Object>())
+                    {
+                        if (!(el is generator))
+                        {
+                            Object _ = (Object)el.Resources["DataSource"];
+                            _.DefaultNumberVisible = Visibility.Visible;
+                        }
+                    } 
+                    Data.visibleBool = false;
                 }
+               
 
-                    Source = e.Source as FrameworkElement;
-                    startObject = e.Source as Object;
-                    //Do a hit test under the mouse position
-                    HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
-                    //If the mouse has hit a border
-                    if (result.VisualHit is Border)
+                Source = e.Source as FrameworkElement;
+                startObject = e.Source as Object;
+                //Do a hit test under the mouse position
+                HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
+                //If the mouse has hit a border
+                if (result.VisualHit is Border)
+                {
+                    //Get the parent class of the border
+                    Border border = (Border)result.VisualHit;
+                    var IO = border.Parent;
+
+                    //If the parent class is an Output
+                    if (IO is Output)
                     {
-                        //Get the parent class of the border
-                        Border border = (Border)result.VisualHit;
-                        var IO = border.Parent;
-
-                        //If the parent class is an Output
-                        if (IO is Output)
+                        if (startObject is generator || startObject.generatorConnected == true)
                         {
-                            if (startObject is generator || startObject.generatorConnected == true)
-                            {
-                                generatorConnect = true;
-                            }
-                            //Cast to output
-                            Output IOOutput = (Output)IO;
-                            startPoint = e.GetPosition(CircuitCanvas);
-                            //Get the center of the output relative to the canvas
-                            Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
-
-                            //Creates a new line
-                            _linkingStarted = true;
-                            _tempLink = new Line();
-                            _tempLink.X1 = position.X;
-                            _tempLink.Y1 = position.Y;
-                            _tempLink.X2 = position.X;
-                            _tempLink.Y2 = position.Y;
-                            _tempLink.Stroke = Brushes.Black;
-                            _tempLink.StrokeThickness = 1;
-
-                            CircuitCanvas.Children.Add(_tempLink);
-
-                            //Assign the temporary output to the current output
-                            _tempOutput = (Output)IO;
-                            if (_tempOutput.isLinked())
-                            {
-                                CircuitCanvas.Children.Remove(_tempLink);
-                                return;
-                            }
-
-                            e.Handled = true;
+                            generatorConnect = true;
                         }
+                        //Cast to output
+                        Output IOOutput = (Output)IO;
+                        startPoint = e.GetPosition(CircuitCanvas);
+                        //Get the center of the output relative to the canvas
+                        Point position = IOOutput.TransformToAncestor(CircuitCanvas).Transform(new Point(IOOutput.ActualWidth / 2, IOOutput.ActualHeight / 2));
+
+                        //Creates a new line
+                        _linkingStarted = true;
+                        _tempLink = new Line();
+                        _tempLink.X1 = position.X;
+                        _tempLink.Y1 = position.Y;
+                        _tempLink.X2 = position.X;
+                        _tempLink.Y2 = position.Y;
+                        _tempLink.Stroke = Brushes.Black;
+                        _tempLink.StrokeThickness = 1;
+
+                        CircuitCanvas.Children.Add(_tempLink);
+
+                        //Assign the temporary output to the current output
+                        _tempOutput = (Output)IO;
+                        if (_tempOutput.isLinked())
+                        {
+                            CircuitCanvas.Children.Remove(_tempLink);
+                            return;
+                        }
+
+                        e.Handled = true;
                     }
-                    else if (!(result.VisualHit is Border))
+                }
+                else if (!(result.VisualHit is Border))
+                {
+                    MousePosition = e.GetPosition(CircuitCanvas);
+                    Keys = Keyboard.Modifiers;
+                    ClickTimer.Stop();
+                    ClickCounter++;
+                    if (e.Source as FrameworkElement is Canvas)
                     {
-                        MousePosition = e.GetPosition(CircuitCanvas);
-                        Keys = Keyboard.Modifiers;
-                        ClickTimer.Stop();
-                        ClickCounter++;
-                        if (e.Source as FrameworkElement is Canvas)
-                        {
-                            ClearSelection();
-                            StartAreaSelection(MousePosition);
-                        }
+                        ClearSelection();
+                        StartAreaSelection(MousePosition);
+                    }
 
                     else if (startObject != null && ClickCounter == 2)
                     {
@@ -792,7 +806,7 @@ namespace PAPIRUS_WPF
             }
             if (!(instance is generator))
             {
-                
+
                 Data.elements.Add(instance);
 
             }

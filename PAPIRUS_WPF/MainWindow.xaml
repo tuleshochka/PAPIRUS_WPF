@@ -7,9 +7,9 @@
         xmlns:Elements="clr-namespace:PAPIRUS_WPF.Elements" x:Class="PAPIRUS_WPF.MainWindow"
         x:Name="Form"
         mc:Ignorable="d"
-        Title="MainWindow" Height="495" Width="805"
+        Title="ПАПИРУС" Height="495" Width="805"
         ResizeMode="CanResizeWithGrip"
-        MinWidth="480" MinHeight="300"
+        MinWidth="495" MinHeight="400"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True" KeyDown="Form_KeyDown" MouseDown="Form_MouseDown">
 

@@ -22,7 +22,7 @@ namespace PAPIRUS_WPF
         public static List<Line> selectedWires = new List<Line>();
         public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();
         public static Object multiPole;
-
+        public static bool visibleBool = false;
 
         //---------для GeneratorDialog-------------//
         public static List<Limits> dataLimits = new List<Limits>();  //

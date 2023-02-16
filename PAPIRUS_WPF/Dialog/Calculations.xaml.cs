@@ -1,21 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using static AngouriMath.Entity;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Window = System.Windows.Window;
 using Matrix = PAPIRUS_WPF.Models.Matrix;
-using System.Drawing.Drawing2D;
 using LiveCharts.Defaults;
 using PAPIRUS_WPF.Elements;
 using System.Numerics;
@@ -47,6 +34,7 @@ namespace PAPIRUS_WPF.Dialog
                     _.DefaultNumberVisible = Visibility.Hidden;
                 }
             }
+            Data.visibleBool = true;
 
         }
 
@@ -65,14 +53,16 @@ namespace PAPIRUS_WPF.Dialog
                         try
                         {
                             matrix = calculation.CalculateTotal(Data.elements);
+                            SMatrix dialog = new SMatrix(matrix);
+                            this.Close();
+                            dialog.ShowDialog();
                         }
                         catch (Exception exception)
                         {
                             MessageBox.Show(exception.Message);
                             this.Close();
                         }
-                        SMatrix dialog = new SMatrix(matrix);
-                        dialog.ShowDialog();
+                        
                     }
                     catch (Exception b)
                     { MessageBox.Show(b.Message); }
@@ -93,7 +83,9 @@ namespace PAPIRUS_WPF.Dialog
                 {
                     MessageBox.Show(exception.Message);
                     this.Close();
+                    return;
                 }
+                
 
                 int dotsNum;
                 int.TryParse(DotsNumber.Text, out dotsNum);
@@ -120,8 +112,10 @@ namespace PAPIRUS_WPF.Dialog
                     {
                         x = i;
                         Entity entity = tempY.Substitute("f", x);
-                        Complex complex = (Complex)entity.EvalNumerical();
-                        y1 = Math.Sqrt(Math.Pow(complex.Real, 2) + Math.Pow(complex.Imaginary, 2));
+                        try 
+                        {
+                            Complex complex = (Complex)entity.EvalNumerical();
+                            y1 = Math.Sqrt(Math.Pow(complex.Real, 2) + Math.Pow(complex.Imaginary, 2));
                         if (complex.Real > 0)
                         {
                             if (complex.Imaginary >= 0) y2 = Math.Atan2(complex.Imaginary, complex.Real);
@@ -138,6 +132,14 @@ namespace PAPIRUS_WPF.Dialog
                             else if (complex.Imaginary < 0) y2 = (3 * Math.PI) / 2;
 
                         }
+                        }
+                        catch(Exception) 
+                        {
+                            MessageBox.Show("Произошла ошибка при вычислениях");
+                            return;
+                        }
+                        
+                        
                         frec.Add(new ObservablePoint(x, y1));
 
                         //------------------------ФЧХ------------------------------//
@@ -146,6 +148,7 @@ namespace PAPIRUS_WPF.Dialog
                    
                 }
                 Graphic calc = new Graphic(frec, phase);
+                this.Close();
                 calc.ShowDialog();
             }
         }
@@ -153,14 +156,7 @@ namespace PAPIRUS_WPF.Dialog
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-        foreach (Object el in (window as MainWindow).CircuitCanvas.Children.OfType<Object>())
-        {
-            if (!(el is generator))
-            {
-                Object _ = (Object)el.Resources["DataSource"];
-                _.DefaultNumberVisible = Visibility.Visible;
-            }
-        }
+        
     }
 
     private void RadioButtonViaMatrix_Checked(object sender, RoutedEventArgs e)
