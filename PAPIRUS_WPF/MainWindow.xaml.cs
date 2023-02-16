@@ -94,7 +94,6 @@ namespace PAPIRUS_WPF
             CircuitCanvas.MouseUp += CircuitCanvas_MouseUp;
 
         }
-        public delegate System.Windows.Media.HitTestResultBehavior HitTestResultCallbak(HitTestResult result);
 
 
         private void SetElementName(Object instance)
@@ -270,7 +269,7 @@ namespace PAPIRUS_WPF
             {
                 RemoveWire(wire);
             }
-            for (int i = 0; i < element.connectedElements.Count(); i++)
+            for (int i = 0;i< element.connectedElements.Count();i++)
             {
                 Object obj = element.connectedElements[i];
                 obj.connectedElements.Remove(element);
@@ -535,6 +534,7 @@ namespace PAPIRUS_WPF
                     var mouse = e.GetPosition(element);
                     center.X = mousePos.X - mouse.X;
                     center.Y = mousePos.Y - mouse.Y;
+
                     foreach (Line attachedLine in _attachedInputLines)
                     {
                         Point endPoint = new Point(attachedLine.X2, attachedLine.Y2);
@@ -561,6 +561,7 @@ namespace PAPIRUS_WPF
                     }
                     element.anchorPoint.X = p2.X - element.Width / 2;
                     element.anchorPoint.Y = p2.Y - element.Height / 2;
+
                 }
             }
             if (selectionMoving)
@@ -926,6 +927,243 @@ namespace PAPIRUS_WPF
             Calculations calc = new Calculations();
             calc.ShowDialog();
 
+        }
+
+
+
+        private void SetElementName(Object instance)
+        {
+            if (instance is generator)
+            {
+                instance.name = "Г-" + num;
+            }
+            else
+            {
+                instance.name = "Эл-" + num;
+            }
+            num++;
+        }
+
+        //--------Selection-------//
+        private void ClearSelection()
+        {
+            foreach (FrameworkElement object_ in CircuitCanvas.Children)
+            {
+                if (object_ is Object)
+                {
+                    Object o = (Object)object_;
+                    o.isSelected = false;
+                    o.BorderBrush = Brushes.Transparent;
+                }
+                else if (object_ is Line)
+                {
+                    Line line = (Line)object_;
+                    line.Stroke = System.Windows.Media.Brushes.Black;
+                }
+            }
+            Data.selection.Clear();
+            Data.selectedWires.Clear();
+        }
+
+        private void SingleElementSelect(FrameworkElement element)
+        {
+            if (element is Object)
+            {
+                Object obj = element as Object;
+                obj.BorderBrush = Brushes.Magenta;
+                p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), obj);
+                obj.anchorPoint.X = p2.X - obj.Width / 2;
+                obj.anchorPoint.Y = p2.Y - obj.Height / 2;
+                Data.selection.Add(obj);
+                startPoint = MousePosition;
+                obj.startPoint = p2;
+                obj.isSelected = true;
+            }
+            else if (element is Line)
+            {
+                Line line = (Line)element;
+                line.Stroke = Brushes.Magenta;
+                Data.selectedWires.Add(line);
+            }
+        }
+
+        private void StartAreaSelection(Point point)
+        {
+            selectionStartPoint = point;
+            markerGlyph = (Rectangle)Application.LoadComponent(new Uri(SymbolShape.SelectionMarker, UriKind.Relative));
+            PositionGlyph(point);
+            if (selectionLayer == null)
+            {
+                selectionLayer = new Canvas()
+                {
+                    RenderTransform = moveVector = new TranslateTransform()
+                };
+                Panel.SetZIndex(selectionLayer, int.MaxValue);
+            }
+            if (this.selectionLayer.Parent != CircuitCanvas)
+            {
+                CircuitCanvas.Children.Add(this.selectionLayer);
+            }
+            CircuitCanvas.Children.Add(markerGlyph);
+            StartMove(point);
+        }
+
+        private void StartMove(Point startpoint)
+        {
+            selectionMoving = true;
+            Mouse.Capture(CircuitCanvas, CaptureMode.Element);
+            moveStart = startpoint;
+            maxMove = new Point(0, 0);
+            Rect bound = new Rect(Canvas.GetLeft(markerGlyph), Canvas.GetTop(markerGlyph), markerGlyph.Width, markerGlyph.Height);
+        }
+
+        private void PositionGlyph(Point point)
+        {
+            Rect rect = new Rect(selectionStartPoint, point);
+            Canvas.SetLeft(markerGlyph, rect.X);
+            Canvas.SetTop(markerGlyph, rect.Y);
+            markerGlyph.Width = rect.Width;
+            markerGlyph.Height = rect.Height;
+        }
+
+        private Point MoveLine(Point PointToMove, double AmountToMoveX, double AmountToMoveY)
+        {
+            Point transformedPoint = new Point();
+            transformedPoint.X = PointToMove.X + AmountToMoveX;
+            transformedPoint.Y = PointToMove.Y + AmountToMoveY;
+            return transformedPoint;
+        }
+
+        private void SetGeneratorConnection(Object startObject)
+        {
+            foreach (Object obj in startObject.connectedElements)
+            {
+                if (obj.generatorConnected == false)
+                {
+                    obj.generatorConnected = true;
+                    if (obj.connectedElements.Count() > 1)
+                    {
+                        SetGeneratorConnection(obj);
+                    }
+                }
+            }
+        }
+
+        private void RemoveGeneratorConnection(Object startObject)
+        {
+            foreach (Object obj in startObject.connectedElements)
+            {
+                if (obj.generatorConnected == true)
+                {
+                    if (!(IsGeneratorConnected(obj, startObject)) || startObject is generator)
+                    {
+                        obj.generatorConnected = false;
+                        if (obj.connectedElements.Count() > 1)
+                        {
+                            RemoveGeneratorConnection(obj);
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool IsGeneratorConnected(Object _object, Object startObject)
+        {
+            var generator = _object.connectedElements.Where(o => o is generator);
+            if (generator.Count() > 0)
+            {
+                return true;
+            }
+            else
+            {
+                var connected = _object.connectedElements.Where(o => o != startObject);
+                foreach (Object obj in connected)
+                {
+                    if (IsGeneratorConnected(obj, _object))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        private void RemoveElement(Object element)
+        {
+            if (element.generatorConnected == true)
+            {
+                RemoveGeneratorConnection(element);
+            }
+            _attachedInputLines = element.GetInputLine();
+            foreach (var wire in _attachedInputLines)
+            {
+                RemoveWire(wire);
+            }
+            _attachedOutputLines = element.GetOutputLine();
+            foreach (var wire in _attachedOutputLines)
+            {
+                RemoveWire(wire);
+            }
+            for (int i = 0; i < element.connectedElements.Count(); i++)
+            {
+                Object obj = element.connectedElements[i];
+                obj.connectedElements.Remove(element);
+            }
+            CircuitCanvas.Children.Remove(element);
+            Data.elements.Remove(element);
+        }
+
+        private void RemoveWire(Line wire)
+        {
+            Point startpoint = new Point(wire.X1, wire.Y1);
+            Point endpoint = new Point(wire.X2, wire.Y2);
+
+            //Move the link endpoint to the current location of the mouse
+            if ((wire.X2 - wire.X1) > 0 && (wire.Y2 - wire.Y1) > 0)
+            {
+                startpoint = new Point(wire.X1 - 1, wire.Y1 - 1);
+                endpoint = new Point(wire.X2 + 1, wire.Y2 + 1);
+            }
+            if ((wire.X2 - wire.X1) < 0 && (wire.Y2 - wire.Y1) < 0)
+            {
+                startpoint = new Point(wire.X1 + 1, wire.Y1 + 1);
+                endpoint = new Point(wire.X2 - 1, wire.Y2 - 1);
+            }
+            if ((wire.X2 - wire.X1) < 0 && (wire.Y2 - wire.Y1) > 0)
+            {
+                startpoint = new Point(wire.X1 + 1, wire.Y1 - 1);
+                endpoint = new Point(wire.X2 - 1, wire.Y2 + 1);
+            }
+            if ((wire.X2 - wire.X1) > 0 && (wire.Y2 - wire.Y1) < 0)
+            {
+                startpoint = new Point(wire.X1 - 1, wire.Y1 + 1);
+                endpoint = new Point(wire.X2 + 1, wire.Y2 - 1);
+            }
+
+            HitTestResult startResult = VisualTreeHelper.HitTest(CircuitCanvas, startpoint);
+            HitTestResult endResult = VisualTreeHelper.HitTest(CircuitCanvas, endpoint);
+            //If the underlying element is a border element
+            if (startResult.VisualHit is Border)
+            {
+                Border border = (Border)startResult.VisualHit;
+                var IO = border.Parent;
+                if (IO is Output)
+                {
+                    Output IOOutput = IO as Output;
+                    IOOutput.DeleteLink();
+                }
+            }
+            if (endResult.VisualHit is Border)
+            {
+                Border border = (Border)endResult.VisualHit;
+                var IO = border.Parent;
+                if (IO is Output)
+                {
+                    Output IOOutput = IO as Output;
+                    IOOutput.DeleteLink();
+                }
+            }
+            CircuitCanvas.Children.Remove(wire);
         }
     }
 }

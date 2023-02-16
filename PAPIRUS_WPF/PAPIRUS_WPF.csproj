@@ -146,6 +146,7 @@
     <Compile Include="Dialog\multi_pole_select.xaml.cs">
       <DependentUpon>multi_pole_select.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DMatrixCalculation.cs" />
     <Compile Include="DoublyLinkedList\DoublyLinkedList.cs" />
     <Compile Include="DoublyLinkedList\DoublyNode.cs" />
     <Compile Include="Elements\fourteen_pole.xaml.cs">

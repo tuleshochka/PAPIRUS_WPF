@@ -30,6 +30,7 @@ namespace PAPIRUS_WPF
         public static double lowerLimit = 0;
         public static double upperLimit = 10;
         public static double specificFrequency = 1;
+        public static double reflectionCoef = 1;
 
 
 

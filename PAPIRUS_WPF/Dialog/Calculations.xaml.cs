@@ -68,6 +68,25 @@ namespace PAPIRUS_WPF.Dialog
                     { MessageBox.Show(b.Message); }
 
                 }
+                else if (RadioButtonDMatrix.IsChecked == true)
+                {
+                    SMatrixCalculation calculation = new SMatrixCalculation();
+                    DMatrixCalculation Dcalc = new DMatrixCalculation();
+                    Matrix matrix = null;
+                    Matrix DMatrix = null;
+                    try
+                    {
+                        matrix = calculation.CalculateTotal(Data.elements);
+                        DMatrix = Dcalc.Calculate(matrix);
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message);
+                        this.Close();
+                    }
+                    SMatrix dialog = new SMatrix(DMatrix);
+                    dialog.ShowDialog();
+                }
             }
             else
             {
