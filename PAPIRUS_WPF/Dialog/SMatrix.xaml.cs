@@ -89,7 +89,7 @@ namespace PAPIRUS_WPF.Dialog
                     else
                     {
                         MessageBox.Show("Произошла ошибка в вычислениях");
-                        return;
+                        this.Close();
                     }
                     if (complex.Imaginary == 0)
                     {
