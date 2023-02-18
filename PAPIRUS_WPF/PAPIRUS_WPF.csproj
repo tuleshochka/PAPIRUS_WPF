@@ -107,7 +107,7 @@
     </Reference>
     <Reference Include="WPF_SHF_Element_lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\projects VScode\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
+      <HintPath>..\..\WPF_SHF_Element_lib\WPF_SHF_Element_lib\bin\Debug\WPF_SHF_Element_lib.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock, Version=4.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Extended.Wpf.Toolkit.4.5.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>

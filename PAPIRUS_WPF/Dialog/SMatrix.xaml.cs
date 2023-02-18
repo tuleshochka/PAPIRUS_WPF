@@ -81,7 +81,16 @@ namespace PAPIRUS_WPF.Dialog
                 {
                     Console.WriteLine(matrix[i, j]);
                     Entity temp = matrix[i, j].Substitute("f", Data.specificFrequency);
-                    Complex complex = (Complex)temp.EvalNumerical();
+                    Complex complex = Complex.Zero;
+                    if (temp.EvaluableNumerical)
+                    {
+                        complex = (Complex)temp.EvalNumerical();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Произошла ошибка в вычислениях");
+                        return;
+                    }
                     if (complex.Imaginary == 0)
                     {
                         Entity expr = complex.Real;
