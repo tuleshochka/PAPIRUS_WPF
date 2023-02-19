@@ -186,7 +186,6 @@ namespace PAPIRUS_WPF.Dialog
                         try
                         {
                             matrix = calculation.Calculate(el, datagridelements);
-                            Console.WriteLine(matrix[0, 0].ToString());
                         }
                         catch (Exception exception)
                         {
@@ -213,8 +212,15 @@ namespace PAPIRUS_WPF.Dialog
                         MessageBox.Show(exception.Message);
                         this.Close();
                     }
-                    SMatrix dialog = new SMatrix(matrix);
-                    dialog.ShowDialog();
+                    try
+                    {
+                        SMatrix dialog = new SMatrix(matrix);
+                        dialog.ShowDialog();
+                    }
+                    catch(Exception exp)
+                    {
+                        MessageBox.Show(exp.Message);
+                    }
                 }
             }
         }

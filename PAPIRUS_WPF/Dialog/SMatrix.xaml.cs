@@ -35,7 +35,7 @@ namespace PAPIRUS_WPF.Dialog
     /// </summary>
     public partial class SMatrix : System.Windows.Window
     {
-       
+
         CultureInfo culture = new CultureInfo("en");
         System.Windows.Forms.Integration.WindowsFormsHost host =
         new System.Windows.Forms.Integration.WindowsFormsHost();
@@ -46,7 +46,7 @@ namespace PAPIRUS_WPF.Dialog
             {"+-","-"},
             {"--","+"},
         };
- 
+
         public SMatrix(Matrix matrix)
         {
             InitializeComponent();
@@ -57,7 +57,7 @@ namespace PAPIRUS_WPF.Dialog
             // Add the interop host control to the Grid
             // control's collection of child controls.
             this.grid.Children.Add(host);
-            dataGridView.RowCount = matrix.M+1;
+            dataGridView.RowCount = matrix.M + 1;
             dataGridView.ColumnCount = matrix.N;
             dataGridView.BackgroundColor = System.Drawing.Color.White;
             for (int i = 0; i < dataGridView.RowCount; i++)
@@ -73,72 +73,82 @@ namespace PAPIRUS_WPF.Dialog
                 dataGridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
             dataGridView.AllowUserToAddRows = false;
-            Console.WriteLine(matrix.M);
+            
             //-----------------ОТОБРАЖЕНИЕ МАТРИЦЫ-----------------//
             for (int i = 0; i < matrix.M; i++)
             {
                 for (int j = 0; j < matrix.N; j++)
                 {
-                    Console.WriteLine(matrix[i, j]);
-                    Entity temp = matrix[i, j].Substitute("f", Data.specificFrequency);
-                    Complex complex = Complex.Zero;
-                    if (temp.EvaluableNumerical)
+                    if (matrix[i, j] == null)
                     {
-                        complex = (Complex)temp.EvalNumerical();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Произошла ошибка в вычислениях");
+                        return;
                         this.Close();
-                    }
-                    if (complex.Imaginary == 0)
-                    {
-                        Entity expr = complex.Real;
-                        if ((Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) <= 0.01 && Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 0 && (double)expr.EvalNumerical() != 0) || Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 1000)
-                        {
-                            dataGridView.Rows[i].Cells[j].Value = String.Format("{0:0.###E+0}", ((double)expr.EvalNumerical()).ToString());
-                        }
-                        else
-                        {
-                            dataGridView.Rows[i].Cells[j].Value = (Math.Round((double)expr.EvalNumerical(), 3)).ToString();
-                        }
+                        throw new Exception("Произошла ошибка в вычислениях");
                     }
                     else
                     {
-                        string sigh = "+";
-                        switch (Math.Sign(complex.Imaginary))
+                        Entity temp = matrix[i, j].Substitute("f", Data.specificFrequency);
+                        Complex complex = Complex.Zero;
+                        if (temp.EvaluableNumerical)
                         {
-                            case -1:
-                                sigh = "";
-                                break;
-                            case 1:
-                                sigh = "+";
-                                break;
-                            case 0:
-                                sigh = "+";
-                                break;
-                        }
-                        string real = null, imaginary = null;
-
-                        if ((Math.Abs(Math.Round(complex.Real, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Real, 3)) >= 0 && complex.Real != 0) || Math.Abs(Math.Round(complex.Real, 3)) >= 1000)
-                        {
-
-                            real = String.Format("{0:0.###E+0}", complex.Real);
+                            complex = (Complex)temp.EvalNumerical();
                         }
                         else
                         {
-                            real = (Math.Round(complex.Real, 3)).ToString();
+                            return;
+                            this.Close();
+                            throw new Exception("Произошла ошибка в вычислениях");
                         }
-                        if ((Math.Abs(Math.Round(complex.Imaginary, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Imaginary, 3)) >= 0 && complex.Imaginary != 0) || Math.Abs(Math.Round(complex.Imaginary, 3)) >= 1000)
+                        if (complex.Imaginary == 0)
                         {
-                            imaginary = String.Format("{0:0.###E+0}", complex.Imaginary);
+                            Entity expr = complex.Real;
+                            if ((Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) <= 0.01 && Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 0 && (double)expr.EvalNumerical() != 0) || Math.Abs(Math.Round((double)expr.EvalNumerical(), 3)) >= 1000)
+                            {
+                                dataGridView.Rows[i].Cells[j].Value = String.Format("{0:0.###E+0}", ((double)expr.EvalNumerical()).ToString());
+                            }
+                            else
+                            {
+                                dataGridView.Rows[i].Cells[j].Value = (Math.Round((double)expr.EvalNumerical(), 3)).ToString();
+                            }
                         }
                         else
                         {
-                            imaginary = (Math.Round(complex.Imaginary, 3)).ToString();
+                            string sigh = "+";
+                            switch (Math.Sign(complex.Imaginary))
+                            {
+                                case -1:
+                                    sigh = "";
+                                    break;
+                                case 1:
+                                    sigh = "+";
+                                    break;
+                                case 0:
+                                    sigh = "+";
+                                    break;
+                            }
+                            string real = null, imaginary = null;
+
+                            if ((Math.Abs(Math.Round(complex.Real, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Real, 3)) >= 0 && complex.Real != 0) || Math.Abs(Math.Round(complex.Real, 3)) >= 1000)
+                            {
+
+                                real = String.Format("{0:0.###E+0}", complex.Real);
+                            }
+                            else
+                            {
+                                real = (Math.Round(complex.Real, 3)).ToString();
+                            }
+                            if ((Math.Abs(Math.Round(complex.Imaginary, 3)) <= 0.01 && Math.Abs(Math.Round(complex.Imaginary, 3)) >= 0 && complex.Imaginary != 0) || Math.Abs(Math.Round(complex.Imaginary, 3)) >= 1000)
+                            {
+                                imaginary = String.Format("{0:0.###E+0}", complex.Imaginary);
+                            }
+                            else
+                            {
+                                imaginary = (Math.Round(complex.Imaginary, 3)).ToString();
+                            }
+                            dataGridView.Rows[i].Cells[j].Value = real + "" + sigh + imaginary + "i";
                         }
-                        dataGridView.Rows[i].Cells[j].Value = real + "" + sigh + imaginary + "i";
                     }
+
                 }
 
             }
@@ -148,7 +158,7 @@ namespace PAPIRUS_WPF.Dialog
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            
+
         }
     }
 }

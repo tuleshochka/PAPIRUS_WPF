@@ -44,7 +44,7 @@ namespace PAPIRUS_WPF
             List<int> connected = new List<int>();
             int i = 0;
 
-            if (elements.Count == 0) 
+            if (elements.Count == 0)
             {
                 throw new Exception("Нет элементов на схеме");
             }
@@ -55,7 +55,7 @@ namespace PAPIRUS_WPF
                 {
                     _object.FillME();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     throw new Exception(e.Message);
                 }
@@ -64,13 +64,13 @@ namespace PAPIRUS_WPF
                 foreach (Output output in _object.GetOutputs())
                 {
                     j = _object.GetOutputs().FindIndex(x => x == output);
-                    if (!(output.isLinked()))  
+                    if (!(output.isLinked()))
                     {
-                        
+
                         Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
                         p.Y = p.Y - output.Height / 2;
                         TextBox text = new TextBox();
-                        
+
                         text.BorderThickness = new Thickness(0);
                         text.IsReadOnly = true;
                         text.Cursor = Cursors.Arrow;
@@ -83,7 +83,7 @@ namespace PAPIRUS_WPF
                         Canvas.SetTop(text, Math.Abs(p.Y));
                         text.Margin = new Thickness(-20, 0, 0, 0);
                         Data.outputNumber.Add(text);
-                        
+
                         free.Add(i);
                         output.index = i;
                         for (int k = 0; k < _object.matrix.N; k++)
@@ -103,13 +103,13 @@ namespace PAPIRUS_WPF
                 int number = _object.group;
                 int j = 0;
                 foreach (Output output in _object.GetOutputs())
-                    
+
                 {
                     j = _object.GetOutputs().FindIndex(x => x == output);
                     if (output.isLinked()) //тут надо вставлять текст блоки
                     {
                         connected.Add(i);
-                        (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0),output);
+                        (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
                         output.index = i;
                         for (int k = 0; k < _object.matrix.N; k++)
                         {
@@ -162,7 +162,7 @@ namespace PAPIRUS_WPF
             }
             int q = 0, w = 0;
             Console.WriteLine("AB matrix:");
-            if (connected.Count >0)
+            if (connected.Count > 0)
             {
                 for (int n = 0; n < free.Count; n++)
                 {
@@ -263,7 +263,7 @@ namespace PAPIRUS_WPF
             return totalMatrix;
         }
 
-            Dictionary<string, string> operators = new Dictionary<string, string>()
+        Dictionary<string, string> operators = new Dictionary<string, string>()
         {
             {"+-","-"},
             {"--","+"},
@@ -273,10 +273,6 @@ namespace PAPIRUS_WPF
 
         public Matrix Calculate(Element element, List<DataGridElements> dataGridElements)
         {
-            foreach(DataGridElements e in dataGridElements)
-            {
-                Console.WriteLine(e.columnValue);
-            }
 
             Element tempElement = (Element)element.Clone();
             int number = element.group;
@@ -301,6 +297,13 @@ namespace PAPIRUS_WPF
             {
                 throw new Exception(e.Message);
             }
+            for (int i = 0; i < matrix.M; i++)
+            {
+                for (int j = 0; j < matrix.N; j++)
+                {
+                    Console.WriteLine("matrix " + i + "," + j + " = " + matrix[i, j].ToString());
+                }
+            }
             return matrix;
         }
 
@@ -324,9 +327,9 @@ namespace PAPIRUS_WPF
                     {
                         temp = OptimizeFinalString(temp.Replace(element.parameters[j].paramColumn, (dataGridElements.Find(x => x.columnParam == element.parameters[j].paramColumn + " (" + element.parameters[j].unitColumn + ")").columnValue)));
                         Entity expr = temp;
-                        if(temp.Contains("f"))
+                        if (temp.Contains("f"))
                         {
-                            if(!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
+                            if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))) && !(element.other_par.Any(x => temp.Contains(x.headerColumn))))
                             {
                                 try
                                 {
@@ -336,9 +339,10 @@ namespace PAPIRUS_WPF
                                 {
                                     throw new Exception(e.Message);
                                 }
+                                break;
                             }
                         }
-                        else if(expr.EvaluableNumerical)
+                        else if (expr.EvaluableNumerical)
                         {
                             try
                             {
@@ -348,11 +352,10 @@ namespace PAPIRUS_WPF
                             {
                                 throw new Exception(e.Message);
                             }
+                            break;
                         }
-                        else
-                        {
-                            element.other_par[i].formulaColumn = temp;
-                        }
+
+                        element.other_par[i].formulaColumn = temp;
                     }
                 }
             }
@@ -371,7 +374,7 @@ namespace PAPIRUS_WPF
                         Entity expr = temp;
                         if (temp.Contains("f"))
                         {
-                            if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
+                            if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))) && !(element.other_par.Any(x => temp.Contains(x.headerColumn))))
                             {
                                 try
                                 {
@@ -381,6 +384,7 @@ namespace PAPIRUS_WPF
                                 {
                                     throw new Exception(e.Message);
                                 }
+                                break;
                             }
                         }
                         else if (expr.EvaluableNumerical)
@@ -393,11 +397,11 @@ namespace PAPIRUS_WPF
                             {
                                 throw new Exception(e.Message);
                             }
+                            break;
                         }
-                        else
-                        {
-                            element.other_par[i].formulaColumn = element.other_par[i].formulaColumn.Replace(value.headerColumn, value.formulaColumn);
-                        }
+
+                        element.other_par[i].formulaColumn = temp;
+
                     }
                 }
             }
@@ -427,18 +431,18 @@ namespace PAPIRUS_WPF
                     {
                         throw new Exception(e.Message);
                     }
-                     
+
                     if ((element.parameters.Count()) != 0)
                     {
-                        
+
                         for (int k = 0; k < element.parameters.Count(); k++)
                         {
                             temp = OptimizeFinalString(temp.Replace(element.parameters[k].paramColumn, (dataGridElements.Find(x => x.columnParam == element.parameters[k].paramColumn + " (" + element.parameters[k].unitColumn + ")").columnValue).ToString()));
-                            
+
                             Entity expr = temp;
                             if (temp.Contains("f"))
                             {
-                                if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
+                                if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))) && !(element.other_par.Any(x => temp.Contains(x.headerColumn))))
                                 {
                                     try
                                     {
@@ -448,6 +452,7 @@ namespace PAPIRUS_WPF
                                     {
                                         throw new Exception(e.Message);
                                     }
+                                    break;
                                 }
                             }
 
@@ -461,11 +466,9 @@ namespace PAPIRUS_WPF
                                 {
                                     throw new Exception(e.Message);
                                 }
+                                break;
                             }
-                            else
-                            {
-                                element.matrix[a].element = temp;
-                            }
+                            element.matrix[a].element = temp;
                         }
                     }
                     if (element.other_par.Count() != 0)
@@ -476,7 +479,7 @@ namespace PAPIRUS_WPF
                             Entity expr = temp;
                             if (temp.Contains("f"))
                             {
-                                if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))))
+                                if (!(element.parameters.Any(x => temp.Contains(x.paramColumn))) && !(element.other_par.Any(x => temp.Contains(x.headerColumn))))
                                 {
                                     try
                                     {
@@ -486,6 +489,7 @@ namespace PAPIRUS_WPF
                                     {
                                         throw new Exception(e.Message);
                                     }
+                                    break;
                                 }
                             }
 
@@ -499,11 +503,10 @@ namespace PAPIRUS_WPF
                                 {
                                     throw new Exception(e.Message);
                                 }
+                                break;
                             }
-                            else
-                            {
-                                element.matrix[a].element = temp;
-                            }
+                            element.matrix[a].element = temp;
+
                         }
                     }
                     a++;
@@ -517,7 +520,7 @@ namespace PAPIRUS_WPF
 
         private Element IntermediateValuesEvalNumerical(Element element, Entity expr, int i)
         {
-            if(expr.EvaluableNumerical)
+            if (expr.EvaluableNumerical)
             {
                 Complex complex = (Complex)expr.EvalNumerical();
                 if (complex.Real is double.NaN || complex.Imaginary is double.NaN)
@@ -614,7 +617,7 @@ namespace PAPIRUS_WPF
             return temp;
         }
 
-        
+
     }
 
 }
