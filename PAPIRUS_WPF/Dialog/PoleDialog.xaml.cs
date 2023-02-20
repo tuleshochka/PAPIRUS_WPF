@@ -276,7 +276,7 @@ namespace PAPIRUS_WPF.Dialog
                 {
                     foreach (DataGridElements element in datagridelements)
                     {
-                        Console.WriteLine(dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]));
+                       
                         var x = dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]) as TextBlock;
 
                         if (string.IsNullOrEmpty(x.Text))
