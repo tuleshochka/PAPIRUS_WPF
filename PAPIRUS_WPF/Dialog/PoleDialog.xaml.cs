@@ -284,6 +284,10 @@ namespace PAPIRUS_WPF.Dialog
                         listOfElements[index].parameters.Add(element);
                     }
                 }
+                else
+                {
+                    return true;
+                }
                 return f;
             }
         }
