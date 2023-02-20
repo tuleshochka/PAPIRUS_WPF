@@ -53,6 +53,8 @@ namespace PAPIRUS_WPF.Dialog
         {
             listOfElements = new List<PoleInsideElementsAndParams>();
             InitializeComponent();
+            dataGrid.EnableColumnVirtualization = false;
+            dataGrid.EnableRowVirtualization = false;
             _object = _element;
             generatorConnected = _element.generatorConnected;
             listBox.SelectedIndex = 0;
@@ -85,6 +87,7 @@ namespace PAPIRUS_WPF.Dialog
                 }
                 el = _object.insideElement;
                 int index = listOfElements.FindIndex(x => x.element.name == el.name);
+               
                 foreach (DataGridElements element in _object.insideParams[index].parameters)
                 {
                     datagridelements.Add(element);
@@ -227,6 +230,7 @@ namespace PAPIRUS_WPF.Dialog
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
+           
             if (!SaveData()) { MessageBox.Show("Введены не все параметры"); }
             else
             {
@@ -255,6 +259,7 @@ namespace PAPIRUS_WPF.Dialog
 
         private bool SaveData()
         {
+
             if (listOfElements.Count == 0)
             {
                 return false;
@@ -271,6 +276,7 @@ namespace PAPIRUS_WPF.Dialog
                 {
                     foreach (DataGridElements element in datagridelements)
                     {
+                        Console.WriteLine(dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]));
                         var x = dataGrid.Columns[1].GetCellContent(dataGrid.Items[i]) as TextBlock;
 
                         if (string.IsNullOrEmpty(x.Text))
@@ -281,8 +287,13 @@ namespace PAPIRUS_WPF.Dialog
                         else f = true;
                         element.columnValue = x.Text;
                         i++;
+                        Console.WriteLine(i);
                         listOfElements[index].parameters.Add(element);
                     }
+                }
+                else
+                {
+                    return true;
                 }
                 return f;
             }

@@ -3,9 +3,6 @@ using PAPIRUS_WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
 using WPF_SHF_Element_lib;
@@ -297,13 +294,7 @@ namespace PAPIRUS_WPF
             {
                 throw new Exception(e.Message);
             }
-            for (int i = 0; i < matrix.M; i++)
-            {
-                for (int j = 0; j < matrix.N; j++)
-                {
-                    Console.WriteLine("matrix " + i + "," + j + " = " + matrix[i, j].ToString());
-                }
-            }
+            
             return matrix;
         }
 
@@ -416,8 +407,18 @@ namespace PAPIRUS_WPF
         private Matrix CalculateMatrix(Element element, List<DataGridElements> dataGridElements)
         {
             int number = element.group;
-            Matrix matrix = new Matrix(number, number);
+            Matrix matrix = new Matrix(number, number); 
             int a = 0;
+            for (int i = 0; i < matrix.N; i++)
+            {
+                for (int j = 0; j < matrix.M; j++)
+                {
+                    matrix[i,j] = element.matrix[a].element;
+                    a++;
+                }
+            
+            }
+            a = 0;
             for (int i = 0; i < number; i++)
             {
                 for (int j = 0; j < number; j++)

@@ -66,3 +66,40 @@
                 
                 CircuitCanvas.Children.Remove(MovingElement);
             }
+
+
+
+            if (inDrag)
+            {
+
+                var mousePos = e.GetPosition(CircuitCanvas);
+                double left = mousePos.X - (MovingElement.ActualWidth/ 2);
+                double top = mousePos.Y - (MovingElement.ActualHeight / 2);
+                Canvas.SetLeft(MovingElement, left);
+                Canvas.SetTop(MovingElement, top);
+                p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), MovingElement);
+                _attachedInputLines = MovingElement.GetInputLine();
+                var mouse = e.GetPosition(MovingElement);
+                center.X = mousePos.X - mouse.X;
+                center.Y = mousePos.Y - mouse.Y;
+                //center = new Point(targetPoints.X - obj.ActualWidth / 2, targetPoints.Y - obj.ActualHeight / 2);
+                foreach (LineGeometry attachedLine in _attachedInputLines)
+                {
+                    attachedLine.EndPoint = MoveLine(attachedLine.EndPoint,
+                                                    (center.X + MovingElement.Width / 2 + _anchorPoint.X),
+                                                  (center.Y + MovingElement.Height / 2 + _anchorPoint.Y));
+
+                }
+
+                _attachedOutputLines = MovingElement.GetOutputLine();
+                //Transform the attached line if its an output (uses StartPoint)
+                foreach (LineGeometry attachedLine in _attachedOutputLines)
+                {
+                    attachedLine.StartPoint = MoveLine(attachedLine.StartPoint,
+                                                     (Math.Abs(center.X + MovingElement.Width / 2) + _anchorPoint.X),
+                                                    (Math.Abs(center.Y + MovingElement.Height / 2) + _anchorPoint.Y));
+                }
+                _anchorPoint = mousePos;
+                _anchorPoint.X = p2.X - MovingElement.Width / 2;
+                _anchorPoint.Y = p2.Y - MovingElement.Height / 2;
+            }
