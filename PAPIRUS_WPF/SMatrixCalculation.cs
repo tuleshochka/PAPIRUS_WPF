@@ -65,9 +65,9 @@ namespace PAPIRUS_WPF
                     {
 
                         Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
-                        p.Y = p.Y - output.Height / 2;
+                        //p.Y = p.Y - output.Height / 2;
                         TextBox text = new TextBox();
-
+                        // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom   outPos
                         text.BorderThickness = new Thickness(0);
                         text.IsReadOnly = true;
                         text.Cursor = Cursors.Arrow;
@@ -76,9 +76,33 @@ namespace PAPIRUS_WPF
                         text.Foreground = Brushes.Blue;
                         text.Text = i + 1.ToString();
                         (window as MainWindow).CircuitCanvas.Children.Add(text);
-                        Canvas.SetLeft(text, Math.Abs(p.X));
-                        Canvas.SetTop(text, Math.Abs(p.Y));
-                        text.Margin = new Thickness(-20, 0, 0, 0);
+                        if (output.outPos == 0) //Left
+                        {
+                            Canvas.SetLeft(text, Math.Abs(p.X));
+                            Canvas.SetTop(text, Math.Abs(p.Y)); 
+                            text.Margin = new Thickness(-20, -4, 0, 0);
+                        }
+                        else if (output.outPos == 1) //Right
+                        {
+                            Canvas.SetLeft(text, Math.Abs(p.X));
+                            Canvas.SetTop(text, Math.Abs(p.Y));
+                            text.Margin = new Thickness(10, -4, 0, 0);
+                        }
+                        else if (output.outPos == 2) //Top
+                        {
+                            Canvas.SetLeft(text, Math.Abs(p.X));
+                            Canvas.SetTop(text, Math.Abs(p.Y));
+                            text.Margin = new Thickness(-4, -20, 0, 0);
+                        }
+                        else if (output.outPos == 3) //Bottom
+                        {
+                            Canvas.SetLeft(text, Math.Abs(p.X));
+                            Canvas.SetTop(text, Math.Abs(p.Y));
+                            text.Margin = new Thickness(-4, 10, 0, 0);
+                        }
+                        else { }
+                        
+                        
                         Data.outputNumber.Add(text);
 
                         free.Add(i);
