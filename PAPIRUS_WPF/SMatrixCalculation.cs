@@ -74,7 +74,7 @@ namespace PAPIRUS_WPF
                         text.Focusable = false;
                         text.Background = Brushes.Transparent;
                         text.Foreground = Brushes.Blue;
-                        text.Text = i + 1.ToString();
+                        text.Text = (i + 1).ToString();
                         (window as MainWindow).CircuitCanvas.Children.Add(text);
                         if (output.outPos == 0) //Left
                         {
