@@ -304,6 +304,10 @@ namespace PAPIRUS_WPF
                 {
                     tempElement = CalculateIntermediateValues_params(tempElement, dataGridElements);
                     tempElement = CalculateIntermediateValues_cycle(tempElement);
+                    for (int i = 0; i < tempElement.other_par.Count; i++)
+                    {
+                        Console.WriteLine(tempElement.other_par[i].headerColumn +" = " + tempElement.other_par[i].formulaColumn);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -421,7 +425,7 @@ namespace PAPIRUS_WPF
                 }
             }
 
-            if (element.other_par.Exists(x => element.parameters.Any(y => x.formulaColumn.Contains(y.paramColumn))))
+            if (element.other_par.Exists(x => element.parameters.Any(y => x.formulaColumn.Contains(y.paramColumn))) || element.other_par.Exists(x => element.other_par.Any(y => x.formulaColumn.Contains(y.headerColumn))))
             {
                 CalculateIntermediateValues_cycle(element);
             }

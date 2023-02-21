@@ -81,8 +81,6 @@ namespace PAPIRUS_WPF.Dialog
                 {
                     if (matrix[i, j] == null)
                     {
-                        return;
-                        this.Close();
                         throw new Exception("Произошла ошибка в вычислениях");
                     }
                     else
@@ -95,8 +93,6 @@ namespace PAPIRUS_WPF.Dialog
                         }
                         else
                         {
-                            return;
-                            this.Close();
                             throw new Exception("Произошла ошибка в вычислениях");
                         }
                         if (complex.Imaginary == 0)
