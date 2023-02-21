@@ -7,11 +7,11 @@
         xmlns:Elements="clr-namespace:PAPIRUS_WPF.Elements" x:Class="PAPIRUS_WPF.MainWindow"
         x:Name="Form"
         mc:Ignorable="d"
-        Title="ПАПИРУС" Height="495" Width="805"
+        Title="ПАПИРУС" Height="500" Width="812"
         ResizeMode="CanResizeWithGrip"
-        MinWidth="495" MinHeight="400"
+        MinWidth="812" MinHeight="500"
         UseLayoutRounding="True"
-        SnapsToDevicePixels="True" KeyDown="Form_KeyDown" MouseDown="Form_MouseDown">
+        SnapsToDevicePixels="True" KeyDown="Form_KeyDown">
 
 
     <Grid RenderTransformOrigin="0.5,0.5">
@@ -27,15 +27,15 @@
         </Grid.ColumnDefinitions>
         <Menu Padding="3,1" Background="Transparent"  Grid.Column="0" Grid.ColumnSpan="2" Height="24" VerticalAlignment="Center">
             <MenuItem Header="Файл">
-                <MenuItem Header="Файл"/>
+                <MenuItem Header="Сохранить как" Click="SaveAs_Click_"/>
             </MenuItem>
             <MenuItem Header="Правка"/>
             <MenuItem Header="Расчёты">
-                <MenuItem Header="Вычисления" Click="MenuItem_Click"/>
+                <MenuItem Header="Вычисления" Click="Calculactions_Click"/>
             </MenuItem>
             <MenuItem Header="Библиотека">
-                <MenuItem Header="Добавить элемент" Click="Button_Click"/>
-                <MenuItem Header="Удалить элемент" Click="MenuItem_Click_1"/>
+                <MenuItem Header="Добавить элемент" Click="AddElement_Click"/>
+                <MenuItem Header="Удалить элемент" Click="RemoveElement_Click_1"/>
             </MenuItem>
             <MenuItem Header="Справка"/>
         </Menu>

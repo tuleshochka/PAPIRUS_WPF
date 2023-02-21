@@ -608,12 +608,6 @@ namespace PAPIRUS_WPF
             return zoom.Value;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
-            window1.ShowDialog();
-        }
-
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
 
@@ -675,24 +669,28 @@ namespace PAPIRUS_WPF
             }
         }
 
-        private void Form_MouseDown(object sender, MouseButtonEventArgs e)
+        private void SaveAs_Click_(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        private void Calculactions_Click(object sender, RoutedEventArgs e)
+        {
+            Calculations calc = new Calculations();
+            calc.ShowDialog();
+        }
+
+        private void AddElement_Click(object sender, RoutedEventArgs e)
+        {
+            WPF_SHF_Element_lib.Window1 window1 = new WPF_SHF_Element_lib.Window1();
+            window1.ShowDialog();
+        }
+
+        private void RemoveElement_Click_1(object sender, RoutedEventArgs e)
         {
             WPF_SHF_Element_lib.Window4 window4 = new WPF_SHF_Element_lib.Window4();
             window4.ShowDialog();
         }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Calculations calc = new Calculations();
-            calc.ShowDialog();
-
-        }
-
 
 
         private void SetElementName(Object instance)

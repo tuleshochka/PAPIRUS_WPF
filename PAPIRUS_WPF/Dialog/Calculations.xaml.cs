@@ -61,6 +61,7 @@ namespace PAPIRUS_WPF.Dialog
                         {
                             MessageBox.Show(exception.Message);
                             this.Close();
+                            return;
                         }
 
                     }
@@ -77,13 +78,14 @@ namespace PAPIRUS_WPF.Dialog
                     try
                     {
                         matrix = calculation.CalculateTotal(Data.elements);
-                        DMatrix = Dcalc.Calculate(matrix);
                     }
                     catch (Exception exception)
                     {
                         MessageBox.Show(exception.Message);
                         this.Close();
+                        return;
                     }
+                    DMatrix = Dcalc.Calculate(matrix);
                     SMatrix dialog = new SMatrix(DMatrix);
                     dialog.ShowDialog();
                 }
@@ -121,6 +123,7 @@ namespace PAPIRUS_WPF.Dialog
                     {
                         MessageBox.Show(exception.Message);
                         this.Close();
+                        return;
                     }
                     DrawGraphic(DMatrix);
                 }
