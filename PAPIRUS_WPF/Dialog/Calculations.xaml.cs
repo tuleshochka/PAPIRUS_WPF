@@ -188,8 +188,6 @@ namespace PAPIRUS_WPF.Dialog
                         MessageBox.Show("Произошла ошибка при вычислениях");
                         return;
                     }
-
-
                     frec.Add(new ObservablePoint(x, y1));
 
                     //------------------------ФЧХ------------------------------//
