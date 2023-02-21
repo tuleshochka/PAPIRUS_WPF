@@ -31,7 +31,7 @@ namespace PAPIRUS_WPF.Dialog
     public class PoleInsideElementsAndParams
     {
         public Element element { get; set; }
-        public List<DataGridElements> parameters = new List<DataGridElements>();
+        public List<DataGridElements> parameters { get; set; }
     }
 
     public partial class PoleDialog : Window
@@ -66,7 +66,7 @@ namespace PAPIRUS_WPF.Dialog
                 elementsList = JsonSerializer.Deserialize<List<Element>>(jsonString);
                 foreach (Element element in elementsList)
                 {
-                    listOfElements.Add(new PoleInsideElementsAndParams { element = element });
+                    listOfElements.Add(new PoleInsideElementsAndParams { element = element, parameters = new List<DataGridElements>() });
                 }
                 poleNum = _element.group;
             }

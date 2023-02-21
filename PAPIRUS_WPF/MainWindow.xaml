@@ -27,6 +27,9 @@
         </Grid.ColumnDefinitions>
         <Menu Padding="3,1" Background="Transparent"  Grid.Column="0" Grid.ColumnSpan="2" Height="24" VerticalAlignment="Center">
             <MenuItem Header="Файл">
+                <MenuItem Header="Создать"/>
+                <MenuItem Header="Открыть"/>
+                <MenuItem Header="Сохранить"/>
                 <MenuItem Header="Сохранить как" Click="SaveAs_Click_"/>
             </MenuItem>
             <MenuItem Header="Правка"/>

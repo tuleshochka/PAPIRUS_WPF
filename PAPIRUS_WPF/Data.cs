@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using PAPIRUS_WPF.Elements;
 
 namespace PAPIRUS_WPF
 {
@@ -23,6 +24,7 @@ namespace PAPIRUS_WPF
         public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();
         public static Object multiPole;
         public static bool visibleBool = false;
+        public static List<Output> outputs = new List<Output>();
 
         //---------для GeneratorDialog-------------//
         public static List<Limits> dataLimits = new List<Limits>();  //

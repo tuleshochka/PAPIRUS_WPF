@@ -29,6 +29,7 @@ namespace PAPIRUS_WPF.Elements
         public event StateChangedHandler StateChanged;
         public delegate void StateChangeHandler();
         public delegate void StateChangedHandler();
+        public int id;
         public Output _state_;
         public int index;
         public int outPos;  // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom

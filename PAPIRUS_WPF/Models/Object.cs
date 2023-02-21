@@ -65,6 +65,8 @@ namespace PAPIRUS_WPF
             return listOfOutput;
         }
 
+        public Point coordinates { get; set; }
+
         public virtual int group { get; set; }
 
         public Matrix matrix;
@@ -83,7 +85,7 @@ namespace PAPIRUS_WPF
 
 
         //---------сохраненный элемент-----------//
-        public Element insideElement;
+        public Element insideElement { get; set; }
 
         //------сохраненные параметры-------------//
         public List<PoleInsideElementsAndParams> insideParams = new List<PoleInsideElementsAndParams>();

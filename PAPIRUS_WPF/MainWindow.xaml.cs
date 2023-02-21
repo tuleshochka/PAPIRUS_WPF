@@ -1,10 +1,15 @@
-﻿using PAPIRUS_WPF.Dialog;
+﻿using Microsoft.Win32;
+using PAPIRUS_WPF.Dialog;
 using PAPIRUS_WPF.Elements;
 using PAPIRUS_WPF.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Timers;
 using System.Windows;
 using System.Windows.Automation.Peers;
@@ -14,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using TextBox = System.Windows.Controls.TextBox;
 using Window = System.Windows.Window;
 
@@ -30,6 +36,7 @@ namespace PAPIRUS_WPF
         private string fileName;
 
         private int num = 1;  //для счета количества элементов на canvas
+        private int numOutput = 1;
 
         //The boolean that signifys when an output is being linked
         private bool _linkingStarted = false;
@@ -126,10 +133,10 @@ namespace PAPIRUS_WPF
                             Object _ = (Object)el.Resources["DataSource"];
                             _.DefaultNumberVisible = Visibility.Visible;
                         }
-                    } 
+                    }
                     Data.visibleBool = false;
                 }
-               
+
 
                 Source = e.Source as FrameworkElement;
                 startObject = e.Source as Object;
@@ -469,6 +476,7 @@ namespace PAPIRUS_WPF
                 {
                     p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
                     element.startPoint = p2;
+                    element.coordinates = p2;
                 }
             }
             if (selectionMoving)
@@ -546,6 +554,8 @@ namespace PAPIRUS_WPF
             if (instance == null)
                 return;
 
+            Point p = new Point();
+
             if (instance is twentyfour_pole)
             {
                 multi_pole_select multi_Pole_Select = new multi_pole_select();
@@ -555,7 +565,7 @@ namespace PAPIRUS_WPF
                 {
                     SetElementName(instance);
                     CircuitCanvas.Children.Add(instance);
-                    Point p = e.GetPosition(CircuitCanvas);
+                    p = e.GetPosition(CircuitCanvas);
                     Canvas.SetLeft(instance, p.X - instance.Width / 2);
                     Canvas.SetTop(instance, p.Y - instance.Height / 2);
                 }
@@ -565,15 +575,21 @@ namespace PAPIRUS_WPF
             {
                 SetElementName(instance);
                 CircuitCanvas.Children.Add(instance);
-                Point p = e.GetPosition(CircuitCanvas);
+                p = e.GetPosition(CircuitCanvas);
                 Canvas.SetLeft(instance, p.X - instance.Width / 2);
                 Canvas.SetTop(instance, p.Y - instance.Height / 2);
             }
+            instance.coordinates = p;
+            List<Output> outputList = instance.GetOutputs();
+            for (int i = 0; i < outputList.Count; i++)
+            {
+                outputList[i].id = numOutput;
+                Data.outputs.Add(outputList[i]);
+                numOutput++;
+            }
             if (!(instance is generator))
             {
-
                 Data.elements.Add(instance);
-
             }
         }
 
@@ -671,7 +687,73 @@ namespace PAPIRUS_WPF
 
         private void SaveAs_Click_(object sender, RoutedEventArgs e)
         {
+            var options = new JsonSerializerOptions()
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                AllowTrailingCommas = true,
+                WriteIndented = true
+            };
 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Schema files (*.shm)|*.shm";
+
+            List<SaveModel> saveModels = new List<SaveModel>();
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                if (!File.Exists(saveFileDialog.FileName))
+                {
+                    List<Object> objects = CircuitCanvas.Children.OfType<Object>().ToList();
+                    for (int i = 0; i < objects.Count(); i++)
+                    {
+                        saveModels.Add(new SaveModel());
+
+                        saveModels[i].name = objects[i].name;
+                        saveModels[i].group = objects[i].group;
+                        saveModels[i].coordinates = objects[i].coordinates;
+                        if (objects[i].insideElement == null)
+                            saveModels[i].insideElement = null;
+                        else saveModels[i].insideElement = objects[i].insideElement.name;
+                        int a = 0;
+                        for(int j = 0; j< objects[i].insideParams.Count;j++)
+                        {
+                            bool f = false;
+                            for(int n = 0; n< objects[i].insideParams[j].parameters.Count;n++)
+                            {
+                                if (!(string.IsNullOrEmpty(objects[i].insideParams[j].parameters[n].columnValue)))
+                                {
+                                    f = true;
+                                    break;
+                                }
+                            }
+                            if (!f) continue;
+                            saveModels[i].insideParams.Add(new PoleInsideElementsAndParams_Save());
+                            saveModels[i].insideParams[a].element = objects[i].insideParams[j].element.name;
+                            saveModels[i].insideParams[a].parameters = objects[i].insideParams[j].parameters;
+                            a++;
+                        }
+
+                        List<Output> outputs = objects[i].GetOutputs();
+
+                        for (int j = 0; j < outputs.Count(); j++)
+                        {
+                            saveModels[i].listOfOutput.Add(new SaveOutput());
+                            if (outputs[j]._state_ == null)
+                                saveModels[i].listOfOutput[j].stateId = 0;
+                            else
+                                saveModels[i].listOfOutput[j].stateId = outputs[j]._state_.id;
+
+                            saveModels[i].listOfOutput[j].id = outputs[j].id;
+                            saveModels[i].listOfOutput[j].outPos = outputs[j].outPos;
+                            
+                        }
+                        //saveModels[i]._attachedInputLines = objects[i]._attachedInputLines;
+                        //saveModels[i]._attachedOutputLines = objects[i]._attachedOutputLines;
+                    }
+
+                    File.WriteAllText(saveFileDialog.FileName, JsonSerializer.Serialize(saveModels, options));
+                }
+            }
         }
 
         private void Calculactions_Click(object sender, RoutedEventArgs e)
@@ -870,6 +952,10 @@ namespace PAPIRUS_WPF
             {
                 Object obj = element.connectedElements[i];
                 obj.connectedElements.Remove(element);
+            }
+            for(int i = 0; i < element.GetOutputs().Count; i++)
+            {
+                Data.outputs.Remove(element.GetOutputs()[i]);
             }
             CircuitCanvas.Children.Remove(element);
             Data.elements.Remove(element);
