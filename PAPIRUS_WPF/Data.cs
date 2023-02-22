@@ -21,7 +21,6 @@ namespace PAPIRUS_WPF
         public static List<Object> elements;
         public static List<Object> selection = new List<Object>();
         public static List<Line> selectedWires = new List<Line>();
-        public static Stack<FrameworkElement> undo = new Stack<FrameworkElement>();
         public static Object multiPole;
         public static bool visibleBool = false;
         public static List<Output> outputs = new List<Output>();
@@ -35,6 +34,17 @@ namespace PAPIRUS_WPF
         public static double reflectionCoef = 1;
 
 
+
+        public static void ClearAll()
+        { 
+            outputNumber.Clear();
+            elements.Clear();
+            selection.Clear();
+            selectedWires.Clear();
+            dataLimits.Clear();
+            dataSpecifics.Clear();
+            outputs.Clear();
+        }
 
         //----------найти родительский элемент-------------//
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject

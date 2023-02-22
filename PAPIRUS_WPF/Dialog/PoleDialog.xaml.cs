@@ -79,6 +79,7 @@ namespace PAPIRUS_WPF.Dialog
             listBox.ItemsSource = listOfElements.Select(x => x.element.name);
             if (_object.insideElement != null)
             {
+                
                 listOfElements.Clear();
                 datagridelements.Clear();
                 int a = 0;
@@ -110,6 +111,7 @@ namespace PAPIRUS_WPF.Dialog
                     datagridelements.Add(element);
                 }
                 listBox.SelectedItem = el.name;
+                listBox.ScrollIntoView(listBox.SelectedItem);
                 dataGrid.ItemsSource = datagridelements;
             }
             else

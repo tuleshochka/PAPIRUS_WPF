@@ -18,6 +18,8 @@ namespace PAPIRUS_WPF.Models
         public Point coordinates { get; set; }
         public string insideElement { get; set; }
         public bool generatorConnected { get; set; }
+        public List<string> matrix { get; set; }
+
 
         //------сохраненные параметры-------------//
         public List<PoleInsideElementsAndParams_Save> insideParams { get; set; }
@@ -28,6 +30,7 @@ namespace PAPIRUS_WPF.Models
         {
             insideParams = new List<PoleInsideElementsAndParams_Save>();
             listOfOutput = new List<SaveOutput>();
+            matrix = new List<string>();
         }
     }
 

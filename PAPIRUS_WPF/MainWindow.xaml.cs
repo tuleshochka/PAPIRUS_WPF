@@ -718,13 +718,14 @@ namespace PAPIRUS_WPF
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Schema files (*.shm)|*.shm";
 
-            if(openFileDialog.ShowDialog()==true)
+            if (openFileDialog.ShowDialog() == true)
             {
                 CircuitCanvas.Children.Clear();
+                Data.ClearAll();
                 var jsonData = File.ReadAllText(openFileDialog.FileName);
                 var saveModels = JsonSerializer.Deserialize<List<SaveModel>>(jsonData) ?? new List<SaveModel>();
 
-                for(int i = 0; i < saveModels.Count; i++)
+                for (int i = 0; i < saveModels.Count; i++)
                 {
                     var model = saveModels[i];
                     Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(model.model);
@@ -745,9 +746,39 @@ namespace PAPIRUS_WPF
                         });
                     }
 
-                        Canvas.SetLeft(instance, model.coordinates.X);
-                        Canvas.SetTop(instance, model.coordinates.Y);
-                        CircuitCanvas.Children.Add(instance);
+                    instance.coordinates = model.coordinates;
+                    int a = 0;
+                    if (model.matrix.Count != 0)
+                    {
+                        int number = model.matrix.Count;
+                        number = (int)Math.Sqrt(number);
+                        Console.WriteLine(number);
+                        instance.matrix = new Models.Matrix(number, number);
+                        for (int j = 0; j < instance.matrix.M; j++)
+                        {
+                            for (int k = 0; k < instance.matrix.N; k++)
+                            {
+                                instance.matrix[j, k] = model.matrix[a];
+                                Console.WriteLine(instance.matrix[j, k]);
+                                a++;
+                            }
+                        }
+                    }
+
+                    Canvas.SetLeft(instance, model.coordinates.X);
+                    Canvas.SetTop(instance, model.coordinates.Y);
+                    CircuitCanvas.Children.Add(instance);
+                    if (!(instance is generator))
+                    {
+                        List<Output> outputList = instance.GetOutputs();
+                        for (int j = 0; j < outputList.Count; j++)
+                        {
+                            outputList[i].id = numOutput;
+                            Data.outputs.Add(outputList[i]);
+                            numOutput++;
+                        }
+                        Data.elements.Add(instance);
+                    }
                 }
             }
         }
@@ -785,21 +816,35 @@ namespace PAPIRUS_WPF
                     saveModels[i].insideParams[a].parameters = objects[i].insideParams[j].parameters;
                     a++;
                 }
+                if (objects[i].matrix != null)
+                {
+                    for (int j = 0; j < objects[i].matrix.M; j++)
+                    {
+                        for (int n = 0; n < objects[i].matrix.N; n++)
+                        {
+                            saveModels[i].matrix.Add(objects[i].matrix[j, n].ToString());
+                        }
+                    }
+                }
 
                 List<Output> outputs = objects[i].GetOutputs();
 
-                for (int j = 0; j < outputs.Count(); j++)
+                if (!(objects[i] is generator))
                 {
-                    saveModels[i].listOfOutput.Add(new SaveOutput());
-                    if (outputs[j]._state_ == null)
-                        saveModels[i].listOfOutput[j].stateId = 0;
-                    else
-                        saveModels[i].listOfOutput[j].stateId = outputs[j]._state_.id;
+                    for (int j = 0; j < outputs.Count(); j++)
+                    {
+                        saveModels[i].listOfOutput.Add(new SaveOutput());
+                        if (outputs[j]._state_ == null)
+                            saveModels[i].listOfOutput[j].stateId = 0;
+                        else
+                            saveModels[i].listOfOutput[j].stateId = outputs[j]._state_.id;
 
-                    saveModels[i].listOfOutput[j].id = outputs[j].id;
-                    saveModels[i].listOfOutput[j].outPos = outputs[j].outPos;
+                        saveModels[i].listOfOutput[j].id = outputs[j].id;
+                        saveModels[i].listOfOutput[j].outPos = outputs[j].outPos;
 
+                    }
                 }
+               
             }
             return saveModels;
         }
@@ -1001,10 +1046,14 @@ namespace PAPIRUS_WPF
                 Object obj = element.connectedElements[i];
                 obj.connectedElements.Remove(element);
             }
-            for (int i = 0; i < element.GetOutputs().Count; i++)
+            if(!(element is generator))
             {
-                Data.outputs.Remove(element.GetOutputs()[i]);
+                for (int i = 0; i < element.GetOutputs().Count; i++)
+                {
+                    Data.outputs.Remove(element.GetOutputs()[i]);
+                }
             }
+            
             CircuitCanvas.Children.Remove(element);
             Data.elements.Remove(element);
         }
