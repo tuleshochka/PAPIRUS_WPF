@@ -14,6 +14,7 @@ namespace PAPIRUS_WPF.Models
     {
         public string name { get; set; }
         public int group { get; set; }
+        public string model { get; set; }
         public Point coordinates { get; set; }
         public string insideElement { get; set; }
         public bool generatorConnected { get; set; }

@@ -27,6 +27,13 @@ namespace PAPIRUS_WPF.Models
             this.matrix = matrix;
         }
 
+        public Element()
+        {
+            parameters = new CloneableList<DataGrid1_Parameters>();
+            other_par = new CloneableList<DataGrid1_Elements>();
+            matrix = new CloneableList<MatrixElements>();
+        }
+
         public object Clone()
         {
             DataGrid1_Parameters[] par = new DataGrid1_Parameters[parameters.Count];

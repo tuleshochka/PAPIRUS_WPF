@@ -81,12 +81,29 @@ namespace PAPIRUS_WPF.Dialog
             {
                 listOfElements.Clear();
                 datagridelements.Clear();
-                foreach (PoleInsideElementsAndParams element in _object.insideParams)
+                int a = 0;
+
+                for(int i = 0; i<elementsList.Count;i++)
                 {
-                    listOfElements.Add(element);
+                    if (a!= _object.insideParams.Count && _object.insideParams[a].element.name == elementsList[i].name)
+                    {
+                        Element element = elementsList.Find(x => x.name == _object.insideParams[a].element.name);
+                        _object.insideParams[a].element = element;
+                        listOfElements.Add(_object.insideParams[a]);
+                        a++;
+                    }
+                    else
+                    {
+                        listOfElements.Add(new PoleInsideElementsAndParams { element = elementsList[i], parameters = new List<DataGridElements>() });
+                    }
                 }
-                el = _object.insideElement;
-                int index = listOfElements.FindIndex(x => x.element.name == el.name);
+
+                //foreach (PoleInsideElementsAndParams element in _object.insideParams)
+                //{
+                //    listOfElements.Add(element);
+                //}
+                el = elementsList.Find(x=> x.name == _object.insideElement.name);
+                int index = _object.insideParams.FindIndex(x => x.element.name == el.name);
                
                 foreach (DataGridElements element in _object.insideParams[index].parameters)
                 {

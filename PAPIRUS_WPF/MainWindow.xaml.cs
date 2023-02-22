@@ -475,6 +475,8 @@ namespace PAPIRUS_WPF
                 foreach (Object element in Data.selection)
                 {
                     p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
+                    p2.X = Math.Abs(p2.X);
+                    p2.Y = Math.Abs(p2.Y);
                     element.startPoint = p2;
                     element.coordinates = p2;
                 }
@@ -549,6 +551,7 @@ namespace PAPIRUS_WPF
 
             string ItemType = allFormats[0];
             //Create a new type of the format
+            Console.WriteLine(ItemType);
             Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
 
             if (instance == null)
@@ -580,15 +583,15 @@ namespace PAPIRUS_WPF
                 Canvas.SetTop(instance, p.Y - instance.Height / 2);
             }
             instance.coordinates = p;
-            List<Output> outputList = instance.GetOutputs();
-            for (int i = 0; i < outputList.Count; i++)
-            {
-                outputList[i].id = numOutput;
-                Data.outputs.Add(outputList[i]);
-                numOutput++;
-            }
             if (!(instance is generator))
             {
+                List<Output> outputList = instance.GetOutputs();
+                for (int i = 0; i < outputList.Count; i++)
+                {
+                    outputList[i].id = numOutput;
+                    Data.outputs.Add(outputList[i]);
+                    numOutput++;
+                }
                 Data.elements.Add(instance);
             }
         }
@@ -697,63 +700,108 @@ namespace PAPIRUS_WPF
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Schema files (*.shm)|*.shm";
 
-            List<SaveModel> saveModels = new List<SaveModel>();
-
             if (saveFileDialog.ShowDialog() == true)
             {
-                if (!File.Exists(saveFileDialog.FileName))
+                File.WriteAllText(saveFileDialog.FileName, JsonSerializer.Serialize(Save(), options));
+            }
+        }
+
+        private void Open_Click(object sender, RoutedEventArgs e)
+        {
+            var options = new JsonSerializerOptions()
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                AllowTrailingCommas = true,
+                WriteIndented = true
+            };
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Schema files (*.shm)|*.shm";
+
+            if(openFileDialog.ShowDialog()==true)
+            {
+                CircuitCanvas.Children.Clear();
+                var jsonData = File.ReadAllText(openFileDialog.FileName);
+                var saveModels = JsonSerializer.Deserialize<List<SaveModel>>(jsonData) ?? new List<SaveModel>();
+
+                for(int i = 0; i < saveModels.Count; i++)
                 {
-                    List<Object> objects = CircuitCanvas.Children.OfType<Object>().ToList();
-                    for (int i = 0; i < objects.Count(); i++)
+                    var model = saveModels[i];
+                    Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(model.model);
+                    instance.name = model.name;
+                    instance.group = model.group;
+                    if (!(model.insideElement is null))
                     {
-                        saveModels.Add(new SaveModel());
-
-                        saveModels[i].name = objects[i].name;
-                        saveModels[i].group = objects[i].group;
-                        saveModels[i].coordinates = objects[i].coordinates;
-                        if (objects[i].insideElement == null)
-                            saveModels[i].insideElement = null;
-                        else saveModels[i].insideElement = objects[i].insideElement.name;
-                        int a = 0;
-                        for(int j = 0; j< objects[i].insideParams.Count;j++)
-                        {
-                            bool f = false;
-                            for(int n = 0; n< objects[i].insideParams[j].parameters.Count;n++)
-                            {
-                                if (!(string.IsNullOrEmpty(objects[i].insideParams[j].parameters[n].columnValue)))
-                                {
-                                    f = true;
-                                    break;
-                                }
-                            }
-                            if (!f) continue;
-                            saveModels[i].insideParams.Add(new PoleInsideElementsAndParams_Save());
-                            saveModels[i].insideParams[a].element = objects[i].insideParams[j].element.name;
-                            saveModels[i].insideParams[a].parameters = objects[i].insideParams[j].parameters;
-                            a++;
-                        }
-
-                        List<Output> outputs = objects[i].GetOutputs();
-
-                        for (int j = 0; j < outputs.Count(); j++)
-                        {
-                            saveModels[i].listOfOutput.Add(new SaveOutput());
-                            if (outputs[j]._state_ == null)
-                                saveModels[i].listOfOutput[j].stateId = 0;
-                            else
-                                saveModels[i].listOfOutput[j].stateId = outputs[j]._state_.id;
-
-                            saveModels[i].listOfOutput[j].id = outputs[j].id;
-                            saveModels[i].listOfOutput[j].outPos = outputs[j].outPos;
-                            
-                        }
-                        //saveModels[i]._attachedInputLines = objects[i]._attachedInputLines;
-                        //saveModels[i]._attachedOutputLines = objects[i]._attachedOutputLines;
+                        instance.insideElement = new Element();
+                        instance.insideElement.name = model.insideElement;
                     }
 
-                    File.WriteAllText(saveFileDialog.FileName, JsonSerializer.Serialize(saveModels, options));
+                    for (int j = 0; j < model.insideParams.Count; j++)
+                    {
+                        instance.insideParams.Add(new PoleInsideElementsAndParams
+                        {
+                            element = new Element { name = model.insideParams[j].element },
+                            parameters = model.insideParams[j].parameters
+                        });
+                    }
+
+                        Canvas.SetLeft(instance, model.coordinates.X);
+                        Canvas.SetTop(instance, model.coordinates.Y);
+                        CircuitCanvas.Children.Add(instance);
                 }
             }
+        }
+
+        private List<SaveModel> Save()
+        {
+            List<SaveModel> saveModels = new List<SaveModel>();
+            List<Object> objects = CircuitCanvas.Children.OfType<Object>().ToList();
+            for (int i = 0; i < objects.Count(); i++)
+            {
+                saveModels.Add(new SaveModel());
+
+                saveModels[i].name = objects[i].name;
+                saveModels[i].model = objects[i].GetType().ToString();
+                saveModels[i].group = objects[i].group;
+                saveModels[i].coordinates = objects[i].coordinates;
+                if (objects[i].insideElement == null)
+                    saveModels[i].insideElement = null;
+                else saveModels[i].insideElement = objects[i].insideElement.name;
+                int a = 0;
+                for (int j = 0; j < objects[i].insideParams.Count; j++)
+                {
+                    bool f = false;
+                    for (int n = 0; n < objects[i].insideParams[j].parameters.Count; n++)
+                    {
+                        if (!(string.IsNullOrEmpty(objects[i].insideParams[j].parameters[n].columnValue)))
+                        {
+                            f = true;
+                            break;
+                        }
+                    }
+                    if (!f) continue;
+                    saveModels[i].insideParams.Add(new PoleInsideElementsAndParams_Save());
+                    saveModels[i].insideParams[a].element = objects[i].insideParams[j].element.name;
+                    saveModels[i].insideParams[a].parameters = objects[i].insideParams[j].parameters;
+                    a++;
+                }
+
+                List<Output> outputs = objects[i].GetOutputs();
+
+                for (int j = 0; j < outputs.Count(); j++)
+                {
+                    saveModels[i].listOfOutput.Add(new SaveOutput());
+                    if (outputs[j]._state_ == null)
+                        saveModels[i].listOfOutput[j].stateId = 0;
+                    else
+                        saveModels[i].listOfOutput[j].stateId = outputs[j]._state_.id;
+
+                    saveModels[i].listOfOutput[j].id = outputs[j].id;
+                    saveModels[i].listOfOutput[j].outPos = outputs[j].outPos;
+
+                }
+            }
+            return saveModels;
         }
 
         private void Calculactions_Click(object sender, RoutedEventArgs e)
@@ -953,7 +1001,7 @@ namespace PAPIRUS_WPF
                 Object obj = element.connectedElements[i];
                 obj.connectedElements.Remove(element);
             }
-            for(int i = 0; i < element.GetOutputs().Count; i++)
+            for (int i = 0; i < element.GetOutputs().Count; i++)
             {
                 Data.outputs.Remove(element.GetOutputs()[i]);
             }
@@ -1013,6 +1061,7 @@ namespace PAPIRUS_WPF
             }
             CircuitCanvas.Children.Remove(wire);
         }
+
     }
 }
 
