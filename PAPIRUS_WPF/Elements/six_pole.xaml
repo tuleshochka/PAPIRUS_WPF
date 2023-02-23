@@ -10,7 +10,7 @@
     <Papirus:Object.Resources>
         <Papirus:Object DefaultNumberVisible="Visible" x:Key="DataSource"/>
     </Papirus:Object.Resources>
-    <Grid DataContext="{StaticResource DataSource}" x:Name="SixPole" Loaded="SixPole_Loaded" >
+    <Grid DataContext="{StaticResource DataSource}" x:Name="EightPol" Loaded="SixPole_Loaded" >
         <!--<Polyline Stroke="Black" StrokeThickness="1" StrokeLineJoin="Round" StrokeEndLineCap="Round" Points="7,40 55,40 55,20 "/>-->
        <!-- <Path Stroke="Black" StrokeThickness="1" Fill="White">
             <Path.Data>

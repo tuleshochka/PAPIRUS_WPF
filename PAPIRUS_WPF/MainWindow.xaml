@@ -27,10 +27,10 @@
         </Grid.ColumnDefinitions>
         <Menu Padding="3,1" Background="Transparent"  Grid.Column="0" Grid.ColumnSpan="2" Height="24" VerticalAlignment="Center">
             <MenuItem Header="Файл">
-                <MenuItem Header="Создать"/>
+                <MenuItem Header="Создать" Click="NewFile_Click"/>
                 <MenuItem Header="Открыть" Click="Open_Click"/>
-                <MenuItem Header="Сохранить"/>
-                <MenuItem Header="Сохранить как" Click="SaveAs_Click_"/>
+                <MenuItem Header="Сохранить" Click="Save_Click"/>
+                <MenuItem Header="Сохранить как" Click="SaveAs_Click"/>
             </MenuItem>
             <MenuItem Header="Правка"/>
             <MenuItem Header="Расчёты">

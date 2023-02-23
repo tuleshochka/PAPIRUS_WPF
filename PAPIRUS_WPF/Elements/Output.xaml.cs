@@ -33,13 +33,17 @@ namespace PAPIRUS_WPF.Elements
         public Output _state_;
         public int index;
         public int outPos;  // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom
-        public string parent
+        public Object GetParent
         {
             get
             {
-                return Data.FindParent<Object>(this.Parent).GetType().Name.ToString();
+                return Data.FindParent<Object>(this.Parent);
             }
         }
+
+        public Object parent { get; set; }
+
+        public Point coordinates;
 
       // The state of the output
         public bool _state;
@@ -112,8 +116,10 @@ namespace PAPIRUS_WPF.Elements
 
         public bool isLinked()
         {
-            if (_state_ != null)
+            if(_state_ != null)
+            {
                 return true;
+            }
             return false;
         }
 

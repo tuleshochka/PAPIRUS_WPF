@@ -44,7 +44,7 @@ namespace PAPIRUS_WPF.Elements
         {
             if (DefaultNumberVisible == Visibility.Hidden)
             {
-                foreach (TextBlock tb in utils.GetControls<TextBlock>(SixPole))
+                foreach (TextBlock tb in Data.GetControls<TextBlock>(EightPol))
                 {
                     tb.Visibility = Visibility.Hidden;
                 }

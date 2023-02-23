@@ -36,12 +36,6 @@ namespace PAPIRUS_WPF.Elements
             LeftInput.StateChanged += FourPoleStateChanged;
             RightInput.StateChanged += FourPoleStateChanged;
             group = 2;
-
-
-            
-
-
-
         }
 
         private void FourPoleStateChanged()
@@ -52,7 +46,7 @@ namespace PAPIRUS_WPF.Elements
             RightInput.State = false;
 
             //Check if any Input is high. If so, set state to high
-            foreach (UIElement e in TwoPol.Children)
+            foreach (UIElement e in EightPol.Children)
             {
                 if (e is Output)
                 {
@@ -83,7 +77,7 @@ namespace PAPIRUS_WPF.Elements
         {
             if (DefaultNumberVisible == Visibility.Hidden)
             {
-                foreach (TextBlock tb in utils.GetControls<TextBlock>(TwoPol))
+                foreach (TextBlock tb in Data.GetControls<TextBlock>(EightPol))
                 {
                     tb.Visibility = Visibility.Hidden;
                 }

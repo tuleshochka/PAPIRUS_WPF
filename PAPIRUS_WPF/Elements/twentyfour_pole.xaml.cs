@@ -53,6 +53,7 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(Top2);
             listOfOutput.Add(Top);
             listOfOutput.Add(Top3);
+
             group = 12;
         }
 
@@ -60,37 +61,14 @@ namespace PAPIRUS_WPF.Elements
         {
             if (DefaultNumberVisible == Visibility.Hidden)
             {
-                foreach (TextBlock tb in utils.GetControls<TextBlock>(EightPol))
+                foreach (TextBlock tb in Data.GetControls<TextBlock>(EightPol))
                 {
                     tb.Visibility = Visibility.Hidden;
                 }
             }
         }
     }
-    static class utils
-    {
-        public static IEnumerable<T> GetControls<T>(this DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-                    foreach (T childOfChild in GetControls<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
 
-                }
-
-            }
-
-        }
-    }
 }
 
 

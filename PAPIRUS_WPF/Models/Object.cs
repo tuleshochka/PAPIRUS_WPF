@@ -42,6 +42,8 @@ namespace PAPIRUS_WPF
         //    set { SetValue(DefaultNumberVisibleProperty, value); }
         //}
 
+        
+
         public Visibility DefaultNumberVisible
         {
             get { return visibility; }

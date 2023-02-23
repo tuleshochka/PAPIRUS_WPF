@@ -24,6 +24,7 @@ using System.Drawing;
 using Point = System.Windows.Point;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
+using System.Windows.Automation.Peers;
 
 namespace PAPIRUS_WPF
 {
@@ -48,102 +49,166 @@ namespace PAPIRUS_WPF
 
             foreach (Object _object in elements)
             {
-                try
+                if (!(_object is generator))
                 {
-                    _object.FillME();
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(e.Message);
-                }
-                int number = _object.group;
-                int j = 0;
-                foreach (Output output in _object.GetOutputs())
-                {
-                    j = _object.GetOutputs().FindIndex(x => x == output);
-                    if (!(output.isLinked()))
+                    try
                     {
-
-                        Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
-                        //p.Y = p.Y - output.Height / 2;
-                        TextBox text = new TextBox();
-                        // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom   outPos
-                        text.BorderThickness = new Thickness(0);
-                        text.IsReadOnly = true;
-                        text.Cursor = Cursors.Arrow;
-                        text.Focusable = false;
-                        text.Background = Brushes.Transparent;
-                        text.Foreground = Brushes.Blue;
-                        text.Text = (i + 1).ToString();
-                        (window as MainWindow).CircuitCanvas.Children.Add(text);
-                        if (output.outPos == 0) //Left
-                        {
-                            Canvas.SetLeft(text, Math.Abs(p.X));
-                            Canvas.SetTop(text, Math.Abs(p.Y)); 
-                            text.Margin = new Thickness(-20, -4, 0, 0);
-                        }
-                        else if (output.outPos == 1) //Right
-                        {
-                            Canvas.SetLeft(text, Math.Abs(p.X));
-                            Canvas.SetTop(text, Math.Abs(p.Y));
-                            text.Margin = new Thickness(10, -4, 0, 0);
-                        }
-                        else if (output.outPos == 2) //Top
-                        {
-                            Canvas.SetLeft(text, Math.Abs(p.X));
-                            Canvas.SetTop(text, Math.Abs(p.Y));
-                            text.Margin = new Thickness(-4, -20, 0, 0);
-                        }
-                        else if (output.outPos == 3) //Bottom
-                        {
-                            Canvas.SetLeft(text, Math.Abs(p.X));
-                            Canvas.SetTop(text, Math.Abs(p.Y));
-                            text.Margin = new Thickness(-4, 10, 0, 0);
-                        }
-                        else { }
-                        
-                        
-                        Data.outputNumber.Add(text);
-
-                        free.Add(i);
-                        output.index = i;
-                        for (int k = 0; k < _object.matrix.N; k++)
-                        {
-                            MatrixElement mx = _object.matrixElements.First(x => x.unique == k + number * j);
-                            mx.rowIndex = i;
-                            mx = _object.matrixElements.First(x => x.unique == number * k + j);
-                            mx.columnIndex = i;
-                        }
-                        i++;
+                        _object.FillME();
                     }
-                    j++;
+                    catch (Exception e)
+                    {
+                        throw new Exception(e.Message);
+                    }
+                    int number = _object.group;
+                    int j = 0;
+                    foreach (Output output in _object.GetOutputs())
+                    {
+                        j = _object.GetOutputs().FindIndex(x => x == output);
+                        if (output._state_ != null)
+                        {
+                            if (output._state_.GetParent is generator)
+                            {
+                                Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
+                                //p.Y = p.Y - output.Height / 2;
+                                TextBox text = new TextBox();
+                                // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom   outPos
+                                text.BorderThickness = new Thickness(0);
+                                text.IsReadOnly = true;
+                                text.Cursor = Cursors.Arrow;
+                                text.Focusable = false;
+                                text.Background = Brushes.Transparent;
+                                text.Foreground = Brushes.Blue;
+                                text.Text = (i + 1).ToString();
+                                (window as MainWindow).CircuitCanvas.Children.Add(text);
+                                if (output.outPos == 0) //Left
+                                {
+                                    Canvas.SetLeft(text, Math.Abs(p.X));
+                                    Canvas.SetTop(text, Math.Abs(p.Y));
+                                    text.Margin = new Thickness(-20, -4, 0, 0);
+                                }
+                                else if (output.outPos == 1) //Right
+                                {
+                                    Canvas.SetLeft(text, Math.Abs(p.X));
+                                    Canvas.SetTop(text, Math.Abs(p.Y));
+                                    text.Margin = new Thickness(10, -4, 0, 0);
+                                }
+                                else if (output.outPos == 2) //Top
+                                {
+                                    Canvas.SetLeft(text, Math.Abs(p.X));
+                                    Canvas.SetTop(text, Math.Abs(p.Y));
+                                    text.Margin = new Thickness(-4, -20, 0, 0);
+                                }
+                                else if (output.outPos == 3) //Bottom
+                                {
+                                    Canvas.SetLeft(text, Math.Abs(p.X));
+                                    Canvas.SetTop(text, Math.Abs(p.Y));
+                                    text.Margin = new Thickness(-4, 10, 0, 0);
+                                }
+                                else { }
+
+
+                                Data.outputNumber.Add(text);
+
+                                free.Add(i);
+                                output.index = i;
+                                for (int k = 0; k < _object.matrix.N; k++)
+                                {
+                                    MatrixElement mx = _object.matrixElements.First(x => x.unique == k + number * j);
+                                    mx.rowIndex = i;
+                                    mx = _object.matrixElements.First(x => x.unique == number * k + j);
+                                    mx.columnIndex = i;
+                                }
+                                i++;
+                            }
+                        }
+                        else if (!(output.isLinked()))
+                        {
+
+                            Point p = (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
+                            //p.Y = p.Y - output.Height / 2;
+                            TextBox text = new TextBox();
+                            // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom   outPos
+                            text.BorderThickness = new Thickness(0);
+                            text.IsReadOnly = true;
+                            text.Cursor = Cursors.Arrow;
+                            text.Focusable = false;
+                            text.Background = Brushes.Transparent;
+                            text.Foreground = Brushes.Blue;
+                            text.Text = (i + 1).ToString();
+                            (window as MainWindow).CircuitCanvas.Children.Add(text);
+                            if (output.outPos == 0) //Left
+                            {
+                                Canvas.SetLeft(text, Math.Abs(p.X));
+                                Canvas.SetTop(text, Math.Abs(p.Y));
+                                text.Margin = new Thickness(-20, -4, 0, 0);
+                            }
+                            else if (output.outPos == 1) //Right
+                            {
+                                Canvas.SetLeft(text, Math.Abs(p.X));
+                                Canvas.SetTop(text, Math.Abs(p.Y));
+                                text.Margin = new Thickness(10, -4, 0, 0);
+                            }
+                            else if (output.outPos == 2) //Top
+                            {
+                                Canvas.SetLeft(text, Math.Abs(p.X));
+                                Canvas.SetTop(text, Math.Abs(p.Y));
+                                text.Margin = new Thickness(-4, -20, 0, 0);
+                            }
+                            else if (output.outPos == 3) //Bottom
+                            {
+                                Canvas.SetLeft(text, Math.Abs(p.X));
+                                Canvas.SetTop(text, Math.Abs(p.Y));
+                                text.Margin = new Thickness(-4, 10, 0, 0);
+                            }
+                            else { }
+
+
+                            Data.outputNumber.Add(text);
+
+                            free.Add(i);
+                            output.index = i;
+                            for (int k = 0; k < _object.matrix.N; k++)
+                            {
+                                MatrixElement mx = _object.matrixElements.First(x => x.unique == k + number * j);
+                                mx.rowIndex = i;
+                                mx = _object.matrixElements.First(x => x.unique == number * k + j);
+                                mx.columnIndex = i;
+                            }
+                            i++;
+                        }
+                        j++;
+                    }
                 }
             }
             foreach (Object _object in elements)
             {
-                int number = _object.group;
-                int j = 0;
-                foreach (Output output in _object.GetOutputs())
-
+                if(!(_object is generator))
                 {
-                    j = _object.GetOutputs().FindIndex(x => x == output);
-                    if (output.isLinked()) //тут надо вставлять текст блоки
-                    {
-                        connected.Add(i);
-                        (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
-                        output.index = i;
-                        for (int k = 0; k < _object.matrix.N; k++)
-                        {
-                            MatrixElement mx = _object.matrixElements.Find(x => x.unique == k + number * j);
-                            mx.rowIndex = i;
-                            mx = _object.matrixElements.Find(x => x.unique == number * k + j);
-                            mx.columnIndex = i;
-                        }
+                    int number = _object.group;
+                    int j = 0;
+                    foreach (Output output in _object.GetOutputs())
 
-                        i++;
+                    {
+                        j = _object.GetOutputs().FindIndex(x => x == output);
+                        if (output.isLinked() && !(output._state_.GetParent is generator))
+                        {
+                            connected.Add(i);
+                            (window as MainWindow).CircuitCanvas.TranslatePoint(new Point(0, 0), output);
+                            output.index = i;
+                            for (int k = 0; k < _object.matrix.N; k++)
+                            {
+                                MatrixElement mx = _object.matrixElements.Find(x => x.unique == k + number * j);
+                                mx.rowIndex = i;
+                                mx = _object.matrixElements.Find(x => x.unique == number * k + j);
+                                mx.columnIndex = i;
+                            }
+
+                            i++;
+                        }
+                        j++;
                     }
-                    j++;
                 }
+               
             }
 
             Entity[,] A = new Entity[i, i];
@@ -306,7 +371,7 @@ namespace PAPIRUS_WPF
                     tempElement = CalculateIntermediateValues_cycle(tempElement);
                     for (int i = 0; i < tempElement.other_par.Count; i++)
                     {
-                        Console.WriteLine(tempElement.other_par[i].headerColumn +" = " + tempElement.other_par[i].formulaColumn);
+                        Console.WriteLine(tempElement.other_par[i].headerColumn + " = " + tempElement.other_par[i].formulaColumn);
                     }
                 }
                 catch (Exception e)
@@ -322,7 +387,7 @@ namespace PAPIRUS_WPF
             {
                 throw new Exception(e.Message);
             }
-            
+
             return matrix;
         }
 
@@ -435,16 +500,16 @@ namespace PAPIRUS_WPF
         private Matrix CalculateMatrix(Element element, List<DataGridElements> dataGridElements)
         {
             int number = element.group;
-            Matrix matrix = new Matrix(number, number); 
+            Matrix matrix = new Matrix(number, number);
             int a = 0;
             for (int i = 0; i < matrix.N; i++)
             {
                 for (int j = 0; j < matrix.M; j++)
                 {
-                    matrix[i,j] = element.matrix[a].element;
+                    matrix[i, j] = element.matrix[a].element;
                     a++;
                 }
-            
+
             }
             a = 0;
             for (int i = 0; i < number; i++)

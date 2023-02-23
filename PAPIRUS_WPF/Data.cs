@@ -63,6 +63,27 @@ namespace PAPIRUS_WPF
                 return FindParent<T>(parentObject);
         }
 
+        public static IEnumerable<T> GetControls<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+                    foreach (T childOfChild in GetControls<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+
+                }
+
+            }
+
+        }
 
         //----------АЧХ и ФЧХ-------------//
         //Тут храним точки

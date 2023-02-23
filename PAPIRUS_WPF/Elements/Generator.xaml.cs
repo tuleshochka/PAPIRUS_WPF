@@ -20,11 +20,14 @@ namespace PAPIRUS_WPF.Elements
     /// </summary>
     public partial class generator : Object
     {
+        public override List<Output> listOfOutput { get; set; } = new List<Output>();
+
         public generator()
         {
             BorderBrush = Brushes.Transparent;
             BorderThickness = new Thickness(1);
             InitializeComponent();
+            listOfOutput.Add(RightInput);
         }
 
         private void Object_MouseDoubleClick(object sender, MouseButtonEventArgs e)

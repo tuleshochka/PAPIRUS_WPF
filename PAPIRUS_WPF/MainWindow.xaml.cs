@@ -9,16 +9,16 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Timers;
 using System.Windows;
-using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using WPF_SHF_Element_lib;
+using Element = PAPIRUS_WPF.Models.Element;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using TextBox = System.Windows.Controls.TextBox;
 using Window = System.Windows.Window;
@@ -88,6 +88,9 @@ namespace PAPIRUS_WPF
         //-------подключение к генератору----------//
         private bool generatorConnect = false;
 
+        //--------Сохранение-----------//
+        private string saveFileName;
+
         public MainWindow()
         {
 
@@ -140,6 +143,7 @@ namespace PAPIRUS_WPF
 
                 Source = e.Source as FrameworkElement;
                 startObject = e.Source as Object;
+                Console.WriteLine(e.GetPosition(CircuitCanvas));
                 //Do a hit test under the mouse position
                 HitTestResult result = VisualTreeHelper.HitTest(CircuitCanvas, e.GetPosition(CircuitCanvas));
                 //If the mouse has hit a border
@@ -176,7 +180,15 @@ namespace PAPIRUS_WPF
 
                         //Assign the temporary output to the current output
                         _tempOutput = (Output)IO;
-                        if (_tempOutput.isLinked())
+                        if (startObject is generator)
+                        {
+                            if (_tempOutput._state_ != null)
+                            {
+                                CircuitCanvas.Children.Remove(_tempLink);
+                                return;
+                            }
+                        }
+                        else if (_tempOutput.isLinked())
                         {
                             CircuitCanvas.Children.Remove(_tempLink);
                             return;
@@ -423,21 +435,18 @@ namespace PAPIRUS_WPF
                             _tempLink.Y2 = inputPoint.Y;
 
                             //Links the output to the input
-                            if (!(startObject is generator) && !(obj is generator))
+                            try
                             {
-                                try
-                                {
-                                    IOInput.LinkInputs(_tempOutput);
-                                }
-                                catch (Exception)
-                                {
-                                    CircuitCanvas.Children.Remove(_tempLink);
-                                    _tempLink = null;
-                                    _linkingStarted = false;
-                                    return;
-                                }
-                                _tempOutput.LinkInputs(IOInput);
+                                IOInput.LinkInputs(_tempOutput);
                             }
+                            catch (Exception)
+                            {
+                                CircuitCanvas.Children.Remove(_tempLink);
+                                _tempLink = null;
+                                _linkingStarted = false;
+                                return;
+                            }
+                            _tempOutput.LinkInputs(IOInput);
 
                             //Adds to the global list
                             _powerList.Add((PowerObject)_tempOutput);
@@ -583,17 +592,16 @@ namespace PAPIRUS_WPF
                 Canvas.SetTop(instance, p.Y - instance.Height / 2);
             }
             instance.coordinates = p;
-            if (!(instance is generator))
+
+            List<Output> outputList = instance.GetOutputs();
+            for (int i = 0; i < outputList.Count; i++)
             {
-                List<Output> outputList = instance.GetOutputs();
-                for (int i = 0; i < outputList.Count; i++)
-                {
-                    outputList[i].id = numOutput;
-                    Data.outputs.Add(outputList[i]);
-                    numOutput++;
-                }
-                Data.elements.Add(instance);
+                outputList[i].id = numOutput;
+                Data.outputs.Add(outputList[i]);
+                numOutput++;
             }
+            Data.elements.Add(instance);
+
         }
 
         private void CircuitCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -688,7 +696,44 @@ namespace PAPIRUS_WPF
             }
         }
 
-        private void SaveAs_Click_(object sender, RoutedEventArgs e)
+        private void NewFile_Click(object sender, RoutedEventArgs e)
+        {
+            var options = new JsonSerializerOptions()
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                AllowTrailingCommas = true,
+                WriteIndented = true
+            };
+
+            if (saveFileName != null)
+            {
+                MessageBoxResult result = MessageBox.Show("Cохранить текущую схему?", "Внимание!", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                {
+                    File.WriteAllText(saveFileName, JsonSerializer.Serialize(Save(), options));
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                MessageBoxResult result = MessageBox.Show("Cохранить текущую схему?", "Внимание!", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                {
+                    SaveAs_Click(sender, e);
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+            }
+            CircuitCanvas.Children.Clear();
+            Data.ClearAll();
+        }
+
+        private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
             var options = new JsonSerializerOptions()
             {
@@ -702,19 +747,39 @@ namespace PAPIRUS_WPF
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                File.WriteAllText(saveFileDialog.FileName, JsonSerializer.Serialize(Save(), options));
+                try
+                {
+                    File.WriteAllText(saveFileDialog.FileName, JsonSerializer.Serialize(Save(), options));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                saveFileName = saveFileDialog.FileName;
+            }
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(saveFileName))
+            {
+                SaveAs_Click(sender, e);
+            }
+            else
+            {
+                var options = new JsonSerializerOptions()
+                {
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    AllowTrailingCommas = true,
+                    WriteIndented = true
+                };
+
+                File.WriteAllText(saveFileName, JsonSerializer.Serialize(Save(), options));
             }
         }
 
         private void Open_Click(object sender, RoutedEventArgs e)
         {
-            var options = new JsonSerializerOptions()
-            {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                AllowTrailingCommas = true,
-                WriteIndented = true
-            };
-
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Schema files (*.shm)|*.shm";
 
@@ -730,56 +795,178 @@ namespace PAPIRUS_WPF
                     var model = saveModels[i];
                     Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(model.model);
                     instance.name = model.name;
-                    instance.group = model.group;
-                    if (!(model.insideElement is null))
+                    if (!(instance is generator))
                     {
-                        instance.insideElement = new Element();
-                        instance.insideElement.name = model.insideElement;
-                    }
-
-                    for (int j = 0; j < model.insideParams.Count; j++)
-                    {
-                        instance.insideParams.Add(new PoleInsideElementsAndParams
+                        instance.group = model.group;
+                        if (!(model.insideElement is null))
                         {
-                            element = new Element { name = model.insideParams[j].element },
-                            parameters = model.insideParams[j].parameters
-                        });
-                    }
+                            instance.insideElement = new Element();
+                            instance.insideElement.name = model.insideElement;
+                        }
 
-                    instance.coordinates = model.coordinates;
-                    int a = 0;
-                    if (model.matrix.Count != 0)
-                    {
-                        int number = model.matrix.Count;
-                        number = (int)Math.Sqrt(number);
-                        Console.WriteLine(number);
-                        instance.matrix = new Models.Matrix(number, number);
-                        for (int j = 0; j < instance.matrix.M; j++)
+                        for (int j = 0; j < model.insideParams.Count; j++)
                         {
-                            for (int k = 0; k < instance.matrix.N; k++)
+                            instance.insideParams.Add(new PoleInsideElementsAndParams
                             {
-                                instance.matrix[j, k] = model.matrix[a];
-                                Console.WriteLine(instance.matrix[j, k]);
-                                a++;
+                                element = new Element { name = model.insideParams[j].element },
+                                parameters = model.insideParams[j].parameters
+                            });
+                        }
+                        int a = 0;
+                        if (model.matrix.Count != 0)
+                        {
+                            int number = model.matrix.Count;
+                            number = (int)Math.Sqrt(number);
+                            Console.WriteLine(number);
+                            instance.matrix = new Models.Matrix(number, number);
+                            for (int j = 0; j < instance.matrix.M; j++)
+                            {
+                                for (int k = 0; k < instance.matrix.N; k++)
+                                {
+                                    instance.matrix[j, k] = model.matrix[a];
+                                    Console.WriteLine(instance.matrix[j, k]);
+                                    a++;
+                                }
                             }
                         }
                     }
 
+                    instance.coordinates = model.coordinates;
+
+
                     Canvas.SetLeft(instance, model.coordinates.X);
                     Canvas.SetTop(instance, model.coordinates.Y);
                     CircuitCanvas.Children.Add(instance);
-                    if (!(instance is generator))
+
+
+                    //List<Output> outputList = instance.GetOutputs();
+                    var child =  instance.FindName("EightPol");
+                    Console.WriteLine(child);
+
+                    //List<Output> outputList = Data.GetControls<Output>(child as DependencyObject).ToList();
+                    List<Output> outputList = instance.GetOutputs();
+                    for (int j = 0; j < outputList.Count; j++)
                     {
-                        List<Output> outputList = instance.GetOutputs();
+                        var output = outputList[j];
+                        output.id = model.listOfOutput[j].id;
+                        if (!(instance is generator))
+                            output.outPos = model.listOfOutput[j].outPos;
+                        output.parent = instance;
+                        //output.coordinates = new Point(instance.coordinates.X - output.coordinates.X, instance.coordinates.Y - output.coordinates.Y);
+                       
+                        //Point p = output.TransformToAncestor(instance).Transform(new Point(output.ActualWidth / 2, output.ActualHeight / 2));
+                        
+                        Console.WriteLine("insance = " + instance.coordinates);
+                        Point p = new Point(output.Margin.Left, output.Margin.Top);
+                        int Xcomp=0;
+                        int Ycomp=0;
+
+                        if(output.VerticalAlignment == VerticalAlignment.Center)
+                        {
+                            p.Y = instance.Height / 2 + output.Margin.Top;
+                            //Xcomp = 1;
+                        }
+                        else if (output.VerticalAlignment == VerticalAlignment.Top)
+                        {
+                            p.Y =  output.Margin.Top;
+                        }
+                        else if (output.VerticalAlignment == VerticalAlignment.Bottom)
+                        {
+                            p.Y = instance.Height + output.Margin.Top;
+                        }
+
+                        if (output.HorizontalAlignment == HorizontalAlignment.Center)
+                        {
+                            p.X = instance.Width / 2 + output.Margin.Left;
+                        }
+                        else if (output.HorizontalAlignment == HorizontalAlignment.Left)
+                        {
+                            p.X = output.Margin.Left;
+                            //Ycomp= 4;
+                        }
+                        else if (output.HorizontalAlignment == HorizontalAlignment.Right)
+                        {
+                            p.X = instance.Width + output.Margin.Left;
+                        }
+
+                        //output.coordinates = new Point(Canvas.GetLeft(outputList[j]), Canvas.GetTop(outputList[j]));
+                        //output.coordinates = output.TranslatePoint(new Point(output.ActualWidth / 2, output.ActualHeight / 2), CircuitCanvas);
+                        output.coordinates = new Point(instance.coordinates.X + p.X + Xcomp, instance.coordinates.Y + p.Y+ Ycomp);
+                        // output.coordinates.X = output.coordinates.X - 1 + output.Width / 2;
+                        //output.coordinates.Y = output.coordinates.Y - 1 + output.Height / 2;
+                        //output.coordinates = output.PointToScreen(new Point(0,0));
+         
+                       // Console.WriteLine("test sssss   ");// + output.TranslatePoint(new Point(output.Width / 2, output.Height / 2),(child as FrameworkElement)));
+                        Data.outputs.Add(output);
+                        Console.WriteLine("test sssss   " + output.TransformToAncestor(this).Transform(new Point(0,0)));
+                        Console.WriteLine("output = " + output.coordinates);
+                    }
+                    Data.elements.Add(instance);
+
+                    saveFileName = openFileDialog.FileName;
+                }
+
+                var elements = CircuitCanvas.Children;
+                for (int i = 0; i < CircuitCanvas.Children.Count; i++)
+                {
+                    Console.WriteLine(elements[i]);
+                    Object el = elements[i] as Object;
+                    if(el != null ) 
+                    {
+                        List<Output> outputList = el.GetOutputs();
                         for (int j = 0; j < outputList.Count; j++)
                         {
-                            outputList[i].id = numOutput;
-                            Data.outputs.Add(outputList[i]);
-                            numOutput++;
+                            for (int k = 0; k < Data.outputs.Count; k++)
+                            {
+                                if (saveModels[i].listOfOutput[j].stateId == Data.outputs[k].id)
+                                {
+                                    outputList[j]._state_ = Data.outputs[k];
+                                    Console.WriteLine(Data.outputs[k].parent);
+                                }
+                            }
+                            if (outputList[j]._state_ != null)
+                            {
+                                Line line = new Line();
+                                line.Stroke = Brushes.Black;
+                                line.StrokeThickness = 1;
+                                Point p1 = outputList[j].coordinates;
+                                Console.WriteLine("x1 = " + line.X1);
+                                p1.X = Math.Abs(p1.X); p1.Y = Math.Abs(p1.Y);
+                                line.X1 = p1.X; line.Y1 = p1.Y;
+                                Point p2 = outputList[j]._state_.coordinates;
+                                p2.X = Math.Abs(p2.X); p2.Y = Math.Abs(p2.Y);
+                                line.X2 = p2.X; line.Y2 = p2.Y;
+
+
+                                CircuitCanvas.Children.Add(line);
+                                el.connectedElements.Add(outputList[j]._state_.parent);
+                                outputList[j]._state_.parent.connectedElements.Add(el);
+                                if (el is generator || outputList[j]._state_.parent is generator || outputList[j]._state_.parent.generatorConnected == true || el.generatorConnected == true)
+                                {
+                                    el.generatorConnected = true;
+                                    outputList[j]._state_.parent.generatorConnected = true;
+                                    SetGeneratorConnection(outputList[j]._state_.parent);
+                                    SetGeneratorConnection(el);
+                                }
+
+                                //Links the output to the input
+
+                                //Adds to the global list
+                                _powerList.Add((PowerObject)outputList[j]._state_);
+                                _powerList.Add((PowerObject)outputList[j]);
+
+                                //Attaches the line to the object
+                                outputList[j]._state_.parent.AttachInputLine(line);
+
+                                //Some evil casting (the outputs' parent of the parent is the circuit object that contains the output). Attaches the output side to the object
+                                el.AttachOutputLine(line);
+
+                            }
                         }
-                        Data.elements.Add(instance);
+
                     }
                 }
+
             }
         }
 
@@ -793,58 +980,63 @@ namespace PAPIRUS_WPF
 
                 saveModels[i].name = objects[i].name;
                 saveModels[i].model = objects[i].GetType().ToString();
-                saveModels[i].group = objects[i].group;
+                if ((objects[i] is generator))
+                    saveModels[i].group = objects[i].group;
+                else saveModels[i].group = 0;
                 saveModels[i].coordinates = objects[i].coordinates;
-                if (objects[i].insideElement == null)
-                    saveModels[i].insideElement = null;
-                else saveModels[i].insideElement = objects[i].insideElement.name;
-                int a = 0;
-                for (int j = 0; j < objects[i].insideParams.Count; j++)
+
+                if ((objects[i] is generator))
                 {
-                    bool f = false;
-                    for (int n = 0; n < objects[i].insideParams[j].parameters.Count; n++)
+                    if (objects[i].insideElement == null)
+                        saveModels[i].insideElement = null;
+                    else saveModels[i].insideElement = objects[i].insideElement.name;
+                    int a = 0;
+                    for (int j = 0; j < objects[i].insideParams.Count; j++)
                     {
-                        if (!(string.IsNullOrEmpty(objects[i].insideParams[j].parameters[n].columnValue)))
+                        bool f = false;
+                        for (int n = 0; n < objects[i].insideParams[j].parameters.Count; n++)
                         {
-                            f = true;
-                            break;
+                            if (!(string.IsNullOrEmpty(objects[i].insideParams[j].parameters[n].columnValue)))
+                            {
+                                f = true;
+                                break;
+                            }
                         }
+                        if (!f) continue;
+                        saveModels[i].insideParams.Add(new PoleInsideElementsAndParams_Save());
+                        saveModels[i].insideParams[a].element = objects[i].insideParams[j].element.name;
+                        saveModels[i].insideParams[a].parameters = objects[i].insideParams[j].parameters;
+                        a++;
                     }
-                    if (!f) continue;
-                    saveModels[i].insideParams.Add(new PoleInsideElementsAndParams_Save());
-                    saveModels[i].insideParams[a].element = objects[i].insideParams[j].element.name;
-                    saveModels[i].insideParams[a].parameters = objects[i].insideParams[j].parameters;
-                    a++;
-                }
-                if (objects[i].matrix != null)
-                {
-                    for (int j = 0; j < objects[i].matrix.M; j++)
+                    if (objects[i].matrix != null)
                     {
-                        for (int n = 0; n < objects[i].matrix.N; n++)
+                        for (int j = 0; j < objects[i].matrix.M; j++)
                         {
-                            saveModels[i].matrix.Add(objects[i].matrix[j, n].ToString());
+                            for (int n = 0; n < objects[i].matrix.N; n++)
+                            {
+                                saveModels[i].matrix.Add(objects[i].matrix[j, n].ToString());
+                            }
                         }
                     }
                 }
 
                 List<Output> outputs = objects[i].GetOutputs();
 
-                if (!(objects[i] is generator))
+
+                for (int j = 0; j < outputs.Count(); j++)
                 {
-                    for (int j = 0; j < outputs.Count(); j++)
-                    {
-                        saveModels[i].listOfOutput.Add(new SaveOutput());
-                        if (outputs[j]._state_ == null)
-                            saveModels[i].listOfOutput[j].stateId = 0;
-                        else
-                            saveModels[i].listOfOutput[j].stateId = outputs[j]._state_.id;
+                    saveModels[i].listOfOutput.Add(new SaveOutput());
+                    if (outputs[j]._state_ == null)
+                        saveModels[i].listOfOutput[j].stateId = 0;
+                    else
+                        saveModels[i].listOfOutput[j].stateId = outputs[j]._state_.id;
 
-                        saveModels[i].listOfOutput[j].id = outputs[j].id;
+                    saveModels[i].listOfOutput[j].id = outputs[j].id;
+                    if ((objects[i] is generator))
                         saveModels[i].listOfOutput[j].outPos = outputs[j].outPos;
+                    else saveModels[i].listOfOutput[j].outPos = 99;
 
-                    }
                 }
-               
             }
             return saveModels;
         }
@@ -1044,16 +1236,18 @@ namespace PAPIRUS_WPF
             for (int i = 0; i < element.connectedElements.Count(); i++)
             {
                 Object obj = element.connectedElements[i];
+                for (int j = 0; j < obj.GetOutputs().Count; j++)
+                {
+                    obj.GetOutputs()[j].DeleteLink();
+                }
                 obj.connectedElements.Remove(element);
             }
-            if(!(element is generator))
+
+            for (int i = 0; i < element.GetOutputs().Count; i++)
             {
-                for (int i = 0; i < element.GetOutputs().Count; i++)
-                {
-                    Data.outputs.Remove(element.GetOutputs()[i]);
-                }
+                Data.outputs.Remove(element.GetOutputs()[i]);
             }
-            
+
             CircuitCanvas.Children.Remove(element);
             Data.elements.Remove(element);
         }
@@ -1110,7 +1304,6 @@ namespace PAPIRUS_WPF
             }
             CircuitCanvas.Children.Remove(wire);
         }
-
     }
 }
 
