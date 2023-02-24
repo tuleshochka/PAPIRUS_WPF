@@ -30,6 +30,13 @@ namespace PAPIRUS_WPF.Elements
         public delegate void StateChangeHandler();
         public delegate void StateChangedHandler();
         public int id;
+        public string name
+        {
+            get
+            {
+                return this.Name;
+            }
+        }
         public Output _state_;
         public int index;
         public int outPos;  // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom
@@ -87,6 +94,7 @@ namespace PAPIRUS_WPF.Elements
             _state = false;
             _state_ = null;
             InitializeComponent();
+            DataContext = this;
         }
 
         ///// <summary>

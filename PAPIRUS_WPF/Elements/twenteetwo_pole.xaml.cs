@@ -33,9 +33,9 @@ namespace PAPIRUS_WPF.Elements
             LeftInput.outPos = 0;
             LeftInput2.outPos = 0;
             LeftInput3.outPos = 0;
-            Buttom3.outPos = 3;
-            Buttom.outPos = 3;
-            Buttom2.outPos = 3;
+            Bottom3.outPos = 3;
+            Bottom.outPos = 3;
+            Bottom2.outPos = 3;
             RightInput3.outPos = 1;
             RightInput2.outPos = 1;
             RightInput.outPos = 1;
@@ -45,9 +45,9 @@ namespace PAPIRUS_WPF.Elements
             listOfOutput.Add(LeftInput);
             listOfOutput.Add(LeftInput2);
             listOfOutput.Add(LeftInput3);
-            listOfOutput.Add(Buttom3);
-            listOfOutput.Add(Buttom);
-            listOfOutput.Add(Buttom2);
+            listOfOutput.Add(Bottom3);
+            listOfOutput.Add(Bottom);
+            listOfOutput.Add(Bottom2);
             listOfOutput.Add(RightInput3);
             listOfOutput.Add(RightInput2);
             listOfOutput.Add(RightInput);

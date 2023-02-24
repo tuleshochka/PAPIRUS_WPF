@@ -560,7 +560,6 @@ namespace PAPIRUS_WPF
 
             string ItemType = allFormats[0];
             //Create a new type of the format
-            Console.WriteLine(ItemType);
             Object instance = (Object)Assembly.GetExecutingAssembly().CreateInstance(ItemType);
 
             if (instance == null)
@@ -817,14 +816,12 @@ namespace PAPIRUS_WPF
                         {
                             int number = model.matrix.Count;
                             number = (int)Math.Sqrt(number);
-                            Console.WriteLine(number);
                             instance.matrix = new Models.Matrix(number, number);
                             for (int j = 0; j < instance.matrix.M; j++)
                             {
                                 for (int k = 0; k < instance.matrix.N; k++)
                                 {
                                     instance.matrix[j, k] = model.matrix[a];
-                                    Console.WriteLine(instance.matrix[j, k]);
                                     a++;
                                 }
                             }
@@ -840,11 +837,11 @@ namespace PAPIRUS_WPF
 
 
                     //List<Output> outputList = instance.GetOutputs();
-                    var child =  instance.FindName("EightPol");
+                    Grid child = (Grid)instance.FindName("EightPol");
                     Console.WriteLine(child);
 
-                    //List<Output> outputList = Data.GetControls<Output>(child as DependencyObject).ToList();
-                    List<Output> outputList = instance.GetOutputs();
+                    List<Output> outputList = Data.GetControls<Output>(child).ToList();
+                    //List<Output> outputList = instance.GetOutputs();
                     for (int j = 0; j < outputList.Count; j++)
                     {
                         var output = outputList[j];
@@ -898,7 +895,11 @@ namespace PAPIRUS_WPF
          
                        // Console.WriteLine("test sssss   ");// + output.TranslatePoint(new Point(output.Width / 2, output.Height / 2),(child as FrameworkElement)));
                         Data.outputs.Add(output);
-                        Console.WriteLine("test sssss   " + output.TransformToAncestor(this).Transform(new Point(0,0)));
+                        //Console.WriteLine("test sssss   " + output.TransformToAncestor(this).Transform(new Point(0,0)));
+                        Point p1 = instance.TranslatePoint(new Point(0, 0), output);
+                        Console.WriteLine("test sssss   " + p1);
+                        var tt = new TranslateTransform();
+                        Console.WriteLine(output.RenderTransform);
                         Console.WriteLine("output = " + output.coordinates);
                     }
                     Data.elements.Add(instance);
@@ -909,7 +910,6 @@ namespace PAPIRUS_WPF
                 var elements = CircuitCanvas.Children;
                 for (int i = 0; i < CircuitCanvas.Children.Count; i++)
                 {
-                    Console.WriteLine(elements[i]);
                     Object el = elements[i] as Object;
                     if(el != null ) 
                     {
@@ -921,7 +921,6 @@ namespace PAPIRUS_WPF
                                 if (saveModels[i].listOfOutput[j].stateId == Data.outputs[k].id)
                                 {
                                     outputList[j]._state_ = Data.outputs[k];
-                                    Console.WriteLine(Data.outputs[k].parent);
                                 }
                             }
                             if (outputList[j]._state_ != null)
@@ -930,7 +929,6 @@ namespace PAPIRUS_WPF
                                 line.Stroke = Brushes.Black;
                                 line.StrokeThickness = 1;
                                 Point p1 = outputList[j].coordinates;
-                                Console.WriteLine("x1 = " + line.X1);
                                 p1.X = Math.Abs(p1.X); p1.Y = Math.Abs(p1.Y);
                                 line.X1 = p1.X; line.Y1 = p1.Y;
                                 Point p2 = outputList[j]._state_.coordinates;

@@ -30,13 +30,13 @@ namespace PAPIRUS_WPF.Elements
             InitializeComponent();
             LeftInput.outPos = 0;
             LeftInput3.outPos = 0;
-            Buttom.outPos = 3;
+            Bottom.outPos = 3;
             RightInput3.outPos = 1;
             RightInput.outPos = 1;
             Top.outPos = 2;
             listOfOutput.Add(LeftInput);
             listOfOutput.Add(LeftInput3);
-            listOfOutput.Add(Buttom);
+            listOfOutput.Add(Bottom);
             listOfOutput.Add(RightInput3);
             listOfOutput.Add(RightInput);
             listOfOutput.Add(Top);

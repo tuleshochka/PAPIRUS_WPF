@@ -16,7 +16,7 @@
         <local:Output x:Name="LeftInput3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,30,0,0"/>
         <local:Output x:Name="RightInput" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,-30,4,0"/>
         <local:Output x:Name="RightInput3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,30,4,0"/>
-        <local:Output x:Name="Buttom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,54,0,0"/>
+        <local:Output x:Name="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,54,0,0"/>
         <local:Output x:Name="Top2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="30,-54,0,0"/>
         <local:Output x:Name="Top3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-30,-54,0,0"/>
         <Rectangle x:Name="LEDRect" Stroke="Black" RadiusX="5" RadiusY="5" Fill="White" Margin="11"/>
