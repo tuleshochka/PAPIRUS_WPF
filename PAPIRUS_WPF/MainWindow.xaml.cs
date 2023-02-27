@@ -54,10 +54,10 @@ namespace PAPIRUS_WPF
         private int ClickCounter;
 
         //The lines being connected to the input
-        private List<Line> _attachedInputLines = new List<Line>();
+        private Dictionary<Output, Line> _attachedInputLines = new Dictionary<Output, Line>();
 
         //The lines being connected to the output
-        private List<Line> _attachedOutputLines = new List<Line>();
+        private Dictionary<Output, Line> _attachedOutputLines = new Dictionary<Output, Line>();
 
         //------для выделения-------//
         private Point point;
@@ -318,8 +318,9 @@ namespace PAPIRUS_WPF
                     center.X = mousePos.X - mouse.X;
                     center.Y = mousePos.Y - mouse.Y;
 
-                    foreach (Line attachedLine in _attachedInputLines)
+                    foreach (var pair in _attachedInputLines)
                     {
+                        Line attachedLine = pair.Value;
                         Point endPoint = new Point(attachedLine.X2, attachedLine.Y2);
                         attachedLine.X2 = (MoveLine(endPoint,
                                                         (center.X + element.Width / 2 + element.anchorPoint.X),
@@ -332,8 +333,9 @@ namespace PAPIRUS_WPF
 
                     _attachedOutputLines = element.GetOutputLine();
                     //Transform the attached line if its an output (uses StartPoint)
-                    foreach (Line attachedLine in _attachedOutputLines)
+                    foreach (var pair in _attachedOutputLines)
                     {
+                        Line attachedLine = pair.Value;
                         Point startPoint = new Point(attachedLine.X1, attachedLine.Y1);
                         attachedLine.X1 = (MoveLine(startPoint,
                                                          (Math.Abs(center.X + element.Width / 2) + element.anchorPoint.X),
@@ -344,7 +346,6 @@ namespace PAPIRUS_WPF
                     }
                     element.anchorPoint.X = p2.X - element.Width / 2;
                     element.anchorPoint.Y = p2.Y - element.Height / 2;
-
                 }
             }
             if (selectionMoving)
@@ -437,7 +438,7 @@ namespace PAPIRUS_WPF
                             //Links the output to the input
                             try
                             {
-                                IOInput.LinkInputs(_tempOutput);
+                                IOInput.LinkInputs(_tempOutput, 0,inputPoint);
                             }
                             catch (Exception)
                             {
@@ -446,17 +447,17 @@ namespace PAPIRUS_WPF
                                 _linkingStarted = false;
                                 return;
                             }
-                            _tempOutput.LinkInputs(IOInput);
+                            _tempOutput.LinkInputs(IOInput, 1, new Point(_tempLink.X1,_tempLink.Y1));
 
                             //Adds to the global list
                             _powerList.Add((PowerObject)_tempOutput);
                             _powerList.Add((PowerObject)IOInput);
 
                             //Attaches the line to the object
-                            obj.AttachInputLine(_tempLink);
+                            obj.AttachInputLine(IOInput,_tempLink);
 
                             //Some evil casting (the outputs' parent of the parent is the circuit object that contains the output). Attaches the output side to the object
-                            ((Object)((Grid)_tempOutput.Parent).Parent).AttachOutputLine(_tempLink);
+                            ((Object)((Grid)_tempOutput.Parent).Parent).AttachOutputLine(_tempOutput,_tempLink);
 
                             //Set linked to true
                             linked = true;
@@ -481,13 +482,27 @@ namespace PAPIRUS_WPF
             {
                 inDrag = false;
 
-                foreach (Object element in Data.selection)
+                foreach (Object element in Data.selection)  
                 {
                     p2 = CircuitCanvas.TranslatePoint(new Point(0, 0), element);
                     p2.X = Math.Abs(p2.X);
                     p2.Y = Math.Abs(p2.Y);
                     element.startPoint = p2;
                     element.coordinates = p2;
+                    _attachedInputLines = element.GetInputLine();
+                    _attachedOutputLines = element.GetOutputLine();
+                    for (int i = 0; i < _attachedInputLines.Count; i++)
+                    {
+                        Output output = _attachedInputLines.Keys.ElementAt(i);
+                        Line wire = _attachedInputLines.Values.ElementAt(i);
+                        output.coordinates = new Point(wire.X2, wire.Y2);
+                    }
+                    for (int i = 0; i < _attachedOutputLines.Count; i++)
+                    {
+                        Output output = _attachedOutputLines.Keys.ElementAt(i);
+                        Line wire = _attachedOutputLines.Values.ElementAt(i);
+                        output.coordinates = new Point(wire.X1, wire.Y1);
+                    }
                 }
             }
             if (selectionMoving)
@@ -838,10 +853,8 @@ namespace PAPIRUS_WPF
 
                     //List<Output> outputList = instance.GetOutputs();
                     Grid child = (Grid)instance.FindName("EightPol");
-                    Console.WriteLine(child);
 
-                    List<Output> outputList = Data.GetControls<Output>(child).ToList();
-                    //List<Output> outputList = instance.GetOutputs();
+                    List<Output> outputList = instance.GetOutputs();
                     for (int j = 0; j < outputList.Count; j++)
                     {
                         var output = outputList[j];
@@ -849,57 +862,9 @@ namespace PAPIRUS_WPF
                         if (!(instance is generator))
                             output.outPos = model.listOfOutput[j].outPos;
                         output.parent = instance;
-                        //output.coordinates = new Point(instance.coordinates.X - output.coordinates.X, instance.coordinates.Y - output.coordinates.Y);
-                       
-                        //Point p = output.TransformToAncestor(instance).Transform(new Point(output.ActualWidth / 2, output.ActualHeight / 2));
-                        
                         Console.WriteLine("insance = " + instance.coordinates);
-                        Point p = new Point(output.Margin.Left, output.Margin.Top);
-                        int Xcomp=0;
-                        int Ycomp=0;
-
-                        if(output.VerticalAlignment == VerticalAlignment.Center)
-                        {
-                            p.Y = instance.Height / 2 + output.Margin.Top;
-                            //Xcomp = 1;
-                        }
-                        else if (output.VerticalAlignment == VerticalAlignment.Top)
-                        {
-                            p.Y =  output.Margin.Top;
-                        }
-                        else if (output.VerticalAlignment == VerticalAlignment.Bottom)
-                        {
-                            p.Y = instance.Height + output.Margin.Top;
-                        }
-
-                        if (output.HorizontalAlignment == HorizontalAlignment.Center)
-                        {
-                            p.X = instance.Width / 2 + output.Margin.Left;
-                        }
-                        else if (output.HorizontalAlignment == HorizontalAlignment.Left)
-                        {
-                            p.X = output.Margin.Left;
-                            //Ycomp= 4;
-                        }
-                        else if (output.HorizontalAlignment == HorizontalAlignment.Right)
-                        {
-                            p.X = instance.Width + output.Margin.Left;
-                        }
-
-                        //output.coordinates = new Point(Canvas.GetLeft(outputList[j]), Canvas.GetTop(outputList[j]));
-                        //output.coordinates = output.TranslatePoint(new Point(output.ActualWidth / 2, output.ActualHeight / 2), CircuitCanvas);
-                        output.coordinates = new Point(instance.coordinates.X + p.X + Xcomp, instance.coordinates.Y + p.Y+ Ycomp);
-                        // output.coordinates.X = output.coordinates.X - 1 + output.Width / 2;
-                        //output.coordinates.Y = output.coordinates.Y - 1 + output.Height / 2;
-                        //output.coordinates = output.PointToScreen(new Point(0,0));
-         
-                       // Console.WriteLine("test sssss   ");// + output.TranslatePoint(new Point(output.Width / 2, output.Height / 2),(child as FrameworkElement)));
+                        output.coordinates = model.listOfOutput[j].coordinates;
                         Data.outputs.Add(output);
-                        //Console.WriteLine("test sssss   " + output.TransformToAncestor(this).Transform(new Point(0,0)));
-                        Point p1 = instance.TranslatePoint(new Point(0, 0), output);
-                        Console.WriteLine("test sssss   " + p1);
-                        var tt = new TranslateTransform();
-                        Console.WriteLine(output.RenderTransform);
                         Console.WriteLine("output = " + output.coordinates);
                     }
                     Data.elements.Add(instance);
@@ -954,10 +919,10 @@ namespace PAPIRUS_WPF
                                 _powerList.Add((PowerObject)outputList[j]);
 
                                 //Attaches the line to the object
-                                outputList[j]._state_.parent.AttachInputLine(line);
+                                outputList[j]._state_.parent.AttachInputLine(outputList[j]._state_,line);
 
                                 //Some evil casting (the outputs' parent of the parent is the circuit object that contains the output). Attaches the output side to the object
-                                el.AttachOutputLine(line);
+                                el.AttachOutputLine(outputList[j],line);
 
                             }
                         }
@@ -1033,7 +998,7 @@ namespace PAPIRUS_WPF
                     if ((objects[i] is generator))
                         saveModels[i].listOfOutput[j].outPos = outputs[j].outPos;
                     else saveModels[i].listOfOutput[j].outPos = 99;
-
+                    saveModels[i].listOfOutput[j].coordinates = outputs[j].coordinates;
                 }
             }
             return saveModels;
@@ -1222,13 +1187,15 @@ namespace PAPIRUS_WPF
                 RemoveGeneratorConnection(element);
             }
             _attachedInputLines = element.GetInputLine();
-            foreach (var wire in _attachedInputLines)
+            foreach (var pair in _attachedInputLines)  //TODO
             {
+                Line wire = pair.Value;
                 RemoveWire(wire);
             }
             _attachedOutputLines = element.GetOutputLine();
-            foreach (var wire in _attachedOutputLines)
+            foreach (var pair in _attachedOutputLines)
             {
+                Line wire = pair.Value;
                 RemoveWire(wire);
             }
             for (int i = 0; i < element.connectedElements.Count(); i++)
@@ -1252,6 +1219,43 @@ namespace PAPIRUS_WPF
 
         private void RemoveWire(Line wire)
         {
+            bool f1 = false;
+            bool f2 = false;
+            Output output = null;
+            for(int i = 0; i < Data.elements.Count; i++)
+            {
+                f1 = false;
+                Object element = Data.elements[i];
+                Dictionary<Output, Line> dicIn = element.GetInputLine();
+                Dictionary<Output, Line> dicOut = element.GetOutputLine();
+                for (int j = 0; j < dicOut.Count; j++)
+                {
+                    if (f1) break;
+                    Line line = dicOut.Values.ElementAt(j);
+                    if(line == wire)
+                    {
+                        output = dicOut.Keys.ElementAt(j);
+                        element._attachedOutputLines.Remove(output);
+                        f1 = true;
+                        break;
+                    }
+                }
+                if (f1) continue;
+                for (int j = 0; j < dicIn.Count; j++)
+                {
+                    Line line = dicIn.Values.ElementAt(j);
+                    if (line == wire)
+                    {
+                        output = dicIn.Keys.ElementAt(j);
+                        element._attachedInputLines.Remove(output);
+                        f2 = true;
+                        break;
+                    }
+                }
+                if (f1 && f2) break;
+            }
+
+
             Point startpoint = new Point(wire.X1, wire.Y1);
             Point endpoint = new Point(wire.X2, wire.Y2);
 

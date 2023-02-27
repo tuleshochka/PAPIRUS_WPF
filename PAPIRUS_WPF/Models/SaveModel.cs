@@ -45,6 +45,7 @@ namespace PAPIRUS_WPF.Models
         public int stateId { get; set; }
         public int id { get; set; }
         public int outPos { get; set; }  // 0 - Left, 1 - Right, 2 - Top, 3 - Bottom
+        public Point coordinates { get; set; }
     }
 
 }

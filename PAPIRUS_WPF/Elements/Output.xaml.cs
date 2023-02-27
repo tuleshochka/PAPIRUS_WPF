@@ -52,7 +52,9 @@ namespace PAPIRUS_WPF.Elements
 
         public Point coordinates;
 
-      // The state of the output
+        public int inputOrOutput = -1; //-1 - нет подключения, 0 - подключен input, 1 - output
+
+        // The state of the output
         public bool _state;
         /// <summary>
         /// The delayed state of the input. Doesn't get updated internally until one tick has passed.
@@ -107,7 +109,15 @@ namespace PAPIRUS_WPF.Elements
         //        StateChange();
         //    }
         //}
-        public void LinkInputs(Output output)
+
+        /// <summary>
+        /// Создает соединение с другим Output
+        /// </summary>
+        /// <param name="output">Output, с которым должно произойти соединение</param>
+        /// <param name="i">0 - подключение в этот Output, 1 - подключение из этого Output</param>
+        /// <param name="coordinates">Середина этого Output</param>
+        /// <exception cref="Exception"></exception>
+        public void LinkInputs(Output output, int i, Point coordinates)
         {
             if (output == this) return;
             //Makes sure that it only listens to one output event at a time
@@ -115,6 +125,8 @@ namespace PAPIRUS_WPF.Elements
                 throw new Exception("Нельзя подключить больше одного элемента");
             //Sets the state to the output
             _state_ = output;
+            inputOrOutput = i;
+            this.coordinates = coordinates;
         }
 
         public void DeleteLink()

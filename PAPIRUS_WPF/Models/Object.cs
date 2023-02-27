@@ -79,8 +79,8 @@ namespace PAPIRUS_WPF
         public Point anchorPoint;
         public Point startPoint = new Point(0,0);
 
-        public List<Line> _attachedInputLines;
-        public List<Line> _attachedOutputLines;
+        public Dictionary<Output,Line> _attachedInputLines;
+        public Dictionary<Output, Line> _attachedOutputLines;
 
         //--------подключен ли к генератору----------//
         public bool generatorConnected = false;
@@ -98,8 +98,8 @@ namespace PAPIRUS_WPF
         public Object()
         {
             //Initialize the lists
-            _attachedInputLines = new List<Line>();
-            _attachedOutputLines = new List<Line>();
+            _attachedInputLines = new Dictionary<Output, Line>();
+            _attachedOutputLines = new Dictionary<Output, Line>();
             connectedElements = new List<Object>();
             matrixElements = new List<MatrixElement>();
         }
@@ -135,21 +135,21 @@ namespace PAPIRUS_WPF
             }
         }
 
-        public virtual void AttachInputLine(Line line)
+        public virtual void AttachInputLine(Output output,Line line)
         {
-            _attachedInputLines.Add(line);
+            _attachedInputLines.Add(output,line);
         }
 
-        public virtual void AttachOutputLine(Line line)
+        public virtual void AttachOutputLine(Output output, Line line)
         {
-            _attachedOutputLines.Add(line);
+            _attachedOutputLines.Add(output, line);
         }
 
-        public List<Line> GetOutputLine()
+        public Dictionary<Output, Line> GetOutputLine()
         {
             return _attachedOutputLines;
         }
-        public List<Line> GetInputLine()
+        public Dictionary<Output, Line> GetInputLine()
         {
             return _attachedInputLines;
         }
