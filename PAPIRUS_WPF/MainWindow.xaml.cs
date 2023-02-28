@@ -91,6 +91,20 @@ namespace PAPIRUS_WPF
         //--------Сохранение-----------//
         private string saveFileName;
 
+        public class CloneableDictionary<T, D> : Dictionary<T, D>, ICloneable<CloneableDictionary<T, D>> where T : ICloneable
+        {
+            public CloneableDictionary<T, D> Clone()
+            {
+                throw new NotImplementedException();
+            }
+
+            object ICloneable.Clone()
+            {
+                throw new NotImplementedException();
+            }
+           
+        }
+
         public MainWindow()
         {
 
@@ -1186,16 +1200,37 @@ namespace PAPIRUS_WPF
             {
                 RemoveGeneratorConnection(element);
             }
-            _attachedInputLines = element.GetInputLine();
-            foreach (var pair in _attachedInputLines)  //TODO
+            Console.WriteLine("object Count b:" + element._attachedInputLines.Count);
+            _attachedInputLines = element._attachedInputLines.ToDictionary(entry => entry.Key, entry => entry.Value);
+            _attachedOutputLines = element._attachedOutputLines.ToDictionary(entry => entry.Key, entry => entry.Value);
+            //this._attachedInputLines.Clear();
+            //this._attachedOutputLines.Clear();
+            //for (int i = 0; i < element._attachedInputLines.Count(); i++)
+            //{
+            //    Output output = element._attachedInputLines.Keys.ElementAt(i);
+            //    Line line = element._attachedInputLines.Values.ElementAt(i);
+            //    _attachedInputLines.Add(output, line);
+            //}
+            //for (int i = 0; i < element._attachedOutputLines.Count(); i++)
+            //{
+            //    Output output = element._attachedOutputLines.Keys.ElementAt(i);
+            //    Line line = element._attachedOutputLines.Values.ElementAt(i);
+            //    _attachedOutputLines.Add(output, line);
+            //}
+            //Console.WriteLine("this Count b:"+_attachedInputLines.Count);
+            //Console.WriteLine("object Count b:" + element._attachedInputLines.Count);
+            //Output output1 = element._attachedInputLines.Keys.ElementAt(0);
+            //element._attachedInputLines.Remove(output1);
+            //Console.WriteLine("this Count a:" + _attachedInputLines.Count);
+            //Console.WriteLine("object Count a:" + element._attachedInputLines.Count);
+            for (int i =0;i < _attachedInputLines.Count;i++)
             {
-                Line wire = pair.Value;
+                Line wire = _attachedInputLines.Values.ElementAt(i);
                 RemoveWire(wire);
             }
-            _attachedOutputLines = element.GetOutputLine();
-            foreach (var pair in _attachedOutputLines)
+            for (int i = 0; i < _attachedOutputLines.Count; i++)
             {
-                Line wire = pair.Value;
+                Line wire = _attachedOutputLines.Values.ElementAt(i);
                 RemoveWire(wire);
             }
             for (int i = 0; i < element.connectedElements.Count(); i++)
