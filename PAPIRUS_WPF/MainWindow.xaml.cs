@@ -457,7 +457,7 @@ namespace PAPIRUS_WPF
                             //Links the output to the input
                             try
                             {
-                                IOInput.LinkInputs(_tempOutput, 0,inputPoint);
+                                IOInput.LinkInputs(_tempOutput, 0,inputPoint);  //TODO add try _tempOutput
                             }
                             catch (Exception)
                             {
