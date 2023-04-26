@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows;
-using System.ComponentModel;
-using System.Windows.Shapes;
-using WPF_SHF_Element_lib;
-using PAPIRUS_WPF.Models;
-using Element = PAPIRUS_WPF.Models.Element;
-using PAPIRUS_WPF.Dialog;
-using System.Numerics;
+﻿using PAPIRUS_WPF.Dialog;
 using PAPIRUS_WPF.Elements;
+using PAPIRUS_WPF.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Shapes;
+using Element = PAPIRUS_WPF.Models.Element;
 using Matrix = PAPIRUS_WPF.Models.Matrix;
 
 namespace PAPIRUS_WPF
@@ -137,12 +131,19 @@ namespace PAPIRUS_WPF
 
         public virtual void AttachInputLine(Output output,Line line)
         {
-            _attachedInputLines.Add(output,line);
+            if (!_attachedInputLines.ContainsKey(output))
+            {
+                _attachedInputLines.Add(output, line);
+            }
         }
 
         public virtual void AttachOutputLine(Output output, Line line)
         {
-            _attachedOutputLines.Add(output, line);
+            if (!_attachedOutputLines.ContainsKey(output))
+            {
+                _attachedOutputLines.Add(output, line);
+            }
+            
         }
 
         public Dictionary<Output, Line> GetOutputLine()

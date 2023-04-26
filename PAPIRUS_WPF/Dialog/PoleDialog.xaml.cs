@@ -17,7 +17,6 @@ using Element = PAPIRUS_WPF.Models.Element;
 using System.Xml.Linq;
 using System.Reflection;
 using System.Numerics;
-using static AngouriMath.Entity;
 using Matrix = PAPIRUS_WPF.Models.Matrix;
 
 namespace PAPIRUS_WPF.Dialog

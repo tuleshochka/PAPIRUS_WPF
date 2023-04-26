@@ -271,6 +271,11 @@ namespace PAPIRUS_WPF
                             }
                         }
                     }
+                    else 
+                    { 
+                    ClickTimer.Stop();
+                    ClickCounter = 0;
+                    }
                     ClickTimer.Start();
                 }
             }

@@ -25,6 +25,7 @@ using Point = System.Windows.Point;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using System.Windows.Automation.Peers;
+using WPF_SHF_Element_lib.Models;
 
 namespace PAPIRUS_WPF
 {
@@ -359,8 +360,24 @@ namespace PAPIRUS_WPF
 
         public Matrix Calculate(Element element, List<DataGridElements> dataGridElements)
         {
-
-            Element tempElement = (Element)element.Clone();
+            //Element tempElement = (Element)element.Clone();
+            List<DataGrid1_Parameters> par = null;
+            par = new List<DataGrid1_Parameters>();
+            for (int i = 0; i< element.parameters.Count;i++)
+            {
+                par.Add(element.parameters[i]);
+            }
+            List<DataGrid1_Elements> oth = new List<DataGrid1_Elements>();
+            for (int i = 0; i < element.other_par.Count; i++)
+            {
+                oth.Add(element.other_par[i]);
+            }
+            List<MatrixElements> mat = new List<MatrixElements>();
+            for (int i = 0; i < element.matrix.Count; i++)
+            {
+                mat.Add(element.matrix[i]);
+            }
+            Element tempElement = new Element(element.imagePath, element.group, element.name, par,oth,mat);
             int number = element.group;
             Matrix matrix = new Matrix(number, number);
             if (tempElement.other_par.Count() != 0)
@@ -371,7 +388,7 @@ namespace PAPIRUS_WPF
                     tempElement = CalculateIntermediateValues_cycle(tempElement);
                     for (int i = 0; i < tempElement.other_par.Count; i++)
                     {
-                        Console.WriteLine(tempElement.other_par[i].headerColumn + " = " + tempElement.other_par[i].formulaColumn);
+                        //Console.WriteLine(tempElement.other_par[i].headerColumn + " = " + tempElement.other_par[i].formulaColumn);
                     }
                 }
                 catch (Exception e)

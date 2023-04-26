@@ -23,6 +23,7 @@ namespace PAPIRUS_WPF.Properties
         {
             get
             {
+
                 return defaultInstance;
             }
         }

@@ -8,8 +8,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
             mc:Ignorable="PresentationOptions">
     <Application.Resources>
+        
 
-        <LinearGradientBrush x:Key="MarkerFill" StartPoint="0,0" EndPoint="1,1" PresentationOptions:Freeze="True">
+            <LinearGradientBrush x:Key="MarkerFill" StartPoint="0,0" EndPoint="1,1" PresentationOptions:Freeze="True">
             <GradientStop Color="#54AC51AB" Offset="0"/>
             <GradientStop Color="#54F606F5" Offset="0.5"/>
             <GradientStop Color="#54AC51AB" Offset="1"/>
