@@ -26,14 +26,13 @@ namespace PAPIRUS_WPF
         public static List<Output> outputs = new List<Output>();
 
         //---------для GeneratorDialog-------------//
+        public static int factorForHertz = 1000000000;
         public static List<Limits> dataLimits = new List<Limits>();  //
         public static List<Specific> dataSpecifics = new List<Specific>();
-        public static double lowerLimit = 0;
-        public static double upperLimit = 10;
-        public static double specificFrequency = 1;
+        public static double lowerLimit = 1*factorForHertz;
+        public static double upperLimit = 10 * factorForHertz;
+        public static double specificFrequency = 1 * factorForHertz;
         public static double reflectionCoef = 1;
-
-
 
         public static void ClearAll()
         { 

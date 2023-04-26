@@ -166,6 +166,7 @@ namespace PAPIRUS_WPF.Dialog
                     {
                         Complex complex = (Complex)entity.EvalNumerical();
                         y1 = Math.Sqrt(Math.Pow(complex.Real, 2) + Math.Pow(complex.Imaginary, 2));
+                        y1 = y1/Data.factorForHertz;
                         if (complex.Real > 0)
                         {
                             if (complex.Imaginary >= 0) y2 = Math.Atan2(complex.Imaginary, complex.Real);
@@ -180,14 +181,15 @@ namespace PAPIRUS_WPF.Dialog
                         {
                             if (complex.Imaginary > 0) y2 = Math.PI / 2;
                             else if (complex.Imaginary < 0) y2 = (3 * Math.PI) / 2;
-
                         }
+                        y2 = y2/Data.factorForHertz;
                     }
                     catch (Exception)
                     {
                         MessageBox.Show("Произошла ошибка при вычислениях");
                         return;
                     }
+                    x = x/Data.factorForHertz;
                     frec.Add(new ObservablePoint(x, y1));
 
                     //------------------------ФЧХ------------------------------//

@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using LiveCharts.Defaults;
 using Microsoft.SqlServer.Server;
+using System.Security.Cryptography;
 
 namespace PAPIRUS_WPF.Dialog
 {
@@ -21,11 +22,11 @@ namespace PAPIRUS_WPF.Dialog
         public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }
         public Func<double, string> YFormatter { get; set; }
+        public Axis[] XAxes { get; set; }
+        public Axis[] YAxes { get; set; }
         public Graphic(ChartValues<ObservablePoint> frec, ChartValues<ObservablePoint> phase)
         {
             InitializeComponent();
-           
-            
 
             SeriesCollection = new SeriesCollection
             {
@@ -35,16 +36,16 @@ namespace PAPIRUS_WPF.Dialog
                     Stroke= Brushes.Red,
                     Fill = Brushes.Transparent,
                     Values = frec
-                  },
-                     new LineSeries
-                 {
-                        Title = "ФЧХ",
-                        Stroke= Brushes.Blue,
+                },
+                new LineSeries
+                {
+                    Title = "ФЧХ",
+                    Stroke= Brushes.Blue,
                     Fill = Brushes.Transparent,
                     Values = phase
                 }
-
             };
+
             DataContext = this;
 
         }

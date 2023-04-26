@@ -16,14 +16,14 @@
         <TextBlock HorizontalAlignment="Left" Margin="26,70,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Language="ru-ru" Text="Параметры элемента"/></TextBlock>
         <DataGrid x:Name="dataGridLimits" Margin="20,150,270,250" AutoGenerateColumns="false" CanUserAddRows="False" >
             <DataGrid.Columns>
-                <local1:DataGridNumericColumn x:Name="LowerLimit"  Header="Нижний предел (Гц)" Binding="{Binding lowerLimit}" Width="*"/>
-                <local1:DataGridNumericColumn x:Name="UpperLimit"  Header="Верхний предел (Гц)" Binding="{Binding upperLimit}" Width="*"/>
+                <local1:DataGridNumericColumn x:Name="LowerLimit"  Header="Нижний предел (ГГц)" Binding="{Binding lowerLimit}" Width="*"/>
+                <local1:DataGridNumericColumn x:Name="UpperLimit"  Header="Верхний предел (ГГц)" Binding="{Binding upperLimit}" Width="*"/>
                 <!--<local1:DataGridNumericColumn x:Name="FrequencyStep"  Header="Шаг по частоте" Binding="{Binding frequencyStep}" Width="*"/>-->
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid x:Name="dataGridSpecific" Margin="20,150,270,250" AutoGenerateColumns="false" CanUserAddRows="False">
             <DataGrid.Columns>
-                <local1:DataGridNumericColumn x:Name="Frequency"  Header="Частота (Гц)" Binding="{Binding frequency}" Width="*"/>
+                <local1:DataGridNumericColumn x:Name="Frequency"  Header="Частота (ГГц)" Binding="{Binding frequency}" Width="*"/>
                 <local1:DataGridNumericColumn x:Name="Tolerance"  Header="Допуск (%)" Binding="{Binding tolerance}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

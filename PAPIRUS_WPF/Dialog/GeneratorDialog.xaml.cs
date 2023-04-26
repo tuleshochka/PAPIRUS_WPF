@@ -44,7 +44,7 @@ namespace PAPIRUS_WPF.Dialog
             }
             else
             {
-                limits.Add(new Limits { lowerLimit = 0, upperLimit = 10 });
+                limits.Add(new Limits { lowerLimit = 1, upperLimit = 10 });
             }
             if(Data.dataSpecifics.Count() != 0)
             {
@@ -52,7 +52,7 @@ namespace PAPIRUS_WPF.Dialog
             }
             else
             {
-                specifics.Add(new Specific { frequency = 5, tolerance = 100 });
+                specifics.Add(new Specific { frequency = 5, tolerance = 80 });
             }
             dataGridLimits.ItemsSource = limits;
             dataGridSpecific.ItemsSource = specifics;
@@ -85,15 +85,15 @@ namespace PAPIRUS_WPF.Dialog
             SpesificSaveData();
             if (RadioButtonDopusk.IsChecked == true)
             {
-                Data.specificFrequency = specifics[0].frequency - ((specifics[0].frequency * specifics[0].tolerance) / 100);
-                Data.upperLimit = specifics[0].frequency+ (specifics[0].frequency * specifics[0].tolerance) / 100;
-                Data.lowerLimit= specifics[0].frequency- (specifics[0].frequency * specifics[0].tolerance) / 100;
+                Data.specificFrequency = (specifics[0].frequency - ((specifics[0].frequency * specifics[0].tolerance) / 100))* Data.factorForHertz;
+                Data.upperLimit = (specifics[0].frequency+ (specifics[0].frequency * specifics[0].tolerance) / 100) * Data.factorForHertz;
+                Data.lowerLimit= (specifics[0].frequency- (specifics[0].frequency * specifics[0].tolerance) / 100)* Data.factorForHertz;
             }
             else
             {
-                Data.specificFrequency = limits[0].lowerLimit;
-                Data.lowerLimit = limits[0].lowerLimit;
-                Data.upperLimit = limits[0].upperLimit;
+                Data.specificFrequency = (limits[0].lowerLimit)*Data.factorForHertz;
+                Data.lowerLimit = (limits[0].lowerLimit) * Data.factorForHertz;
+                Data.upperLimit = (limits[0].upperLimit) * Data.factorForHertz;
             }
             this.Close();
         }
